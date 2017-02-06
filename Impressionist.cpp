@@ -7,8 +7,6 @@
 // communicate.
 //
 //This line of comment was added by He Zhou - testing the syncing of github from VS!!!!!
-//Test whether the commit is recorded under Samuel He
-//test3
 #include <stdio.h>
 
 #include <FL/Fl.h>
