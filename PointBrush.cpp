@@ -4,7 +4,10 @@
 // The implementation of Point Brush. It is a kind of ImpBrush. All your brush implementations
 // will look like the file with the different GL primitive calls.
 //
-
+//really???
+//why there's no unstaged changes??
+//where is CircleBrush.cpp??????
+//why I cannot push my commit from Visual Studio??
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include "pointbrush.h"
