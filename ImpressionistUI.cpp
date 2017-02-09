@@ -346,23 +346,23 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes }, 
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
+
+		{ "&Colors...",	FL_ALT + 'k', (Fl_Callback *)ImpressionistUI::cb_brushes }, 
+		{ "&Paintly", FL_ALT + 'p', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 		
+
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
 
 	{ "&Display",		0, 0, 0, FL_SUBMENU },
-		{ "&Load Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
-		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
-		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
+		{ "&Original Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
+		{ "&Edge Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
+		{ "&Another Image...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
 		{ 0 },
 
 	{ "&Options",		0, 0, 0, FL_SUBMENU },
-		{ "&Load Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
-		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
-		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
-		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
-
-		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
+		{ "&Faster...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
+		{ "&Safer...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 		{ 0 },
 
 	{ "&Help",		0, 0, 0, FL_SUBMENU },
