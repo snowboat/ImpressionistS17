@@ -25,7 +25,7 @@ void CircleBrush::BrushBegin(const Point source, const Point target)
 
 
 
-	glPointSize((float)size);
+	glPointSize((float)size*3);	//Samuel TODO: to be changed to an actual circle!!! 
 
 	BrushMove(source, target);
 }
