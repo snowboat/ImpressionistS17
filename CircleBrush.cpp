@@ -7,6 +7,7 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include "CircleBrush.h"
+#include "math.h"
 
 extern float frand();
 
@@ -24,7 +25,7 @@ void CircleBrush::BrushBegin(const Point source, const Point target)
 
 
 
-	glPointSize((float)size*3);	//Samuel TODO: to be changed to an actual circle!!! 
+	glPointSize((float)size);	//Samuel TODO: to be changed to an actual circle!!! 
 
 	BrushMove(source, target);
 }
@@ -39,10 +40,14 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
-	glBegin(GL_POINTS);
+	glBegin(GL_POLYGON);
 	SetColor(source);
-
-	glVertex2d(target.x, target.y);
+	float pi = 3.14159265359;
+	double radius =  pDoc->getSize()/2;
+	//glVertex2d(target.x, target.y);
+	for (double i = 0; i < 2 * pi; i += pi / 24) {
+		glVertex2d(cos(i)*radius + target.x, sin(i)*radius + target.y);
+	}
 
 	glEnd();
 }
