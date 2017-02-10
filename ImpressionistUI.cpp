@@ -280,6 +280,13 @@ void ImpressionistUI::cb_sizeSlides(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_nSize=int( ((Fl_Slider *)o)->value() ) ;
 }
 
+
+//TODO: Change the ALPHA value when the slider changes.
+void ImpressionistUI::cb_alphaSlides(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_alphaValue = float(((Fl_Slider *)o)->value());
+}
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -417,6 +424,7 @@ ImpressionistUI::ImpressionistUI() {
 	// init values
 
 	m_nSize = 10;
+	m_alphaValue = 1.00;
 
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
@@ -443,6 +451,19 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushSizeSlider->value(m_nSize);
 		m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
 		m_BrushSizeSlider->callback(cb_sizeSlides);
+
+		// Alpha Slider
+		m_BrushSizeSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha");
+		m_BrushSizeSlider->user_data((void*)(this));	// record self to be used by static callback functions
+		m_BrushSizeSlider->type(FL_HOR_NICE_SLIDER);
+		m_BrushSizeSlider->labelfont(FL_COURIER);
+		m_BrushSizeSlider->labelsize(12);
+		m_BrushSizeSlider->minimum(0);
+		m_BrushSizeSlider->maximum(1);
+		m_BrushSizeSlider->step(0.01);
+		m_BrushSizeSlider->value(m_alphaValue);
+		m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
+		m_BrushSizeSlider->callback(cb_alphaSlides);
 
     m_brushDialog->end();	
 
