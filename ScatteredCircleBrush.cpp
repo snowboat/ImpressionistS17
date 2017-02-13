@@ -55,7 +55,6 @@ void ScatteredCircleBrush::BrushMove(const Point source, const Point target)
 	double dist1 = rand() % maxdist;
 	double angle1 = frand() * 2 * pi;
 	Point circleCtr1(source.x + dist1*cos(angle1), source.y + dist1*sin(angle1));
-	printf("another circle at %f, %f", source.x + dist1*cos(angle1), source.y + dist1*sin(angle1));
 	glBegin(GL_POLYGON);
 	SetColor(circleCtr1);
 	for (double i = 0; i < 2 * pi; i += pi / 36) {
@@ -66,7 +65,6 @@ void ScatteredCircleBrush::BrushMove(const Point source, const Point target)
 	double dist2 = rand() % maxdist;
 	double angle2 = frand() * 2 * pi;
 	Point circleCtr2(source.x + dist2*cos(angle2), source.y + dist2*sin(angle2));
-	printf("another circle at %f, %f", source.x + dist2*cos(angle2), source.y + dist2*sin(angle2));
 	glBegin(GL_POLYGON);
 	SetColor(circleCtr2);
 	for (double i = 0; i < 2 * pi; i += pi / 36) {

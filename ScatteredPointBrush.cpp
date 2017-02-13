@@ -45,7 +45,7 @@ void ScatteredPointBrush::BrushMove(const Point source, const Point target)
 			if (rand()%5 == 1) {
 				Point samplePoint(source.x + i, source.y + j);
 				SetColor(samplePoint);
-				glVertex2i(source.x + i, source.y + j);
+				glVertex2i(target.x + i, target.y + j);
 				
 			}
 		}
