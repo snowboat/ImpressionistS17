@@ -25,7 +25,7 @@ void CircleBrush::BrushBegin(const Point source, const Point target)
 
 
 
-	glPointSize((float)size);	//Samuel TODO: to be changed to an actual circle!!! 
+	glPointSize((float)size);	
 
 	BrushMove(source, target);
 }
@@ -45,7 +45,7 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 	float pi = 3.14159265359;
 	double radius =  pDoc->getSize()/2;
 	//glVertex2d(target.x, target.y);
-	for (double i = 0; i < 2 * pi; i += pi / 24) {
+	for (double i = 0; i < 2 * pi; i += pi / 36) {
 		glVertex2d(cos(i)*radius + target.x, sin(i)*radius + target.y);
 	}
 
