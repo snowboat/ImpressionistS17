@@ -93,6 +93,15 @@ int ImpressionistDoc::getSize()
 	return m_pUI->getSize();
 }
 
+GLubyte ImpressionistDoc::getAlpha()
+{
+	return (GLubyte)(m_pUI->getAlpha());
+}
+
+void ImpressionistDoc::setAlpha(float alpha)
+{
+}
+
 //---------------------------------------------------------
 // Load the specified image
 // This is called by the UI when the load image button is 

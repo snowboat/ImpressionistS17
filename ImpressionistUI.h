@@ -51,9 +51,10 @@ public:
 	void				resize_windows(int w, int h);
 
 	// Interface to get attribute
-
 	int					getSize();
 	void				setSize(int size);
+	float				getAlpha();
+	void				setAlpha(float alpha);
 
 private:
 	ImpressionistDoc*	m_pDoc;		// pointer to document to communicate with the document

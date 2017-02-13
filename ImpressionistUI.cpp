@@ -363,6 +363,19 @@ void ImpressionistUI::setSize(int size)
 		m_BrushSizeSlider->value(m_nSize);
 }
 
+float ImpressionistUI::getAlpha()
+{
+	return m_alphaValue;
+}
+
+void ImpressionistUI::setAlpha(float alpha)
+{
+	m_alphaValue = alpha;
+
+	if (alpha <= 1.0f && alpha>= 0.0f)
+		m_AlphaValueSlider->value(m_alphaValue);
+}
+
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },

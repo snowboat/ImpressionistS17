@@ -27,6 +27,8 @@ public:
 	void	setBrushType(int type);			// called by the UI to set the brushType
 	int		getSize();						// get the UI size
 	void	setSize(int size);				// set the UI size
+	GLubyte 	getAlpha();					//return the alpha as glubyte for setcolor() to use
+	void	setAlpha(float alpha);
 	char*	getImageName();					// get the current image name
 	void 	setStrokeDirection(int type);
 
@@ -50,7 +52,6 @@ public:
 	int m_nSize;
 	// Current Stroke Direction
 	int strokeDirection;		//TODO: actually I think it may not need to be recorded as an integer. but let's keep it for now.					
-
 	ImpressionistUI*	m_pUI;
 
 	// Operations
