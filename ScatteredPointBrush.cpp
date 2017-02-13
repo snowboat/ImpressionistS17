@@ -39,18 +39,19 @@ void ScatteredPointBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 	int size = pDoc->getSize();
+	glBegin(GL_POINTS);
 	for (int i = -size/2; i < size/2; i++) {
 		for (int j = -size/2; j < size/2; j++) {
 			if (rand()%5 == 1) {
-				glBegin(GL_POINTS);
 				Point samplePoint(source.x + i, source.y + j);
 				SetColor(samplePoint);
-				//printf("point %d and %d", source.x, source.y);
-				glVertex2d(target.x + i, target.y + j);
-				glEnd();
+				glVertex2i(source.x + i, source.y + j);
+				
 			}
 		}
 	}
+	glEnd();
+	glFlush();
 	/*	glBegin(GL_POINTS);
 	SetColor(source);
 
