@@ -28,6 +28,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_nWidth = -1;
 	m_ucBitmap = NULL;
 	m_ucPainting = NULL;
+	strokeDirection = 0;
 
 
 	// create one instance of each brush
@@ -77,6 +78,11 @@ char* ImpressionistDoc::getImageName()
 void ImpressionistDoc::setBrushType(int type)
 {
 	m_pCurrentBrush = ImpBrush::c_pBrushes[type];
+}
+
+//change the stroke direction
+void ImpressionistDoc::setStrokeDirection(int type) {
+	strokeDirection = type;
 }
 
 //---------------------------------------------------------

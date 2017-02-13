@@ -269,6 +269,16 @@ void ImpressionistUI::cb_clear_canvas_button(Fl_Widget* o, void* v)
 	pDoc->clearCanvas();
 }
 
+//callback function of stroke direction change
+void ImpressionistUI::cb_setStrokeDirection(Fl_Widget* o, void* v) {
+	ImpressionistUI* pUI = ((ImpressionistUI *)(o->user_data()));
+	ImpressionistDoc* pDoc = pUI->getDocument();
+
+	int type = (int)v;
+
+	pDoc->setStrokeDirection(type);
+}
+
 
 //-----------------------------------------------------------
 // Updates the brush size to use from the value of the size
@@ -280,6 +290,13 @@ void ImpressionistUI::cb_sizeSlides(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_nSize = int(((Fl_Slider *)o)->value());
 }
 
+void ImpressionistUI::cb_lineWidthChanges(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->m_lineWidth = int(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_lineAngleChanges(Fl_Widget* o, void* v) {
+	((ImpressionistUI*)(o->user_data()))->m_lineAngle = int(((Fl_Slider *)o)->value());
+}
 
 //TODO: Change the ALPHA value when the slider changes.
 void ImpressionistUI::cb_alphaSlides(Fl_Widget * o, void * v)
@@ -390,6 +407,13 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{ 0 }
 };
 
+Fl_Menu_Item ImpressionistUI::strokeDirectionMenu[3 + 1] = {
+	{ "Slider/Right Mouse",FL_ALT + 'p', (Fl_Callback *)ImpressionistUI::cb_setStrokeDirection, (void *)1 },
+	{ "Cursur Direction",FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_setStrokeDirection, (void *)2 },
+	{ "Gradient",FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_setStrokeDirection, (void *)3 },
+	{ 0 }
+};
+
 
 
 //----------------------------------------------------
@@ -424,19 +448,31 @@ ImpressionistUI::ImpressionistUI() {
 	// init values
 
 	m_nSize = 10;
+	m_lineWidth = 10;
+	m_lineAngle = 0;
 	m_alphaValue = 1.00;
 
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
+
 	// Add a brush type choice to the dialog
 	m_BrushTypeChoice = new Fl_Choice(50, 10, 150, 25, "&Brush");
 	m_BrushTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
 	m_BrushTypeChoice->menu(brushTypeMenu);
 	m_BrushTypeChoice->callback(cb_brushChoice);
 
+	//clear Canvas
 	m_ClearCanvasButton = new Fl_Button(240, 10, 150, 25, "&Clear Canvas");
 	m_ClearCanvasButton->user_data((void*)(this));
 	m_ClearCanvasButton->callback(cb_clear_canvas_button);
+
+
+	//Choice for Stroke Direction
+	m_strokeDirectionChoice = new Fl_Choice(125, 50, 150, 25, "&Stroke Direction");
+	m_strokeDirectionChoice->user_data((void*)(this));	 // record self to be used by static callback functions
+	m_strokeDirectionChoice->menu(strokeDirectionMenu);
+	m_strokeDirectionChoice->callback(cb_setStrokeDirection);
+
 
 
 	// Add brush size slider to the dialog 
@@ -451,6 +487,32 @@ ImpressionistUI::ImpressionistUI() {
 	m_BrushSizeSlider->value(m_nSize);
 	m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
 	m_BrushSizeSlider->callback(cb_sizeSlides);
+
+	// Line width slider
+	m_LineWidthSlider = new Fl_Value_Slider(10, 110, 300, 20, "Line Width");
+	m_LineWidthSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_LineWidthSlider->type(FL_HOR_NICE_SLIDER);
+	m_LineWidthSlider->labelfont(FL_COURIER);
+	m_LineWidthSlider->labelsize(12);
+	m_LineWidthSlider->minimum(1);
+	m_LineWidthSlider->maximum(40);
+	m_LineWidthSlider->step(1);
+	m_LineWidthSlider->value(m_lineWidth);
+	m_LineWidthSlider->align(FL_ALIGN_RIGHT);
+	m_LineWidthSlider->callback(cb_lineWidthChanges);
+
+	// Line Angle Slider
+	m_BrushSizeSlider = new Fl_Value_Slider(10, 140, 300, 20, "Line Angle");
+	m_BrushSizeSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_BrushSizeSlider->type(FL_HOR_NICE_SLIDER);
+	m_BrushSizeSlider->labelfont(FL_COURIER);
+	m_BrushSizeSlider->labelsize(12);
+	m_BrushSizeSlider->minimum(0);
+	m_BrushSizeSlider->maximum(359);
+	m_BrushSizeSlider->step(1);
+	m_BrushSizeSlider->value(m_lineAngle);
+	m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
+	m_BrushSizeSlider->callback(cb_lineAngleChanges);
 
 	// Alpha Slider
 	m_AlphaValueSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha");
