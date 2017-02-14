@@ -71,6 +71,7 @@ void ScatteredCircleBrush::BrushMove(const Point source, const Point target)
 		glVertex2d(cos(i)*radius + circleCtr2.x, sin(i)*radius + circleCtr2.y);
 	}
 	glEnd();
+	glFlush();
 	
 
 }
