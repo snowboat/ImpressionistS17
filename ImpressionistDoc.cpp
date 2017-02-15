@@ -93,9 +93,9 @@ int ImpressionistDoc::getSize()
 	return m_pUI->getSize();
 }
 
-GLubyte ImpressionistDoc::getAlpha()
+double ImpressionistDoc::getAlpha()
 {
-	return (GLubyte)(m_pUI->getAlpha());
+	return  m_pUI->getAlpha();
 }
 
 void ImpressionistDoc::setAlpha(float alpha)
