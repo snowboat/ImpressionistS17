@@ -290,15 +290,17 @@ void ImpressionistUI::cb_sizeSlides(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_nSize = int(((Fl_Slider *)o)->value());
 }
 
+//change line width when slider changes
 void ImpressionistUI::cb_lineWidthChanges(Fl_Widget* o, void* v) {
 	((ImpressionistUI*)(o->user_data()))->m_lineWidth = int(((Fl_Slider *)o)->value());
 }
 
+//change line angle when slider slides
 void ImpressionistUI::cb_lineAngleChanges(Fl_Widget* o, void* v) {
 	((ImpressionistUI*)(o->user_data()))->m_lineAngle = int(((Fl_Slider *)o)->value());
 }
 
-//TODO: Change the ALPHA value when the slider changes.
+//Change the ALPHA value when the slider changes.
 void ImpressionistUI::cb_alphaSlides(Fl_Widget * o, void * v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_alphaValue = float(((Fl_Slider *)o)->value());

@@ -44,16 +44,20 @@ void PointBrush::BrushMove( const Point source, const Point target )
 		printf( "PointBrush::BrushMove  document is NULL\n" );
 		return;
 	}
-	if (withinBoundary(source)) {
-		std::cout << "within boundary" << std::endl;
-		glBegin(GL_POINTS);
-		SetColor(source);
-		//std::cout << GetColor(source)[0] << " " << GetColor(source)[1] << " "<<GetColor(source)[2] << std::endl;
-		glVertex2d(target.x, target.y);
+	//if (withinBoundary(source)) {
+	//	std::cout << "within boundary" << std::endl;
+	//	glBegin(GL_POINTS);
+	//	SetColor(source);
+	//	//std::cout << GetColor(source)[0] << " " << GetColor(source)[1] << " "<<GetColor(source)[2] << std::endl;
+	//	glVertex2d(target.x, target.y);
 
-		glEnd();
-	}
-
+	//	glEnd();
+	//}
+	glBegin(GL_POINTS);
+	SetColor(source);
+	my_glVertex2d(source,target);
+	glEnd();
+	glFlush();
 }
 
 void PointBrush::BrushEnd( const Point source, const Point target )

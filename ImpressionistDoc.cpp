@@ -40,6 +40,7 @@ ImpressionistDoc::ImpressionistDoc()
 
 	ImpBrush::c_pBrushes[BRUSH_POINTS] = new PointBrush(this, "Points");
 
+	//On startup, construct these brushes right now
 	// Note: You should implement these 5 brushes.  They are set the same (PointBrush) for now
 	ImpBrush::c_pBrushes[BRUSH_LINES]
 		= new LineBrush(this, "Lines");

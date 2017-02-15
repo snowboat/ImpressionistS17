@@ -46,6 +46,16 @@ bool ImpBrush::withinBoundary(Point target)
 	}
 }
 
+void ImpBrush::my_glVertex2d(Point source, Point target)
+{
+	if (source.x >= 0 && source.x <= m_pDoc->m_nPaintWidth && source.y >= 0 && source.y <= m_pDoc->m_nPaintHeight) {
+		glVertex2d(target.x, target.y);
+	}
+	std::cout << m_pDoc->m_nPaintWidth << "and " << m_pDoc->m_nPaintHeight << std::endl;
+	std::cout << m_pDoc->m_nWidth << "with" << m_pDoc->m_nHeight << std::endl;
+
+}
+
 //----------------------------------------------------
 // Set the color to paint with to the color at source,
 // which is the coord at the original window to sample 
@@ -55,8 +65,6 @@ void ImpBrush::SetColor (const Point source)
 {
 	ImpressionistDoc* pDoc = GetDocument();
 
-
-
 	GLubyte color[4];
 
 	memcpy ( color, pDoc->GetOriginalPixel( source ), 3 );
@@ -65,6 +73,7 @@ void ImpBrush::SetColor (const Point source)
 
 }
 
+//Retrieve the color values from a particular point from original image (NOT from color selector)
 int* ImpBrush::GetColor(const Point source) {
 	ImpressionistDoc* pDoc = GetDocument();
 	GLubyte color[3];

@@ -37,10 +37,11 @@ public:
 public:
 	// Dimensions of original window.
 	int				m_nWidth,
-		m_nHeight;
+					m_nHeight;
+
 	// Dimensions of the paint window.
 	int				m_nPaintWidth,
-		m_nPaintHeight;
+					m_nPaintHeight;
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;
 	unsigned char*	m_ucPainting;

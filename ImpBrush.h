@@ -63,6 +63,8 @@ public:
 	//check whether you are painting within the boundary of Paint Rectangle
 	bool withinBoundary(Point target);
 
+	void my_glVertex2d(Point source, Point target);
+
 private:
 	ImpressionistDoc*	m_pDoc;
 
