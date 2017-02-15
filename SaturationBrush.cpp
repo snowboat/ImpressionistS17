@@ -48,14 +48,18 @@ void SaturationBrush::BrushMove(const Point source, const Point target)
 		std::cout << GetColor(source)[0] << " " << GetColor(source)[1] << " " << GetColor(source)[2] << std::endl;
 		int greyscale = (GetColor(source)[0]*0.299 + GetColor(source)[1]*0.587 + GetColor(source)[2]*0.114);
 		int saturatePixel[4];
-		double alpha = -10;
+		GLubyte newColor[4];
+		double alpha = 0;
 		for (int i = 0; i < 3; i++) {
-			saturatePixel[i] = alpha*GetColor(source)[i] + (1.0 - alpha)*greyscale;
+			saturatePixel[i] = (1.0-alpha)*GetColor(source)[i] + alpha*greyscale;
+			newColor[i] = (GLubyte)saturatePixel[i];
 		}
 		saturatePixel[3] = (int)(pDoc->getAlpha() * 255);
-		glColor4iv(saturatePixel);
-		std::cout << saturatePixel[0] << "and" << saturatePixel[3];
-		SetColor(source);
+		newColor[3] = (GLubyte)saturatePixel[3];
+		//glColor4iv(saturatePixel);
+		//std::cout << saturatePixel[0] << "and" << saturatePixel[3];
+		//SetColor(source);
+		glColor4ubv(newColor);
 		glVertex2d(target.x, target.y);
 
 		glEnd();
