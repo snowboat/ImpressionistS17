@@ -363,16 +363,16 @@ void ImpressionistUI::setSize(int size)
 		m_BrushSizeSlider->value(m_nSize);
 }
 
-float ImpressionistUI::getAlpha()
+double ImpressionistUI::getAlpha()
 {
 	return m_alphaValue;
 }
 
-void ImpressionistUI::setAlpha(float alpha)
+void ImpressionistUI::setAlpha(double alpha)
 {
 	m_alphaValue = alpha;
 
-	if (alpha <= 1.0f && alpha>= 0.0f)
+	if (alpha <= 1.0 && alpha>= 0.0)
 		m_AlphaValueSlider->value(m_alphaValue);
 }
 

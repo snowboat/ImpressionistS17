@@ -27,7 +27,7 @@ public:
 	void	setBrushType(int type);			// called by the UI to set the brushType
 	int		getSize();						// get the UI size
 	void	setSize(int size);				// set the UI size
-	GLubyte 	getAlpha();					//return the alpha as glubyte for setcolor() to use
+	double 	getAlpha();					//return the alpha as double for setcolor() to use
 	void	setAlpha(float alpha);
 	char*	getImageName();					// get the current image name
 	void 	setStrokeDirection(int type);

@@ -39,7 +39,9 @@ void ScatteredPointBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 	int size = pDoc->getSize();
+	glPointSize(1.0);
 	glBegin(GL_POINTS);
+	
 	for (int i = -size/2; i < size/2; i++) {
 		for (int j = -size/2; j < size/2; j++) {
 			if (rand()%5 == 1) {

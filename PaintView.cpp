@@ -48,7 +48,7 @@ void PaintView::draw()
 	glDrawBuffer(GL_FRONT_AND_BACK);
 	#endif // !MESA
 
-	if(!valid())
+	if(!valid())//initialize opengl
 	{
 
 		glClearColor(0.7f, 0.7f, 0.7f, 1.0);
@@ -58,7 +58,12 @@ void PaintView::draw()
 
 		ortho();
 
-		glClear( GL_COLOR_BUFFER_BIT );
+		glClear( GL_COLOR_BUFFER_BIT );//clear the buffer
+
+		//enable alpha blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	}
 
 	Point scrollpos;// = GetScrollPosition();
