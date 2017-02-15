@@ -18,6 +18,7 @@ enum
 	BRUSH_SCATTERED_POINTS,
 	BRUSH_SCATTERED_LINES,
 	BRUSH_SCATTERED_CIRCLES,
+	BRUSH_SATURATION_BRUSH,
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 };
 
@@ -47,6 +48,8 @@ public:
 	// according to the source image and the position, determine the draw color
 	void SetColor( const Point source );
 
+	int * GetColor(const Point source);
+
 	// get Doc to communicate with it
 	ImpressionistDoc* GetDocument( void );
 
@@ -55,6 +58,9 @@ public:
 	
 	static int			c_nBrushCount;	// How many brushes we have,
 	static ImpBrush**	c_pBrushes;		// and what they are.
+
+	//check whether you are painting within the boundary of Paint Rectangle
+	bool withinBoundary(Point target);
 
 private:
 	ImpressionistDoc*	m_pDoc;

@@ -36,6 +36,16 @@ char* ImpBrush::BrushName(void)
 	return m_pBrushName;
 }
 
+bool ImpBrush::withinBoundary(Point target)
+{
+	if (target.x >= 0 && target.x <= m_pDoc->m_nPaintWidth && target.y >= 0 && target.y <= m_pDoc->m_nPaintHeight) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 //----------------------------------------------------
 // Set the color to paint with to the color at source,
 // which is the coord at the original window to sample 
@@ -50,13 +60,18 @@ void ImpBrush::SetColor (const Point source)
 	GLubyte color[4];
 
 	memcpy ( color, pDoc->GetOriginalPixel( source ), 3 );
-	/*
-	std::cout << pDoc->getAlpha() << std::endl;*/
-	color[3] = (int)(pDoc->getAlpha() * 255);/*
-	std::cout << (double)color[3] << std::endl;
-	std::cout << color[3] << std::endl;
-	std::cout << (double)color[0] << " " << (double)color[1] << " " << (double)color[2] << " " << (double)color[3] << std::endl;
-	*/
+	color[3] = (int)(pDoc->getAlpha() * 255);
 	glColor4ubv( color );
 
+}
+
+int* ImpBrush::GetColor(const Point source) {
+	ImpressionistDoc* pDoc = GetDocument();
+	GLubyte color[3];
+	memcpy(color, pDoc->GetOriginalPixel(source), 3);
+	int rgbColor[3];
+	for (int i = 0; i < 3; i++) {
+		rgbColor[i] = (int)(color[i]);
+	}
+	return rgbColor;
 }
