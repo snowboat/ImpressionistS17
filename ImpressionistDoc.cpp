@@ -19,6 +19,7 @@
 #include "ScatteredCircleBrush.h"
 #include "ScatteredPointBrush.h"
 #include "SaturationBrush.h"
+#include "BlackandwhiteBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -52,6 +53,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new ScatteredCircleBrush(this, "Scattered Circles");
 	ImpBrush::c_pBrushes[BRUSH_SATURATION_BRUSH]
 		= new SaturationBrush(this, "Saturation Brush");
+	ImpBrush::c_pBrushes[BRUSH_BLACKANDWHITE_BRUSH]
+		= new BlackandwhiteBrush(this, "Blackandwhite Brush");
 
 	// make one of the brushes current
 	m_pCurrentBrush = ImpBrush::c_pBrushes[0];

@@ -41,30 +41,31 @@ void SaturationBrush::BrushMove(const Point source, const Point target)
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
-	if (withinBoundary(source)) {
-		std::cout << "within boundary" << std::endl;
-		glBegin(GL_POINTS);
-		SetColor(source);
-		std::cout << GetColor(source)[0] << " " << GetColor(source)[1] << " " << GetColor(source)[2] << std::endl;
-		int greyscale = (GetColor(source)[0]*0.299 + GetColor(source)[1]*0.587 + GetColor(source)[2]*0.114);
-		int saturatePixel[4];
-		GLubyte newColor[4];
-		double alpha = 0;
-		for (int i = 0; i < 3; i++) {
-			saturatePixel[i] = (1.0-alpha)*GetColor(source)[i] + alpha*greyscale;
-			newColor[i] = (GLubyte)saturatePixel[i];
-		}
-		saturatePixel[3] = (int)(pDoc->getAlpha() * 255);
-		newColor[3] = (GLubyte)saturatePixel[3];
-		//glColor4iv(saturatePixel);
-		//std::cout << saturatePixel[0] << "and" << saturatePixel[3];
-		//SetColor(source);
-		glColor4ubv(newColor);
-		glVertex2d(target.x, target.y);
+	int size = pDoc->getSize();
+	glPointSize(1.0);
+	glBegin(GL_POINTS);
 
-		glEnd();
-		glFlush();
+	for (int i = -size / 2; i < size / 2; i++) {
+		for (int j = -size / 2; j < size / 2; j++) {
+			Point replacedPoint(source.x + i, source.y + j);
+			int greyscale = (GetColor(replacedPoint)[0] * 0.299 + GetColor(replacedPoint)[1] * 0.587 + GetColor(replacedPoint)[2] * 0.114);
+			int saturatePixel[4];
+			GLubyte newColor[4];
+			double alpha = -1;//degree of saturation
+			for (int i = 0; i < 3; i++) {
+				saturatePixel[i] = (1.0 - alpha)*GetColor(replacedPoint)[i] + alpha*greyscale;
+				newColor[i] = (GLubyte)saturatePixel[i];
+			}
+			saturatePixel[3] = (int)(pDoc->getAlpha() * 255);
+			newColor[3] = (GLubyte)saturatePixel[3];
+			glColor4ubv(newColor);
+
+			glVertex2i(target.x + i, target.y + j);
+		}
 	}
+
+	glEnd();
+	glFlush();
 }
 
 void SaturationBrush::BrushEnd(const Point source, const Point target)
