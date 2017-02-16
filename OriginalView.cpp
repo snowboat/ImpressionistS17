@@ -75,7 +75,6 @@ void OriginalView::draw()
 		glPixelStorei( GL_UNPACK_ROW_LENGTH, m_pDoc->m_nWidth );
 		glDrawBuffer( GL_BACK );
 		glDrawPixels( drawWidth, drawHeight, GL_RGB, GL_UNSIGNED_BYTE, bitstart );
-
 	}
 
 			
@@ -93,14 +92,24 @@ void OriginalView::resizeWindow(int	width,
 	resize(x(), y(), width, height);
 }
 
-void OriginalView::drawCursor(Point target)
+
+
+
+void OriginalView::drawCursor()
 {
-	std::cout << "drawing cursor at" <<target.x << " "<< target.y <<  std::endl;
+	std::cout << "drawing cursor at" <<cursorPosition.x << " "<< cursorPosition.y <<  std::endl;
+
 	glBegin(GL_POINTS);
 	glPointSize(5.0);
-	//glColor3i(255, 0, 0);
-	glVertex2d(target.x, target.y);
+	glColor3ub(255, 0, 0);
+	glVertex2d(cursorPosition.x, cursorPosition.y);
 	glEnd();
 	glFlush();
+}
+
+void OriginalView::setCursorPosition(Point target)
+{
+	cursorPosition.x = target.x;
+	cursorPosition.y = target.y;
 }
 

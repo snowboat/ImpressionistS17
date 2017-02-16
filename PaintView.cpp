@@ -118,7 +118,8 @@ void PaintView::draw()
 		{
 		case LEFT_MOUSE_DOWN:
 			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
-			m_pDoc->m_pUI->m_origView->drawCursor(target);
+			m_pDoc->m_pUI->m_origView->setCursorPosition(target);
+			m_pDoc->m_pUI->m_origView->drawCursor();
 			break;
 		case LEFT_MOUSE_DRAG:
 			m_pDoc->m_pCurrentBrush->BrushMove( source, target );

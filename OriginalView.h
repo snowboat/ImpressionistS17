@@ -30,14 +30,17 @@ public:
 
 	void resizeWindow(int width, int height);
 
-	void drawCursor(Point target);
+	void drawCursor( );
 
 	ImpressionistDoc*	m_pDoc;
+
+	void setCursorPosition(Point target);
 
 private:
 	int	m_nWindowWidth, 
 		m_nWindowHeight;
-
+	
+	Point cursorPosition;
 };
 
 #endif

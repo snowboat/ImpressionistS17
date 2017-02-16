@@ -30,6 +30,9 @@ void PointBrush::BrushBegin(const Point source, const Point target)
 
 	//std::cout << "dimensions:" << pDoc->m_nPaintWidth << " " << pDoc->m_nPaintHeight << std::endl;
 	//std::cout << pDoc->m_nWidth << " " << pDoc->m_nHeight << std::endl;
+	
+	
+	//
 	BrushMove(source, target);
 
 }
@@ -55,8 +58,8 @@ void PointBrush::BrushMove(const Point source, const Point target)
 	//}
 	glBegin(GL_POINTS);
 	SetColor(source);
-	glVertex2d(target.x, target.y);
-	//my_glVertex2d(source,target);
+	//glVertex2d(target.x, target.y);
+	my_glVertex2d(source,target);
 	//std::cout << "source is" << source.x << " " << source.y << std::endl;
 	//std::cout << "target is" << target.x << " " << target.y << std::endl;
 
