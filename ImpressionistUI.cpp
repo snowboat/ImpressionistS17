@@ -421,15 +421,15 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{ "Scattered Points",	FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_POINTS },
 	{ "Scattered Lines",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_LINES },
 	{ "Scattered Circles",	FL_ALT + 'd', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_CIRCLES },
-	{ "Saturation Brush",	FL_ALT + 'd', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SATURATION_BRUSH },
-	{ "Black and white Brush",	FL_ALT + 'd', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLACKANDWHITE_BRUSH },
+	{ "Saturation",	FL_ALT + 't', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SATURATION_BRUSH },
+	{ "Black and White",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLACKANDWHITE_BRUSH },
 	{ 0 }
 };
 
 Fl_Menu_Item ImpressionistUI::strokeDirectionMenu[3 + 1] = {
-	{ "Slider/Right Mouse",FL_ALT + 'p', (Fl_Callback *)ImpressionistUI::cb_setStrokeDirection, (void *)1 },
-	{ "Cursur Direction",FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_setStrokeDirection, (void *)2 },
-	{ "Gradient",FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_setStrokeDirection, (void *)3 },
+	{ "Slider/Right Mouse",FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_setStrokeDirection, (void *)1 },
+	{ "Gradient",FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_setStrokeDirection, (void *)2 },
+	{ "Brush Direction",FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_setStrokeDirection, (void *)3 },
 	{ 0 }
 };
 
@@ -486,7 +486,7 @@ ImpressionistUI::ImpressionistUI() {
 
 
 	//Choice for Stroke Direction
-	m_strokeDirectionChoice = new Fl_Choice(125, 50, 150, 25, "&Stroke Direction");
+	m_strokeDirectionChoice = new Fl_Choice(114, 45, 150, 25, "&Stroke Direction");
 	m_strokeDirectionChoice->user_data((void*)(this));	 // record self to be used by static callback functions
 	m_strokeDirectionChoice->menu(strokeDirectionMenu);
 	m_strokeDirectionChoice->callback(cb_setStrokeDirection);
