@@ -8,6 +8,7 @@
 #include "impressionistDoc.h"
 #include "originalview.h"
 #include <iostream>
+using namespace std;
 
 #ifndef WIN32
 #define min(a, b)	( ( (a)<(b) ) ? (a) : (b) )
@@ -45,6 +46,7 @@ void OriginalView::draw()
 
 	if ( m_pDoc->m_ucBitmap ) 
 	{
+
 		// note that both OpenGL pixel storage and the Windows BMP format
 		// store pixels left-to-right, BOTTOM-to-TOP!!  thus all the fiddling
 		// around with startrow.
@@ -75,6 +77,10 @@ void OriginalView::draw()
 		glPixelStorei( GL_UNPACK_ROW_LENGTH, m_pDoc->m_nWidth );
 		glDrawBuffer( GL_BACK );
 		glDrawPixels( drawWidth, drawHeight, GL_RGB, GL_UNSIGNED_BYTE, bitstart );
+
+
+		drawCursor();
+		
 	}
 
 			
@@ -97,19 +103,21 @@ void OriginalView::resizeWindow(int	width,
 
 void OriginalView::drawCursor()
 {
-	std::cout << "drawing cursor at" <<cursorPosition.x << " "<< cursorPosition.y <<  std::endl;
 
+	glPointSize(10.0);
 	glBegin(GL_POINTS);
-	glPointSize(5.0);
 	glColor3ub(255, 0, 0);
 	glVertex2d(cursorPosition.x, cursorPosition.y);
+	//cout << cursorPosition.x << " " << cursorPosition.y << endl;
+	cout << m_nWindowHeight << "-w  h- " << m_nWindowWidth << endl;
 	glEnd();
-	glFlush();
+
 }
 
 void OriginalView::setCursorPosition(Point target)
 {
 	cursorPosition.x = target.x;
 	cursorPosition.y = target.y;
+	redraw();
 }
 

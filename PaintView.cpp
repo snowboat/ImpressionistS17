@@ -76,7 +76,7 @@ void PaintView::draw()
 
 	m_nWindowWidth	= w();
 	m_nWindowHeight	= h();
-
+	
 	int drawWidth, drawHeight;
 	drawWidth = min( m_nWindowWidth, m_pDoc->m_nPaintWidth );
 	drawHeight = min( m_nWindowHeight, m_pDoc->m_nPaintHeight );
@@ -118,8 +118,8 @@ void PaintView::draw()
 		{
 		case LEFT_MOUSE_DOWN:
 			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
-			m_pDoc->m_pUI->m_origView->setCursorPosition(target);
-			m_pDoc->m_pUI->m_origView->drawCursor();
+			//m_pDoc->m_pUI->m_origView->setCursorPosition(target);
+			//m_pDoc->m_pUI->m_origView->drawCursor();
 			break;
 		case LEFT_MOUSE_DRAG:
 			m_pDoc->m_pCurrentBrush->BrushMove( source, target );
@@ -158,8 +158,10 @@ void PaintView::draw()
 
 int PaintView::handle(int event)
 {
+
 	switch(event)
 	{
+	
 	case FL_ENTER:
 	    redraw();
 		break;
@@ -170,7 +172,9 @@ int PaintView::handle(int event)
 			eventToDo=RIGHT_MOUSE_DOWN;
 		else
 			eventToDo=LEFT_MOUSE_DOWN;
-		isAnEvent=1;
+		isAnEvent=1;	
+		
+
 		redraw();
 		break;
 	case FL_DRAG:
@@ -182,6 +186,7 @@ int PaintView::handle(int event)
 			eventToDo=LEFT_MOUSE_DRAG;
 		isAnEvent=1;
 		redraw();
+		m_pDoc->m_pUI->drawCursor(Point(coord.x, m_nWindowHeight - coord.y));
 		break;
 	case FL_RELEASE:
 		coord.x = Fl::event_x();
@@ -196,6 +201,7 @@ int PaintView::handle(int event)
 	case FL_MOVE:
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
+		m_pDoc->m_pUI->drawCursor(Point(coord.x, m_nWindowHeight - coord.y));
 		break;
 	default:
 		return 0;

@@ -118,6 +118,7 @@ double ImpressionistDoc::getAlpha()
 
 void ImpressionistDoc::setAlpha(float alpha)
 {
+
 }
 
 //---------------------------------------------------------

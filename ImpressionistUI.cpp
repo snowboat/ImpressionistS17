@@ -380,6 +380,11 @@ void ImpressionistUI::setAlpha(double alpha)
 		m_AlphaValueSlider->value(m_alphaValue);
 }
 
+void ImpressionistUI::drawCursor(const Point & target)
+{
+	m_origView->setCursorPosition(target);
+}
+
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
@@ -458,7 +463,7 @@ ImpressionistUI::ImpressionistUI() {
 	// install original view window
 	m_origView = new OriginalView(0, 25, 300, 275, "This is the orig view");//300jon
 	m_origView->box(FL_DOWN_FRAME);
-	//m_origView->deactivate();//may delete this line for displaying the red cursor on origView
+	m_origView->deactivate();//may delete this line for displaying the red cursor on origView
 
 	group->end();
 	Fl_Group::current()->resizable(group);
