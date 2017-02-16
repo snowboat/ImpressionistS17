@@ -30,6 +30,8 @@ public:
 
 	void resizeWindow(int width, int height);
 
+	void drawCursor(Point target);
+
 	ImpressionistDoc*	m_pDoc;
 
 private:

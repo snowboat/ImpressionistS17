@@ -43,8 +43,8 @@ public:
 	int				m_nPaintWidth,
 					m_nPaintHeight;
 	// Bitmaps for original image and painting.
-	unsigned char*	m_ucBitmap;
-	unsigned char*	m_ucPainting;
+	unsigned char*	m_ucBitmap;//original image
+	unsigned char*	m_ucPainting;//painting image
 
 
 	// The current active brush.

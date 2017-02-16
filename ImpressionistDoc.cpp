@@ -86,6 +86,16 @@ char* ImpressionistDoc::getImageName()
 void ImpressionistDoc::setBrushType(int type)
 {
 	m_pCurrentBrush = ImpBrush::c_pBrushes[type];
+	
+	//upon change of brush type, activate or deactivate the line-related sliders
+	if (type == BRUSH_LINES || type == BRUSH_SCATTERED_LINES) {
+		m_pUI->m_LineAngleSlider->activate();
+		m_pUI->m_LineWidthSlider->activate();
+	}
+	else {
+		m_pUI->m_LineAngleSlider->deactivate();
+		m_pUI->m_LineWidthSlider->deactivate();
+	}
 }
 
 //change the stroke direction
@@ -119,8 +129,7 @@ int ImpressionistDoc::loadImage(char *iname)
 {
 	// try to open the image to read
 	unsigned char*	data;
-	int				width,
-		height;
+	int				width,height;
 
 	if ((data = readBMP(iname, width, height)) == NULL)
 	{

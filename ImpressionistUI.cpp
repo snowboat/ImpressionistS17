@@ -11,6 +11,7 @@
 
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
+#include <iostream>
 
 /*
 //------------------------------ Widget Examples -------------------------------------------------
@@ -332,6 +333,7 @@ void ImpressionistUI::show() {
 void ImpressionistUI::resize_windows(int w, int h) {
 	m_paintView->size(w, h);
 	m_origView->size(w, h);
+	std::cout << "resized to " << w << "and " << h << std::endl;
 }
 
 //------------------------------------------------ 
@@ -456,14 +458,13 @@ ImpressionistUI::ImpressionistUI() {
 	// install original view window
 	m_origView = new OriginalView(0, 25, 300, 275, "This is the orig view");//300jon
 	m_origView->box(FL_DOWN_FRAME);
-	m_origView->deactivate();
+	//m_origView->deactivate();//may delete this line for displaying the red cursor on origView
 
 	group->end();
 	Fl_Group::current()->resizable(group);
 	m_mainWindow->end();
 
 	// init values
-
 	m_nSize = 10;
 	m_lineWidth = 10;
 	m_lineAngle = 0;
@@ -517,19 +518,21 @@ ImpressionistUI::ImpressionistUI() {
 	m_LineWidthSlider->value(m_lineWidth);
 	m_LineWidthSlider->align(FL_ALIGN_RIGHT);
 	m_LineWidthSlider->callback(cb_lineWidthChanges);
+	m_LineWidthSlider->deactivate();
 
 	// Line Angle Slider
-	m_BrushSizeSlider = new Fl_Value_Slider(10, 140, 300, 20, "Line Angle");
-	m_BrushSizeSlider->user_data((void*)(this));	// record self to be used by static callback functions
-	m_BrushSizeSlider->type(FL_HOR_NICE_SLIDER);
-	m_BrushSizeSlider->labelfont(FL_COURIER);
-	m_BrushSizeSlider->labelsize(12);
-	m_BrushSizeSlider->minimum(0);
-	m_BrushSizeSlider->maximum(359);
-	m_BrushSizeSlider->step(1);
-	m_BrushSizeSlider->value(m_lineAngle);
-	m_BrushSizeSlider->align(FL_ALIGN_RIGHT);
-	m_BrushSizeSlider->callback(cb_lineAngleChanges);
+	m_LineAngleSlider = new Fl_Value_Slider(10, 140, 300, 20, "Line Angle");
+	m_LineAngleSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_LineAngleSlider->type(FL_HOR_NICE_SLIDER);
+	m_LineAngleSlider->labelfont(FL_COURIER);
+	m_LineAngleSlider->labelsize(12);
+	m_LineAngleSlider->minimum(0);
+	m_LineAngleSlider->maximum(359);
+	m_LineAngleSlider->step(1);
+	m_LineAngleSlider->value(m_lineAngle);
+	m_LineAngleSlider->align(FL_ALIGN_RIGHT);
+	m_LineAngleSlider->callback(cb_lineAngleChanges);
+	m_LineAngleSlider->deactivate();
 
 	// Alpha Slider
 	m_AlphaValueSlider = new Fl_Value_Slider(10, 170, 300, 20, "Alpha");

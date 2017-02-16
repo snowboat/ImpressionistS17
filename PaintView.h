@@ -43,6 +43,9 @@ private:
 			m_nWindowWidth, 
 			m_nWindowHeight;
 
+	//The associated original view for drawing the cursor
+	OriginalView* origView;
+
 };
 
 #endif

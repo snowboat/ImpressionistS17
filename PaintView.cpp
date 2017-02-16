@@ -9,6 +9,8 @@
 #include "impressionistUI.h"
 #include "paintview.h"
 #include "ImpBrush.h"
+#include <iostream>
+using namespace std;
 
 
 #define LEFT_MOUSE_DOWN		1
@@ -37,7 +39,9 @@ PaintView::PaintView(int			x,
 {
 	m_nWindowWidth	= w;
 	m_nWindowHeight	= h;
-
+	std::cout << "paintview is " << w << "and" << h << std::endl;
+	
+	
 }
 
 
@@ -105,12 +109,16 @@ void PaintView::draw()
 
 		Point source( coord.x + m_nStartCol, m_nEndRow - coord.y );
 		Point target( coord.x, m_nWindowHeight - coord.y );
-		
+		//cout << "coord.x coord.y are " << coord.x << " " << coord.y << endl;
+		//cout << "startrow endrow startcol endcol are " << m_nStartRow << " " << m_nEndRow << " " << m_nStartCol << " " << m_nEndCol << endl;
+		//cout << "m_nWindowHeight is " << m_nWindowHeight << endl;
+
 		// This is the event handler
 		switch (eventToDo) 
 		{
 		case LEFT_MOUSE_DOWN:
 			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
+			m_pDoc->m_pUI->m_origView->drawCursor(target);
 			break;
 		case LEFT_MOUSE_DRAG:
 			m_pDoc->m_pCurrentBrush->BrushMove( source, target );

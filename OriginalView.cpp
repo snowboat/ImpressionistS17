@@ -7,6 +7,7 @@
 #include "impressionist.h"
 #include "impressionistDoc.h"
 #include "originalview.h"
+#include <iostream>
 
 #ifndef WIN32
 #define min(a, b)	( ( (a)<(b) ) ? (a) : (b) )
@@ -21,7 +22,7 @@ OriginalView::OriginalView(int			x,
 {
 	m_nWindowWidth	= w;
 	m_nWindowHeight	= h;
-
+	std::cout << "origView is " << w << "and" << h << std::endl;
 }
 
 void OriginalView::draw()
@@ -76,6 +77,7 @@ void OriginalView::draw()
 		glDrawPixels( drawWidth, drawHeight, GL_RGB, GL_UNSIGNED_BYTE, bitstart );
 
 	}
+
 			
 	glFlush();
 }
@@ -89,5 +91,16 @@ void OriginalView::resizeWindow(int	width,
 								int	height)
 {
 	resize(x(), y(), width, height);
+}
+
+void OriginalView::drawCursor(Point target)
+{
+	std::cout << "drawing cursor at" <<target.x << " "<< target.y <<  std::endl;
+	glBegin(GL_POINTS);
+	glPointSize(5.0);
+	//glColor3i(255, 0, 0);
+	glVertex2d(target.x, target.y);
+	glEnd();
+	glFlush();
 }
 

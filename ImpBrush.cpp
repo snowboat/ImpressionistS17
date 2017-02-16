@@ -51,8 +51,8 @@ void ImpBrush::my_glVertex2d(Point source, Point target)
 	if (source.x >= 0 && source.x <= m_pDoc->m_nPaintWidth && source.y >= 0 && source.y <= m_pDoc->m_nPaintHeight) {
 		glVertex2d(target.x, target.y);
 	}
-	std::cout << m_pDoc->m_nPaintWidth << "and " << m_pDoc->m_nPaintHeight << std::endl;
-	std::cout << m_pDoc->m_nWidth << "with" << m_pDoc->m_nHeight << std::endl;
+	//std::cout << m_pDoc->m_nPaintWidth << "and " << m_pDoc->m_nPaintHeight << std::endl;
+	//std::cout << m_pDoc->m_nWidth << "with" << m_pDoc->m_nHeight << std::endl;
 
 }
 

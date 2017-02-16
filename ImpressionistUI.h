@@ -59,7 +59,7 @@ public:
 private:
 	ImpressionistDoc*	m_pDoc;		// pointer to document to communicate with the document
 
-									// All attributes here
+	// All attributes here
 	int		m_nSize;
 	int 	m_lineWidth;
 	int 	m_lineAngle;
