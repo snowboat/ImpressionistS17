@@ -114,10 +114,18 @@ int ImpressionistDoc::getSize()
 //---------------------------------------------------------
 // Returns the line width.
 //---------------------------------------------------------
+int ImpressionistDoc::getLineWidth()
+{
+	return m_pUI->getLineWidth();
+}
 
 //---------------------------------------------------------
 // Returns the line angle.
 //---------------------------------------------------------
+int ImpressionistDoc::getLineAngle()
+{
+	return m_pUI->getLineAngle();
+}
 
 //---------------------------------------------------------
 // Returns the alpha value.

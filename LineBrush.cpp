@@ -21,8 +21,10 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
 	int size = pDoc->getSize();
+	glPointSize((float)size);
 
-	glPointSize( (float)size );
+	int lineWidth = pDoc->getLineWidth();
+	glLineWidth( (float) 40);
 
 	BrushMove(source, target);
 }
@@ -45,6 +47,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	glVertex2d(target.x + size, target.y);
 
 	glEnd();
+	glFlush();
 
 }
 

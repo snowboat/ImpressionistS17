@@ -363,15 +363,59 @@ void ImpressionistUI::setSize(int size)
 {
 	m_nSize = size;
 
-	if (size <= 40)
+	if (size <= 40 && size > 0)
 		m_BrushSizeSlider->value(m_nSize);
 }
 
+//------------------------------------------------
+// Return the line width
+//------------------------------------------------
+int ImpressionistUI::getLineWidth()
+{
+	return m_lineWidth;
+}
+
+//-------------------------------------------------
+// Set the line width
+//-------------------------------------------------
+void ImpressionistUI::setLineWidth(int lineWidth) 
+{
+	m_lineWidth = lineWidth;
+
+	if (lineWidth <= 40 && lineWidth > 0)
+		m_LineWidthSlider->value(m_lineWidth);
+}
+
+//------------------------------------------------
+// Return the line angle
+//------------------------------------------------
+int ImpressionistUI::getLineAngle()
+{
+	return m_lineAngle;
+}
+
+//-------------------------------------------------
+// Set the line angle
+//-------------------------------------------------
+void ImpressionistUI::setLineAngle(int lineAngle)
+{
+	m_lineAngle = lineAngle;
+
+	if (lineAngle <= 359 && lineAngle >= 0)
+		m_LineAngleSlider->value(m_lineAngle);
+}
+
+//------------------------------------------------
+// Return the alpha
+//------------------------------------------------
 double ImpressionistUI::getAlpha()
 {
 	return m_alphaValue;
 }
 
+//-------------------------------------------------
+// Set the alpha
+//-------------------------------------------------
 void ImpressionistUI::setAlpha(double alpha)
 {
 	m_alphaValue = alpha;
@@ -466,7 +510,7 @@ ImpressionistUI::ImpressionistUI() {
 
 	// init values
 	m_nSize = 10;
-	m_lineWidth = 10;
+	m_lineWidth = 1;
 	m_lineAngle = 0;
 	m_alphaValue = 1.00;
 
