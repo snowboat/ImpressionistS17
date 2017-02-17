@@ -60,6 +60,10 @@ public:
 	double				getAlpha();
 	void				setAlpha(double alpha);
 
+
+	//function to draw cursor on origView
+	void	drawCursor(const Point& target);
+
 private:
 	ImpressionistDoc*	m_pDoc;		// pointer to document to communicate with the document
 
