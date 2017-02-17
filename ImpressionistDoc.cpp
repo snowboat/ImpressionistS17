@@ -34,6 +34,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucBitmap = NULL;
 	backupBitmap = NULL;
 	m_ucPainting = NULL;
+	m_undoImage = NULL;
 	m_ucEdgeMap = NULL;
 	m_ucAnotherBitmap = NULL;
 	strokeDirection = 0;
@@ -149,6 +150,17 @@ void ImpressionistDoc::applyManipulation()
 	m_pUI->m_origView->refresh();
 }
 
+void ImpressionistDoc::undo()
+{
+	if (m_undoImage && m_undoImage != m_ucPainting) {
+		delete[] m_ucPainting;
+		m_ucPainting = new unsigned char[m_nPaintWidth*m_nPaintHeight * 3];
+		memcpy(m_ucPainting, m_undoImage, m_nPaintWidth*m_nPaintHeight * 3);
+
+		m_pUI->m_paintView->refresh();
+	}
+}
+
 //---------------------------------------------------------
 // Returns the size of the brush.
 //---------------------------------------------------------
@@ -207,17 +219,20 @@ int ImpressionistDoc::loadImage(char *iname)
 	// release old storage
 	if (m_ucBitmap) delete[] m_ucBitmap;
 	if (m_ucPainting) delete[] m_ucPainting;
+	if (backupBitmap) {
+		delete[] backupBitmap;
+		backupBitmap = NULL;
+	}
+	if (m_undoImage) {
+		delete[] m_undoImage;
+		m_undoImage = NULL;
+	}
+
 
 	m_ucBitmap = data;
-	//backupBitmap = data;
 	//do deep copy to initialize backupbitmap
 	backupBitmap = new unsigned char[width*height * 3];
 	memcpy(backupBitmap, m_ucBitmap, width*height * 3);
-	//for (int i = 0; i < width*height * 3; i++) {
-		//backupBitmap[i] = m_ucBitmap[i];
-		//memset(backupBitmap, (int)m_ucBitmap[i], 1);
-	//}
-
 
 	// allocate space for draw view
 	m_ucPainting = new unsigned char[width*height * 3];

@@ -116,6 +116,9 @@ private:
 	static void cb_blueSlides(Fl_Widget* o, void* v);
 	static void	cb_manipulate_color_button(Fl_Widget* o, void* v);
 
+	//undo option
+	static void	cb_undo(Fl_Menu_* o, void* v);
+
 
 
 };

@@ -350,6 +350,11 @@ void ImpressionistUI::cb_manipulate_color_button(Fl_Widget * o, void * v)
 {
 	((ImpressionistUI*)(o->user_data()))->getDocument()->applyManipulation();
 }
+
+void ImpressionistUI::cb_undo(Fl_Menu_ * o, void * v)
+{
+	whoami(o)->getDocument()->undo();
+}
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -505,6 +510,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ 0 },
 
 	{ "&Options",		0, 0, 0, FL_SUBMENU },
+	{ "&Undo...",	FL_ALT + 'u', (Fl_Callback *)ImpressionistUI::cb_undo },
 	{ "&Faster...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
 	{ "&Safer...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 	{ 0 },

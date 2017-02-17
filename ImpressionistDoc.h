@@ -41,6 +41,9 @@ public:
 	//apply the color manipulation on original image
 	void applyManipulation();
 
+	//undo
+	void undo();
+
 	// Attributes
 public:
 	// Dimensions of original window.
@@ -52,8 +55,10 @@ public:
 					m_nPaintHeight;
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;//original image
-	unsigned char*  backupBitmap;
+	unsigned char*  backupBitmap;	//immutable bitmap which records the original stagte of left image
 	unsigned char*	m_ucPainting;//painting image
+	unsigned char*  m_undoImage;
+
 	unsigned char*  m_ucEdgeMap;
 	unsigned char*  m_ucAnotherBitmap;
 

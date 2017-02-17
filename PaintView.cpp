@@ -109,9 +109,6 @@ void PaintView::draw()
 
 		Point source( coord.x + m_nStartCol, m_nEndRow - coord.y );
 		Point target( coord.x, m_nWindowHeight - coord.y );
-		// cout << "coord.x coord.y are " << coord.x << " " << coord.y << endl;
-		// cout << "startrow endrow startcol endcol are " << m_nStartRow << " " << m_nEndRow << " " << m_nStartCol << " " << m_nEndCol << endl;
-		// cout << "m_nWindowHeight is " << m_nWindowHeight << endl;
 
 		// This is the event handler
 		switch (eventToDo) 
@@ -120,10 +117,14 @@ void PaintView::draw()
 
 
 			if (coord.x >= 0 && coord.x <= m_nDrawWidth && coord.y >= 0 && coord.y <= m_nDrawHeight) {
+				//save current m_ucPainting to the undoImage
+				delete [] m_pDoc->m_undoImage;
+				m_pDoc->m_undoImage = new unsigned char[m_nDrawHeight*m_nDrawWidth * 3];
+				memcpy(m_pDoc->m_undoImage, m_pDoc->m_ucPainting, m_nDrawHeight*m_nDrawWidth * 3);
+				
+				//Actually start painting
 				m_pDoc->m_pCurrentBrush->BrushBegin(source, target);
 			}
-			//m_pDoc->m_pUI->m_origView->setCursorPosition(target);
-			//m_pDoc->m_pUI->m_origView->drawCursor();
 			break;
 		case LEFT_MOUSE_DRAG:
 			if (coord.x >= 0 && coord.x <= m_nDrawWidth && coord.y >= 0 && coord.y <= m_nDrawHeight) {
