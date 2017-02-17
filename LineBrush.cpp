@@ -7,6 +7,7 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include "LineBrush.h"
+#include <math.h>
 
 extern float frand();
 
@@ -19,6 +20,8 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 {
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
+
+	lastPosition = source;
 
 	BrushMove(source, target);
 }
@@ -45,12 +48,15 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		lineAngle = pDoc->m_sobelFilter->getGradientAngle(source) + 90;
 		break;
 	case 3: // Brush Direction
+		if (source.x == lastPosition.x)
+			lineAngle = 90;
+		else
+			lineAngle = atan( (source.y - lastPosition.y) / (source.x - lastPosition.x)) / M_PI * 180;
 		break;
 	default:
 		break;
 	}
 
-	
 	glPushMatrix();
 	glTranslated(target.x, target.y, 0);
 	glRotated(lineAngle, 0.0, 0.0, 1.0);
@@ -66,9 +72,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	//glTranslated(-target.x, -target.y, 0.0);
 	glPopMatrix();
 
-	
-	
-
+	lastPosition = source;
 }
 
 void LineBrush::BrushEnd(const Point source, const Point target)
