@@ -28,6 +28,7 @@ void PointBrush::BrushBegin(const Point source, const Point target)
 	glPointSize((float)size);
 
 
+
 	//std::cout << "dimensions:" << pDoc->m_nPaintWidth << " " << pDoc->m_nPaintHeight << std::endl;
 	//std::cout << pDoc->m_nWidth << " " << pDoc->m_nHeight << std::endl;
 	
@@ -47,6 +48,8 @@ void PointBrush::BrushMove(const Point source, const Point target)
 		printf("PointBrush::BrushMove  document is NULL\n");
 		return;
 	}
+
+
 	//if (withinBoundary(source)) {
 	//	std::cout << "within boundary" << std::endl;
 	//	glBegin(GL_POINTS);

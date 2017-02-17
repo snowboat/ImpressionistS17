@@ -20,12 +20,6 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
-	int size = pDoc->getSize();
-	glPointSize((float)size);
-
-	int lineWidth = pDoc->getLineWidth();
-	glLineWidth( (float) 40);
-
 	BrushMove(source, target);
 }
 
@@ -40,14 +34,28 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
-	glBegin(GL_LINE_STRIP);
-	SetColor(source);
-	glVertex2d(target.x, target.y);
-	int size = pDoc->getSize();
-	glVertex2d(target.x + size, target.y);
+	int lineLength = pDoc->getSize(); // get the line length from UI size
+	int lineWidth = pDoc->getLineWidth();
+	int lineAngle = pDoc->getLineAngle();
 
+	
+	glPushMatrix();
+	glTranslated(target.x, target.y, 0);
+	glRotated(lineAngle, 0.0, 0.0, 1.0);
+	
+	glBegin(GL_POLYGON);
+		SetColor(source);
+		glVertex3d((double)-lineLength / 2, (double)-lineWidth / 2, 0.0);
+		glVertex3d((double)lineLength / 2, (double)-lineWidth / 2, 0.0);
+		glVertex3d((double)lineLength / 2, (double)lineWidth / 2, 0.0);
+		glVertex3d((double)-lineLength / 2, (double)lineWidth / 2, 0.0);
 	glEnd();
-	glFlush();
+
+	//glTranslated(-target.x, -target.y, 0.0);
+	glPopMatrix();
+
+	
+	
 
 }
 
