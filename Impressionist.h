@@ -8,6 +8,7 @@
 #include <GL/glu.h>
 
 #include "ImpBrush.h"
+#include "SobelFilter.h"
 
 #define TRUE	1
 #define FALSE	0

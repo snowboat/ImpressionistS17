@@ -18,6 +18,7 @@ public:
 	ImpressionistDoc();
 
 	void	setUI(ImpressionistUI* ui);		// Assign the UI to use
+	void    setFilter(SobelFilter* filter); // Assign the filter to use
 
 	int		loadImage(char *iname);			// called by the UI to load image
 	int		saveImage(char *iname);			// called by the UI to save image
@@ -35,7 +36,7 @@ public:
 	void	setAlpha(float alpha);
 	char*	getImageName();					// get the current image name
 	void 	setStrokeDirection(int type);
-
+	int     getStrokeDirection();
 
 	// Attributes
 public:
@@ -49,6 +50,8 @@ public:
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;//original image
 	unsigned char*	m_ucPainting;//painting image
+	unsigned char*  m_ucEdgeMap;
+	unsigned char*  m_ucAnotherBitmap;
 
 
 	// The current active brush.
@@ -58,6 +61,9 @@ public:
 	// Current Stroke Direction
 	int strokeDirection;		//TODO: actually I think it may not need to be recorded as an integer. but let's keep it for now.					
 	ImpressionistUI*	m_pUI;
+
+	// set the filter to use
+	SobelFilter* m_sobelFilter;
 
 	// Operations
 public:

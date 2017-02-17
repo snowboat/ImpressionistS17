@@ -36,7 +36,19 @@ void LineBrush::BrushMove(const Point source, const Point target)
 
 	int lineLength = pDoc->getSize(); // get the line length from UI size
 	int lineWidth = pDoc->getLineWidth();
+
 	int lineAngle = pDoc->getLineAngle();
+	int lineType = pDoc->getStrokeDirection();
+	switch (lineType)
+	{
+	case 2: // Gradient
+		lineAngle = pDoc->m_sobelFilter->getGradientAngle(source) + 90;
+		break;
+	case 3: // Brush Direction
+		break;
+	default:
+		break;
+	}
 
 	
 	glPushMatrix();
