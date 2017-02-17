@@ -34,6 +34,8 @@ ImpressionistDoc::ImpressionistDoc()
 	m_ucBitmap = NULL;
 	backupBitmap = NULL;
 	m_ucPainting = NULL;
+	m_ucEdgeMap = NULL;
+	m_ucAnotherBitmap = NULL;
 	strokeDirection = 0;
 
 
@@ -63,6 +65,8 @@ ImpressionistDoc::ImpressionistDoc()
 	// make one of the brushes current
 	m_pCurrentBrush = ImpBrush::c_pBrushes[0];
 
+	m_sobelFilter = new SobelFilter(this);
+
 }
 
 
@@ -72,6 +76,14 @@ ImpressionistDoc::ImpressionistDoc()
 void ImpressionistDoc::setUI(ImpressionistUI* ui)
 {
 	m_pUI = ui;
+}
+
+//---------------------------------------------------------
+// Set the current Filter 
+//---------------------------------------------------------
+void ImpressionistDoc::setFilter(SobelFilter* filter)
+{
+	m_sobelFilter = filter;
 }
 
 //---------------------------------------------------------
@@ -104,6 +116,11 @@ void ImpressionistDoc::setBrushType(int type)
 //change the stroke direction
 void ImpressionistDoc::setStrokeDirection(int type) {
 	strokeDirection = type;
+}
+
+//get the stroke direction
+int ImpressionistDoc::getStrokeDirection() {
+	return strokeDirection;
 }
 
 //apply the current color manipulation on original image

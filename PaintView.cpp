@@ -109,9 +109,9 @@ void PaintView::draw()
 
 		Point source( coord.x + m_nStartCol, m_nEndRow - coord.y );
 		Point target( coord.x, m_nWindowHeight - coord.y );
-		//cout << "coord.x coord.y are " << coord.x << " " << coord.y << endl;
-		//cout << "startrow endrow startcol endcol are " << m_nStartRow << " " << m_nEndRow << " " << m_nStartCol << " " << m_nEndCol << endl;
-		//cout << "m_nWindowHeight is " << m_nWindowHeight << endl;
+		// cout << "coord.x coord.y are " << coord.x << " " << coord.y << endl;
+		// cout << "startrow endrow startcol endcol are " << m_nStartRow << " " << m_nEndRow << " " << m_nStartCol << " " << m_nEndCol << endl;
+		// cout << "m_nWindowHeight is " << m_nWindowHeight << endl;
 
 		// This is the event handler
 		switch (eventToDo) 
