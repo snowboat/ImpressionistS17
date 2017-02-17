@@ -228,6 +228,7 @@ void ImpressionistUI::cb_exit(Fl_Menu_* o, void* v)
 {
 	whoami(o)->m_mainWindow->hide();
 	whoami(o)->m_brushDialog->hide();
+	whoami(o)->m_colorManipulationDialog->hide();
 
 }
 
@@ -320,6 +321,31 @@ void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
 	whoami(o)->m_paintView->refresh();
 }
 
+void ImpressionistUI::cb_manipulate_color(Fl_Menu_ * o, void * v)
+{
+	whoami(o)->m_colorManipulationDialog->show();
+}
+
+void ImpressionistUI::cb_redSlides(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_redValue = float(((Fl_Slider *)o)->value());
+
+}
+
+void ImpressionistUI::cb_greenSlides(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_greenValue = float(((Fl_Slider *)o)->value());
+
+}
+void ImpressionistUI::cb_blueSlides(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_blueValue = float(((Fl_Slider *)o)->value());
+
+}
+void ImpressionistUI::cb_manipulate_color_button(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->getDocument()->applyManipulation();
+}
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -437,13 +463,27 @@ void ImpressionistUI::setAlpha(double alpha)
 		m_AlphaValueSlider->value(m_alphaValue);
 }
 
+float ImpressionistUI::getRed()
+{
+	return m_redValue;
+}
 
+float ImpressionistUI::getGreen()
+{
+	return m_greenValue;
+}
+
+float ImpressionistUI::getBlue()
+{
+	return m_blueValue;
+}
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
 	{ "&Load Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
 	{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 	{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
+	{ "&Manipulate Color...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_manipulate_color },
 	{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 
 	{ "&Colors...",	FL_ALT + 'k', (Fl_Callback *)ImpressionistUI::cb_brushes },
@@ -528,6 +568,9 @@ ImpressionistUI::ImpressionistUI() {
 	m_lineWidth = 1;
 	m_lineAngle = 0;
 	m_alphaValue = 1.00;
+	m_redValue = 1.00;
+	m_greenValue = 1.00;
+	m_blueValue = 1.00;
 
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
@@ -607,5 +650,52 @@ ImpressionistUI::ImpressionistUI() {
 	m_AlphaValueSlider->callback(cb_alphaSlides);
 
 	m_brushDialog->end();
+
+	m_colorManipulationDialog = new Fl_Window(400, 325, "Color Manipulation Dialog");
+	// Red Channel Slider
+	m_redSlider = new Fl_Value_Slider(10, 110, 300, 20, "Red");
+	m_redSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_redSlider->type(FL_HOR_NICE_SLIDER);
+	m_redSlider->labelfont(FL_COURIER);
+	m_redSlider->labelsize(12);
+	m_redSlider->minimum(0);
+	m_redSlider->maximum(1);
+	m_redSlider->step(0.01);
+	m_redSlider->value(m_redValue);
+	m_redSlider->align(FL_ALIGN_RIGHT);
+	m_redSlider->callback(cb_redSlides);
+
+	// Green Channel Slider
+	m_greenSlider = new Fl_Value_Slider(10, 140, 300, 20, "Green");
+	m_greenSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_greenSlider->type(FL_HOR_NICE_SLIDER);
+	m_greenSlider->labelfont(FL_COURIER);
+	m_greenSlider->labelsize(12);
+	m_greenSlider->minimum(0);
+	m_greenSlider->maximum(1);
+	m_greenSlider->step(0.01);
+	m_greenSlider->value(m_greenValue);
+	m_greenSlider->align(FL_ALIGN_RIGHT);
+	m_greenSlider->callback(cb_greenSlides);
+
+	//Blue slider
+	m_blueSlider = new Fl_Value_Slider(10, 170, 300, 20, "Blue");
+	m_blueSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_blueSlider->type(FL_HOR_NICE_SLIDER);
+	m_blueSlider->labelfont(FL_COURIER);
+	m_blueSlider->labelsize(12);
+	m_blueSlider->minimum(0);
+	m_blueSlider->maximum(1);
+	m_blueSlider->step(0.01);
+	m_blueSlider->value(m_blueValue);
+	m_blueSlider->align(FL_ALIGN_RIGHT);
+	m_blueSlider->callback(cb_blueSlides);
+
+	m_applyManipulationButton = new Fl_Button(10, 200, 150, 25, "&Apply manipulation");
+	m_applyManipulationButton->user_data((void*)(this));
+	m_applyManipulationButton->callback(cb_manipulate_color_button);
+
+	m_colorManipulationDialog->end();
+
 
 }

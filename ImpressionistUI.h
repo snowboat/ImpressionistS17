@@ -43,6 +43,14 @@ public:
 	Fl_Slider*			m_AlphaValueSlider;
 	Fl_Button*          m_ClearCanvasButton;
 
+	//for color manipulation
+	Fl_Window*		m_colorManipulationDialog;
+	Fl_Slider*		m_redSlider;
+	Fl_Slider*		m_greenSlider;
+	Fl_Slider*		m_blueSlider;
+	Fl_Button*		m_applyManipulationButton;
+
+
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
 	ImpressionistDoc*	getDocument();
@@ -59,6 +67,9 @@ public:
 	void                setLineAngle(int lineAngle);
 	double				getAlpha();
 	void				setAlpha(double alpha);
+	float				getRed();
+	float				getGreen();
+	float				getBlue();
 
 
 
@@ -71,6 +82,9 @@ private:
 	int 	m_lineWidth;
 	int 	m_lineAngle;
 	double   m_alphaValue;
+	double	m_redValue;
+	double	m_greenValue;
+	double	m_blueValue;
 
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
@@ -95,6 +109,14 @@ private:
 	static void cb_lineWidthChanges(Fl_Widget* o, void* v);
 	static void cb_alphaSlides(Fl_Widget* o, void* v);
 	static void cb_swap_image(Fl_Menu_* o, void* v);
+	//color manipulation callbacks
+	static void cb_manipulate_color(Fl_Menu_* o, void* v);
+	static void cb_redSlides(Fl_Widget* o, void* v);
+	static void cb_greenSlides(Fl_Widget* o, void* v);
+	static void cb_blueSlides(Fl_Widget* o, void* v);
+	static void	cb_manipulate_color_button(Fl_Widget* o, void* v);
+
+
 
 };
 

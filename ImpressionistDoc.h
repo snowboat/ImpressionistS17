@@ -36,6 +36,8 @@ public:
 	char*	getImageName();					// get the current image name
 	void 	setStrokeDirection(int type);
 
+	//apply the color manipulation on original image
+	void applyManipulation();
 
 	// Attributes
 public:
@@ -48,6 +50,7 @@ public:
 					m_nPaintHeight;
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;//original image
+	unsigned char*  backupBitmap;
 	unsigned char*	m_ucPainting;//painting image
 
 
