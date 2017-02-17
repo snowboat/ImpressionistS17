@@ -314,9 +314,13 @@ void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
 {
 	//swap the bitmaps
 	unsigned char* temp = whoami(o)->getDocument()->m_ucBitmap;
+	//whoami(o)->getDocument()->backupBitmap = whoami(o)->getDocument()->m_ucPainting;
+	//whoami(o)->getDocument()->backupBitmap = whoami(o)->getDocument()->m_ucPainting;
+	//update backup bitmap to the new ucBitmap
 	whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucPainting;
+	memcpy(whoami(o)->getDocument()->backupBitmap, whoami(o)->getDocument()->m_ucBitmap, whoami(o)->getDocument()->m_nPaintHeight*whoami(o)->getDocument()->m_nPaintWidth * 3);
 	whoami(o)->getDocument()->m_ucPainting = temp;
-	//redraw the two views
+	//redraw the two view
 	whoami(o)->m_origView->refresh();
 	whoami(o)->m_paintView->refresh();
 }

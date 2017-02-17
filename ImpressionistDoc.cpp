@@ -133,8 +133,8 @@ void ImpressionistDoc::applyManipulation()
 	//unsigned char* backupBitmap = m_ucBitmap;
 	
 
-	m_ucBitmap = backupBitmap;	//backup bitmap is always equal to the very-original image. it's immutable
-
+	//m_ucBitmap = backupBitmap;	//backup bitmap is always equal to the very-original image. it's immutable
+	memcpy(m_ucBitmap, backupBitmap, m_nPaintWidth*m_nPaintHeight * 3);
 	for (int i = 0; i < m_nPaintWidth*m_nPaintHeight; i++) {
 		m_ucBitmap[3*i +0] *= redScale;
 		m_ucBitmap[3*i+1] *= greenScale;
@@ -209,7 +209,15 @@ int ImpressionistDoc::loadImage(char *iname)
 	if (m_ucPainting) delete[] m_ucPainting;
 
 	m_ucBitmap = data;
-	backupBitmap = data;
+	//backupBitmap = data;
+	//do deep copy to initialize backupbitmap
+	backupBitmap = new unsigned char[width*height * 3];
+	memcpy(backupBitmap, m_ucBitmap, width*height * 3);
+	//for (int i = 0; i < width*height * 3; i++) {
+		//backupBitmap[i] = m_ucBitmap[i];
+		//memset(backupBitmap, (int)m_ucBitmap[i], 1);
+	//}
+
 
 	// allocate space for draw view
 	m_ucPainting = new unsigned char[width*height * 3];
