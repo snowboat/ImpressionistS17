@@ -53,6 +53,5 @@ int SobelFilter::getGradientAngle(const Point source) {
 
 	if (gradientX == 0)
 		return 90;
-	else
-		return atan(gradientY / gradientX) / M_PI * 180;
+    return atan(gradientY / gradientX) / M_PI * 180;
 }
