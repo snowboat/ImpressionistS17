@@ -64,6 +64,7 @@ void ImpBrush::my_glVertex2d(Point source, Point target)
 void ImpBrush::SetColor (const Point source)
 {
 	ImpressionistDoc* pDoc = GetDocument();
+	std::cout << "source is" << source.x << " " << source.y << std::endl;
 
 	GLubyte color[4];
 

@@ -36,6 +36,7 @@ public:
 
 	void setCursorPosition(Point target);
 
+
 private:
 	int	m_nWindowWidth, 
 		m_nWindowHeight;

@@ -11,6 +11,8 @@
 #include "impressionistUI.h"
 
 #include "ImpBrush.h"
+#include <iostream>
+using namespace std;
 
 // Include individual brush headers here.
 #include "PointBrush.h"
@@ -30,6 +32,7 @@ ImpressionistDoc::ImpressionistDoc()
 
 	m_nWidth = -1;
 	m_ucBitmap = NULL;
+	backupBitmap = NULL;
 	m_ucPainting = NULL;
 	m_ucEdgeMap = NULL;
 	m_ucAnotherBitmap = NULL;
@@ -120,6 +123,32 @@ int ImpressionistDoc::getStrokeDirection() {
 	return strokeDirection;
 }
 
+//apply the current color manipulation on original image
+void ImpressionistDoc::applyManipulation()
+{
+	float redScale = m_pUI->getRed();
+	float greenScale = m_pUI->getGreen();
+	float blueScale = m_pUI->getBlue();
+
+	//unsigned char* backupBitmap = m_ucBitmap;
+	
+
+	m_ucBitmap = backupBitmap;	//backup bitmap is always equal to the very-original image. it's immutable
+
+	for (int i = 0; i < m_nPaintWidth*m_nPaintHeight; i++) {
+		m_ucBitmap[3*i +0] *= redScale;
+		m_ucBitmap[3*i+1] *= greenScale;
+		m_ucBitmap[3*i+2] *= blueScale;
+	}
+
+	cout << "ucbitmap" << (int)m_ucBitmap[0] << " " << (int)m_ucBitmap[1] << " " << (int)m_ucBitmap[2] << endl;
+	cout << "backupbitmap" << (int)backupBitmap[0] << " " << (int)backupBitmap[1] << " " << (int)backupBitmap[2] << endl;
+
+
+	//m_ucBitmap = backupBitmap;
+	m_pUI->m_origView->refresh();
+}
+
 //---------------------------------------------------------
 // Returns the size of the brush.
 //---------------------------------------------------------
@@ -180,6 +209,7 @@ int ImpressionistDoc::loadImage(char *iname)
 	if (m_ucPainting) delete[] m_ucPainting;
 
 	m_ucBitmap = data;
+	backupBitmap = data;
 
 	// allocate space for draw view
 	m_ucPainting = new unsigned char[width*height * 3];
