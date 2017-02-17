@@ -94,6 +94,7 @@ private:
 	static void cb_lineAngleChanges(Fl_Widget* o, void* v);
 	static void cb_lineWidthChanges(Fl_Widget* o, void* v);
 	static void cb_alphaSlides(Fl_Widget* o, void* v);
+	static void cb_swap_image(Fl_Menu_* o, void* v);
 
 };
 

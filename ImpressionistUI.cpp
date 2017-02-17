@@ -307,6 +307,19 @@ void ImpressionistUI::cb_alphaSlides(Fl_Widget * o, void * v)
 	((ImpressionistUI*)(o->user_data()))->m_alphaValue = float(((Fl_Slider *)o)->value());
 }
 
+
+//swap the painting&original image
+void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
+{
+	//swap the bitmaps
+	unsigned char* temp = whoami(o)->getDocument()->m_ucBitmap;
+	whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucPainting;
+	whoami(o)->getDocument()->m_ucPainting = temp;
+	//redraw the two views
+	whoami(o)->m_origView->refresh();
+	whoami(o)->m_paintView->refresh();
+}
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -441,6 +454,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ 0 },
 
 	{ "&Display",		0, 0, 0, FL_SUBMENU },
+	{ "&Swap Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_swap_image },
 	{ "&Original Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
 	{ "&Edge Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 	{ "&Another Image...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
