@@ -1,4 +1,7 @@
 *.VC.opendb
 *.VC.db
 impressionist.VC.db
+./impressionist.VC.db
 Debug/
+.vs/impressionist/v14/.suo
+impressionist.vcxproj.user
