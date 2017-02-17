@@ -117,12 +117,18 @@ void PaintView::draw()
 		switch (eventToDo) 
 		{
 		case LEFT_MOUSE_DOWN:
-			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
+
+
+			if (coord.x >= 0 && coord.x <= m_nDrawWidth && coord.y >= 0 && coord.y <= m_nDrawHeight) {
+				m_pDoc->m_pCurrentBrush->BrushBegin(source, target);
+			}
 			//m_pDoc->m_pUI->m_origView->setCursorPosition(target);
 			//m_pDoc->m_pUI->m_origView->drawCursor();
 			break;
 		case LEFT_MOUSE_DRAG:
-			m_pDoc->m_pCurrentBrush->BrushMove( source, target );
+			if (coord.x >= 0 && coord.x <= m_nDrawWidth && coord.y >= 0 && coord.y <= m_nDrawHeight) {
+				m_pDoc->m_pCurrentBrush->BrushMove(source, target);
+			}
 			break;
 		case LEFT_MOUSE_UP:
 			m_pDoc->m_pCurrentBrush->BrushEnd( source, target );
