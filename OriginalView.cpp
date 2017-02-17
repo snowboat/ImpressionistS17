@@ -104,13 +104,22 @@ void OriginalView::resizeWindow(int	width,
 void OriginalView::drawCursor()
 {
 
-	glPointSize(10.0);
-	glBegin(GL_POINTS);
-	glColor3ub(255, 0, 0);
-	glVertex2d(cursorPosition.x, cursorPosition.y);
-	//cout << cursorPosition.x << " " << cursorPosition.y << endl;
-	cout << m_nWindowHeight << "-w  h- " << m_nWindowWidth << endl;
-	glEnd();
+	int drawWidth, drawHeight;
+
+	drawWidth = min(m_nWindowWidth, m_pDoc->m_nWidth);
+	drawHeight = min(m_nWindowHeight, m_pDoc->m_nHeight);
+
+	if (cursorPosition.x >= 0 && cursorPosition.x <= drawWidth && cursorPosition.y >=0 && m_nWindowHeight-cursorPosition.y <= drawHeight) {
+		glPointSize(10.0);
+		glBegin(GL_POINTS);
+		glColor3ub(255, 0, 0);
+		glVertex2d(cursorPosition.x, cursorPosition.y);/*
+		cout << "cursorPosition is " << cursorPosition.x << " " << cursorPosition.y << endl;
+		cout << m_nWindowHeight << "-w  h- " << m_nWindowWidth << endl;*/
+		glEnd();
+	}
+
+
 
 }
 

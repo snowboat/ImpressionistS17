@@ -380,10 +380,6 @@ void ImpressionistUI::setAlpha(double alpha)
 		m_AlphaValueSlider->value(m_alphaValue);
 }
 
-void ImpressionistUI::drawCursor(const Point & target)
-{
-	m_origView->setCursorPosition(target);
-}
 
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
