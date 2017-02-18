@@ -29,13 +29,9 @@ public:
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
 	void	setBrushType(int type);			// called by the UI to set the brushType
 	int		getSize();						// get the UI size
-	void	setSize(int size);				// set the UI size
 	int     getLineWidth();
-	void    setLineWidth(int lineWidth);
 	int     getLineAngle();
-	void    setLineAngle(int lineAngle);
 	double 	getAlpha();					//return the alpha as double for setcolor() to use
-	void	setAlpha(float alpha);
 	char*	getImageName();					// get the current image name
 	void 	setStrokeDirection(int type);
 	int     getStrokeDirection();
@@ -70,7 +66,9 @@ public:
 	// Size of the brush.
 	int m_nSize;
 	// Current Stroke Direction
-	int strokeDirection;		//TODO: actually I think it may not need to be recorded as an integer. but let's keep it for now.					
+	int strokeDirection;	
+	int brushType;
+
 	ImpressionistUI*	m_pUI;
 
 	// set the filter to use

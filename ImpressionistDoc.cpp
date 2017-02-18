@@ -39,7 +39,8 @@ ImpressionistDoc::ImpressionistDoc()
 	m_undoImage = NULL;
 	m_ucEdgeMap = NULL;
 	m_ucAnotherBitmap = NULL;
-	strokeDirection = 0;
+	strokeDirection = 1;
+	brushType = BRUSH_POINTS;
 
 
 	// create one instance of each brush
@@ -108,13 +109,16 @@ char* ImpressionistDoc::getImageName()
 void ImpressionistDoc::setBrushType(int type)
 {
 	m_pCurrentBrush = ImpBrush::c_pBrushes[type];
-	
+	brushType = type;
+
 	//upon change of brush type, activate or deactivate the line-related sliders
 	if (type == BRUSH_LINES || type == BRUSH_SCATTERED_LINES) {
+		m_pUI->m_strokeDirectionChoice->activate();
 		m_pUI->m_LineAngleSlider->activate();
 		m_pUI->m_LineWidthSlider->activate();
 	}
 	else {
+		m_pUI->m_strokeDirectionChoice->deactivate();
 		m_pUI->m_LineAngleSlider->deactivate();
 		m_pUI->m_LineWidthSlider->deactivate();
 	}

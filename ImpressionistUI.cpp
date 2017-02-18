@@ -280,7 +280,7 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
 
 
 	pDoc->setBrushType(type);
-	cout << "brushchoice is " << type << endl;
+	// cout << "brushchoice is " << type << endl;
 }
 
 //------------------------------------------------------------
@@ -440,8 +440,10 @@ void ImpressionistUI::setSize(int size)
 {
 	m_nSize = size;
 
-	if (size <= 40 && size > 0)
+	if (size <= 40)
 		m_BrushSizeSlider->value(m_nSize);
+	else
+		m_BrushSizeSlider->value(40);
 }
 
 //------------------------------------------------
@@ -635,6 +637,7 @@ ImpressionistUI::ImpressionistUI() {
 	m_strokeDirectionChoice->user_data((void*)(this));	 // record self to be used by static callback functions
 	m_strokeDirectionChoice->menu(strokeDirectionMenu);
 	m_strokeDirectionChoice->callback(cb_setStrokeDirection);
+	m_strokeDirectionChoice->deactivate();
 
 
 

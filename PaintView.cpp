@@ -10,6 +10,7 @@
 #include "paintview.h"
 #include "ImpBrush.h"
 #include <iostream>
+#include <math.h>
 using namespace std;
 
 
@@ -29,6 +30,8 @@ using namespace std;
 static int		eventToDo;
 static int		isAnEvent=0;
 static Point	coord;
+
+Point startPoint;
 
 PaintView::PaintView(int			x, 
 					 int			y, 
@@ -138,15 +141,37 @@ void PaintView::draw()
 			RestoreContent();
 			break;
 		case RIGHT_MOUSE_DOWN:
-
+			// cout << "brushType is " << m_pDoc->brushType << endl;
+			// cout << "strokeDirection is " << m_pDoc->strokeDirection << endl;
+			if (m_pDoc->brushType == BRUSH_LINES || m_pDoc->brushType == BRUSH_SCATTERED_LINES) {
+				SaveCurrentContent();
+				startPoint = target;
+				// cout << "right mouse movement" << endl;
+			}
 			break;
 		case RIGHT_MOUSE_DRAG:
-
+			if (m_pDoc->brushType == BRUSH_LINES || m_pDoc->brushType == BRUSH_SCATTERED_LINES) {
+				RestoreContent();
+				glBegin(GL_LINE_STRIP);
+					glColor3ub(255, 0, 0);
+					glVertex3d(startPoint.x, startPoint.y, 0.0);
+					glVertex3d(target.x, target.y, 0.0);
+				glEnd();
+			}
 			break;
 		case RIGHT_MOUSE_UP:
-
+			if (m_pDoc->brushType == BRUSH_LINES || m_pDoc->brushType == BRUSH_SCATTERED_LINES) {
+				RestoreContent();
+				int lineLength = sqrt((target.x - startPoint.x) * (target.x - startPoint.x) + (target.y - startPoint.y) * (target.y - startPoint.y));
+				m_pDoc->m_pUI->setSize(lineLength);
+				if (m_pDoc->strokeDirection == 1) {
+					int lineAngle = (int)(atan2((target.y - startPoint.y), (target.x - startPoint.x)) / M_PI * 180);
+					if (lineAngle < 0)
+						lineAngle += 360;
+					m_pDoc->m_pUI->setLineAngle(lineAngle);
+				}	
+			}
 			break;
-
 		default:
 			printf("Unknown event!!\n");		
 			break;
