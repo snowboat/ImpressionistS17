@@ -96,6 +96,9 @@ void PaintView::draw()
 	m_nStartCol		= scrollpos.x;
 	m_nEndCol		= m_nStartCol + drawWidth;
 
+	//cout << "startrow endrow startcoloum endcol" << m_nStartRow << " " << m_nEndRow << " "
+	//	<< m_nStartCol << " " << m_nEndCol << endl;
+
 	if ( m_pDoc->m_ucPainting && !isAnEvent) 
 	{
 		RestoreContent();
@@ -291,4 +294,14 @@ void PaintView::RestoreContent()
 				  m_pPaintBitstart);
 
 //	glDrawBuffer(GL_FRONT);
+}
+
+int PaintView::getDrawHeight()
+{
+	return this->m_nDrawHeight;
+}
+
+int PaintView::getWindowHeight()
+{
+	return this->m_nWindowHeight;
 }

@@ -8,6 +8,8 @@
 #include "impressionistUI.h"
 #include "ScatteredCircleBrush.h"
 #include "math.h"
+#include <iostream>
+using namespace std;
 
 extern float frand();
 
@@ -54,7 +56,13 @@ void ScatteredCircleBrush::BrushMove(const Point source, const Point target)
 		glBegin(GL_POLYGON);
 		SetColor(circleCtr1Source);
 		for (double i = 0; i < 2 * M_PI; i += M_PI / 36) {
-			glVertex2d(cos(i)*radius + circleCtr1.x, sin(i)*radius + circleCtr1.y);
+			int xToDraw = (int)(cos(i)*radius + circleCtr1.x);
+			int xUpperBound = pDoc->m_nPaintWidth;
+			int yToDraw = (int)(sin(i)*radius + circleCtr1.y);
+			int yLowerBound = pDoc->m_pUI->m_paintView->getWindowHeight() - pDoc->m_nPaintHeight;
+			if ( xToDraw<= xUpperBound && yToDraw >= yLowerBound ) {
+				glVertex2i(xToDraw, yToDraw);
+			}
 		}
 		glEnd();
 	}

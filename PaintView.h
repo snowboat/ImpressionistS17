@@ -30,6 +30,9 @@ public:
 
 	void RestoreContent();
 
+	int getDrawHeight();
+	int getWindowHeight();
+
 	ImpressionistDoc *m_pDoc;
 
 private:

@@ -70,12 +70,24 @@ void ScatteredLineBrush::BrushMove(const Point source, const Point target)
 		glTranslated(lineCtrl.x, lineCtrl.y, 0);
 		glRotated(lineAngle, 0.0, 0.0, 1.0);
 
-		glBegin(GL_POLYGON);
+		//boundaries of drawing
+		int xUpperBound = pDoc->m_nPaintWidth;
+		int yLowerBound = pDoc->m_pUI->m_paintView->getWindowHeight() - pDoc->m_nPaintHeight;
+		/*cout << xUpperBound << " " << yLowerBound << endl;
+		cout << "vertex1: " << (double)(-lineLength / 2) + lineCtrl.x << " " << (double)(lineWidth / 2) + lineCtrl.y << endl;
+		cout << "vertex2: " << (double)(-lineLength / 2) + lineCtrl.x << " " << (double)(-lineWidth / 2) + lineCtrl.y << endl;
+		cout << "vertex3: " << (double)(lineLength / 2) + lineCtrl.x << " " << (double)(-lineWidth / 2) + lineCtrl.y << endl;
+		cout << "vertex4: " << (double)(lineLength / 2) + lineCtrl.x << " " << (double)(lineWidth / 2) + lineCtrl.y << endl;
+		*/glBegin(GL_POLYGON);
 		SetColor(lineCtrlSource);
-		glVertex3d((double)-lineLength / 2, (double)-lineWidth / 2, 0.0);
-		glVertex3d((double)lineLength / 2, (double)-lineWidth / 2, 0.0);
-		glVertex3d((double)lineLength / 2, (double)lineWidth / 2, 0.0);
-		glVertex3d((double)-lineLength / 2, (double)lineWidth / 2, 0.0);
+		if ((double)(-lineLength / 2)+lineCtrl.x <= xUpperBound && ((double)(-lineWidth / 2) + lineCtrl.y) >= yLowerBound)
+			glVertex3d((double)-lineLength / 2, (double)-lineWidth / 2, 0.0);
+		if ((double)(lineLength / 2) + lineCtrl.x <= xUpperBound && ((double)(-lineWidth / 2) + lineCtrl.y) >= yLowerBound)
+			glVertex3d((double)lineLength / 2, (double)-lineWidth / 2, 0.0);
+		if ((double)(lineLength / 2) + lineCtrl.x <= xUpperBound && ((double)(lineWidth / 2) + lineCtrl.y) >= yLowerBound)
+			glVertex3d((double)lineLength / 2, (double)lineWidth / 2, 0.0);
+		if ((double)(-lineLength / 2) + lineCtrl.x <= xUpperBound && ((double)(lineWidth / 2) + lineCtrl.y) >= yLowerBound)
+			glVertex3d((double)-lineLength / 2, (double)lineWidth / 2, 0.0);
 		glEnd();
 
 		//glTranslated(-target.x, -target.y, 0.0);
