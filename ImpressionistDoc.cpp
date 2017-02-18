@@ -269,6 +269,72 @@ int ImpressionistDoc::saveImage(char *iname)
 	return 1;
 }
 
+int ImpressionistDoc::loadDissolveImage(char * iname)
+{
+	// try to open the image to read
+	unsigned char*	data;	//data is the new loaded image
+	int				width, height;	//width, height are the attributes of the newly loaded image
+
+	if ((data = readBMP(iname, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+
+	// reflect the fact of loading the new image
+	//m_nWidth = width;
+	//m_nPaintWidth = width;
+	//m_nHeight = height;
+	//m_nPaintHeight = height;
+	if (width != m_nPaintWidth || height != m_nPaintHeight) {
+		fl_alert("Dimensions of dissolved image not correct!!");
+		return 0;
+	}
+
+	// release old storage
+	if (backupBitmap) {
+		delete[] backupBitmap;
+		backupBitmap = NULL;
+	}
+	if (m_undoImage) {
+		delete[] m_undoImage;
+		m_undoImage = NULL;
+	}
+
+
+
+
+	//update m_ucBitmap
+	int imageSize = 3*m_nPaintWidth*m_nPaintHeight;
+	for (int i = 0; i < imageSize; i++) {
+		m_ucBitmap[i] = (unsigned char)((int)m_ucBitmap[i] * 0.5 + (int)data[i] * 0.5);
+	}
+
+	//do deep copy to initialize backupbitmap
+	backupBitmap = new unsigned char[width*height * 3];
+	memcpy(backupBitmap, m_ucBitmap, width*height * 3);
+
+	// allocate space for draw view
+	//m_ucPainting = new unsigned char[width*height * 3];
+	//memset(m_ucPainting, 0, width*height * 3);
+
+	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
+		m_pUI->m_mainWindow->y(),
+		width * 2,
+		height + 25);
+
+	// display it on origView
+	m_pUI->m_origView->resizeWindow(width, height);
+	m_pUI->m_origView->refresh();
+
+	// refresh paint view as well
+	m_pUI->m_paintView->resizeWindow(width, height);
+	m_pUI->m_paintView->refresh();
+
+
+	return 1;
+}
+
 //----------------------------------------------------------------
 // Clear the drawing canvas
 // This is called by the UI when the clear canvas menu item is 

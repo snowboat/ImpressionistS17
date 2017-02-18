@@ -184,6 +184,16 @@ void ImpressionistUI::cb_load_image(Fl_Menu_* o, void* v)
 	}
 }
 
+void ImpressionistUI::cb_load_dissolve_image(Fl_Menu_ * o, void * v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL) {
+		pDoc->loadDissolveImage(newfile);
+	}
+}
+
 
 //------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
@@ -312,14 +322,20 @@ void ImpressionistUI::cb_alphaSlides(Fl_Widget * o, void * v)
 //swap the painting&original image
 void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
 {
+	ImpressionistDoc* m_pDoc = whoami(o)->getDocument();
+
 	//swap the bitmaps
 	unsigned char* temp = whoami(o)->getDocument()->m_ucBitmap;
-	//whoami(o)->getDocument()->backupBitmap = whoami(o)->getDocument()->m_ucPainting;
-	//whoami(o)->getDocument()->backupBitmap = whoami(o)->getDocument()->m_ucPainting;
+
 	//update backup bitmap to the new ucBitmap
 	whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucPainting;
 	memcpy(whoami(o)->getDocument()->backupBitmap, whoami(o)->getDocument()->m_ucBitmap, whoami(o)->getDocument()->m_nPaintHeight*whoami(o)->getDocument()->m_nPaintWidth * 3);
 	whoami(o)->getDocument()->m_ucPainting = temp;
+	
+	//update the undo bitmap to be null(nothing to undo)
+	delete[] m_pDoc->m_undoImage;
+	m_pDoc->m_undoImage = NULL;
+	
 	//redraw the two view
 	whoami(o)->m_origView->refresh();
 	whoami(o)->m_paintView->refresh();
@@ -493,6 +509,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 	{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
 	{ "&Manipulate Color...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_manipulate_color },
+	{ "&Dissolve Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_dissolve_image },
 	{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 
 	{ "&Colors...",	FL_ALT + 'k', (Fl_Callback *)ImpressionistUI::cb_brushes },
