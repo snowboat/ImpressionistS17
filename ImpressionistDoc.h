@@ -23,6 +23,7 @@ public:
 	int		loadImage(char *iname);			// called by the UI to load image
 	int		saveImage(char *iname);			// called by the UI to save image
 	int		loadDissolveImage(char* iname);	//load the dissolve image (1 bell)
+	int		loadMuralImage(char* iname);	//load the mural image (1.5 bells)
 
 
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas

@@ -1,22 +1,22 @@
 //
-// PointBrush.cpp
+// SharpeningBrush.cpp
 //
 // The implementation of Point Brush. It is a kind of ImpBrush. All your brush implementations
 // will look like the file with the different GL primitive calls.
 //
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
-#include "PointBrush.h"
+#include "SharpeningBrush.h"
 #include <iostream>
 
 extern float frand();
 
-PointBrush::PointBrush(ImpressionistDoc* pDoc, char* name) :
+SharpeningBrush::SharpeningBrush(ImpressionistDoc* pDoc, char* name) :
 	ImpBrush(pDoc, name)
 {
 }
 
-void PointBrush::BrushBegin(const Point source, const Point target)
+void SharpeningBrush::BrushBegin(const Point source, const Point target)
 {
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
@@ -31,14 +31,14 @@ void PointBrush::BrushBegin(const Point source, const Point target)
 
 }
 
-void PointBrush::BrushMove(const Point source, const Point target)
+void SharpeningBrush::BrushMove(const Point source, const Point target)
 {
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
 
 	if (pDoc == NULL) {
-		printf("PointBrush::BrushMove  document is NULL\n");
+		printf("SharpeningBrush::BrushMove  document is NULL\n");
 		return;
 	}
 
@@ -49,7 +49,7 @@ void PointBrush::BrushMove(const Point source, const Point target)
 	glFlush();
 }
 
-void PointBrush::BrushEnd(const Point source, const Point target)
+void SharpeningBrush::BrushEnd(const Point source, const Point target)
 {
 	// do nothing so far
 }

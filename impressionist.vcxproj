@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BlackandwhiteBrush.cpp" />
+    <ClCompile Include="BlurringBrush.cpp" />
     <ClCompile Include="CircleBrush.cpp" />
     <ClCompile Include="ImpBrush.cpp" />
     <ClCompile Include="Impressionist.cpp" />
@@ -153,11 +154,13 @@
     <ClCompile Include="SaturationBrush.cpp" />
     <ClCompile Include="ScatteredCircleBrush.cpp" />
     <ClCompile Include="ScatteredPointBrush.cpp" />
+    <ClCompile Include="SharpeningBrush.cpp" />
     <ClCompile Include="SobelFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="BlackandwhiteBrush.h" />
+    <ClInclude Include="BlurringBrush.h" />
     <ClInclude Include="CircleBrush.h" />
     <ClInclude Include="ImpBrush.h" />
     <ClInclude Include="impressionist.h" />
@@ -170,6 +173,7 @@
     <ClInclude Include="SaturationBrush.h" />
     <ClInclude Include="ScatteredCircleBrush.h" />
     <ClInclude Include="ScatteredPointBrush.h" />
+    <ClInclude Include="SharpeningBrush.h" />
     <ClInclude Include="SobelFilter.h" />
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,7 @@
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 #include <iostream>
+using namespace std;
 
 /*
 //------------------------------ Widget Examples -------------------------------------------------
@@ -194,6 +195,17 @@ void ImpressionistUI::cb_load_dissolve_image(Fl_Menu_ * o, void * v)
 	}
 }
 
+void ImpressionistUI::cb_load_mural_image(Fl_Menu_ * o, void * v)
+{
+
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL) {
+		pDoc->loadMuralImage(newfile);
+	}
+}
+
 
 //------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
@@ -268,6 +280,7 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
 
 
 	pDoc->setBrushType(type);
+	cout << "brushchoice is " << type << endl;
 }
 
 //------------------------------------------------------------
@@ -510,6 +523,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
 	{ "&Manipulate Color...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_manipulate_color },
 	{ "&Dissolve Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_dissolve_image },
+	{ "&Load Mural Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_mural_image },
 	{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 
 	{ "&Colors...",	FL_ALT + 'k', (Fl_Callback *)ImpressionistUI::cb_brushes },
@@ -549,6 +563,8 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{ "Scattered Circles",	FL_ALT + 'd', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_CIRCLES },
 	{ "Saturation",	FL_ALT + 't', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SATURATION_BRUSH },
 	{ "Black and White",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLACKANDWHITE_BRUSH },
+	{ "Blur",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLURRING },
+	{ "Sharpen",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SHARPENING },
 	{ 0 }
 };
 

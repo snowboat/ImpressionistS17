@@ -22,6 +22,8 @@ using namespace std;
 #include "ScatteredPointBrush.h"
 #include "SaturationBrush.h"
 #include "BlackandwhiteBrush.h"
+#include "BlurringBrush.h"
+#include "SharpeningBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -62,6 +64,10 @@ ImpressionistDoc::ImpressionistDoc()
 		= new SaturationBrush(this, "Saturation Brush");
 	ImpBrush::c_pBrushes[BRUSH_BLACKANDWHITE_BRUSH]
 		= new BlackandwhiteBrush(this, "Blackandwhite Brush");
+	ImpBrush::c_pBrushes[BRUSH_BLURRING]
+		= new BlurringBrush(this, "Bluring Brush");
+	ImpBrush::c_pBrushes[BRUSH_SHARPENING]
+		= new SharpeningBrush(this, "Sharpening Brush");
 
 	// make one of the brushes current
 	m_pCurrentBrush = ImpBrush::c_pBrushes[0];
@@ -326,6 +332,68 @@ int ImpressionistDoc::loadDissolveImage(char * iname)
 
 
 	return 1;
+}
+
+int ImpressionistDoc::loadMuralImage(char * iname)
+{
+	// try to open the image to read
+	unsigned char*	data;	//data is the new loaded image
+	int				width, height;	//width, height are the attributes of the newly loaded image
+
+	if ((data = readBMP(iname, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+
+	// reflect the fact of loading the new image
+	//m_nWidth = width;
+	//m_nPaintWidth = width;
+	//m_nHeight = height;
+	//m_nPaintHeight = height;
+	if (width != m_nPaintWidth || height != m_nPaintHeight) {
+		fl_alert("Dimensions of mural image not correct!!");
+		return 0;
+	}
+
+	// release old storage
+	if (backupBitmap) {
+		delete[] backupBitmap;
+		backupBitmap = NULL;
+	}
+	if (m_undoImage) {
+		delete[] m_undoImage;
+		m_undoImage = NULL;
+	}
+
+
+
+
+	////update m_ucBitmap
+	m_ucBitmap = data;
+
+	//do deep copy to initialize backupbitmap
+	backupBitmap = new unsigned char[width*height * 3];
+	memcpy(backupBitmap, m_ucBitmap, width*height * 3);
+
+	//m_nPainting is not changed
+
+	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
+		m_pUI->m_mainWindow->y(),
+		width * 2,
+		height + 25);
+
+	// display it on origView
+	m_pUI->m_origView->resizeWindow(width, height);
+	m_pUI->m_origView->refresh();
+
+	// refresh paint view as well
+	m_pUI->m_paintView->resizeWindow(width, height);
+	m_pUI->m_paintView->refresh();
+
+
+	return 1;
+
 }
 
 //----------------------------------------------------------------
