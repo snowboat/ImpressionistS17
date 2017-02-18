@@ -11,7 +11,7 @@
 
 extern float frand();
 
-Point lastPosition;
+Point lastPos;
 
 LineBrush::LineBrush(ImpressionistDoc* pDoc, char* name) :
 	ImpBrush(pDoc, name)
@@ -23,7 +23,7 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
-	lastPosition = target;
+	lastPos = target;
 
 	BrushMove(source, target);
 }
@@ -50,7 +50,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		lineAngle = pDoc->m_sobelFilter->getGradientAngle(source) + 90;
 		break;
 	case 3: // Brush Direction
-		lineAngle =(int)(atan2((source.y - lastPosition.y),(source.x - lastPosition.x)) / M_PI * 180);
+		lineAngle =(int)(atan2((source.y - lastPos.y),(source.x - lastPos.x)) / M_PI * 180);
 		break;
 	default:
 		break;
@@ -71,7 +71,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	//glTranslated(-target.x, -target.y, 0.0);
 	glPopMatrix();
 
-	lastPosition = source;
+	lastPos = source;
 }
 
 void LineBrush::BrushEnd(const Point source, const Point target)

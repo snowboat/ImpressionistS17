@@ -19,6 +19,7 @@ using namespace std;
 #include "LineBrush.h"
 #include "CircleBrush.h"
 #include "ScatteredCircleBrush.h"
+#include "ScatteredLineBrush.h"
 #include "ScatteredPointBrush.h"
 #include "SaturationBrush.h"
 #include "BlackandwhiteBrush.h"
@@ -58,7 +59,7 @@ ImpressionistDoc::ImpressionistDoc()
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_POINTS]
 		= new ScatteredPointBrush(this, "Scattered Points");
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_LINES]
-		= new PointBrush(this, "Scattered Lines");
+		= new ScatteredLineBrush(this, "Scattered Lines");
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_CIRCLES]
 		= new ScatteredCircleBrush(this, "Scattered Circles");
 	ImpBrush::c_pBrushes[BRUSH_SATURATION_BRUSH]

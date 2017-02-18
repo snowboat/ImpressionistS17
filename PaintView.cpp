@@ -42,9 +42,7 @@ PaintView::PaintView(int			x,
 {
 	m_nWindowWidth	= w;
 	m_nWindowHeight	= h;
-	std::cout << "paintview is " << w << "and" << h << std::endl;
-	
-	
+	// cout << "paintview is " << w << " and " << h << endl;	
 }
 
 

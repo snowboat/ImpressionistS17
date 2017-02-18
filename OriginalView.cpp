@@ -23,7 +23,7 @@ OriginalView::OriginalView(int			x,
 {
 	m_nWindowWidth	= w;
 	m_nWindowHeight	= h;
-	std::cout << "origView is " << w << "and" << h << std::endl;
+	// cout << "origView is " << w << " and " << h << endl;
 }
 
 void OriginalView::draw()
