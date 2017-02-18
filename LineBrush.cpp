@@ -50,10 +50,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 		lineAngle = pDoc->m_sobelFilter->getGradientAngle(source) + 90;
 		break;
 	case 3: // Brush Direction
-		//if (target.x == lastPosition.x)
-		//	lineAngle = 90;
-		//else
-			lineAngle =(int)(atan2((source.y - lastPosition.y),(source.x - lastPosition.x)) / M_PI * 180);
+		lineAngle =(int)(atan2((source.y - lastPosition.y),(source.x - lastPosition.x)) / M_PI * 180);
 		break;
 	default:
 		break;
