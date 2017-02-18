@@ -42,7 +42,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	int lineLength = pDoc->getSize(); // get the line length from UI size
 	int lineWidth = pDoc->getLineWidth();
 
-	int lineAngle = pDoc->getLineAngle();
+	int lineAngle = pDoc->getLineAngle(); // Slider or Right Mouse
 	int lineType = pDoc->getStrokeDirection();
 	switch (lineType)
 	{

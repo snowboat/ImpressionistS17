@@ -44,15 +44,15 @@ void ScatteredLineBrush::BrushMove(const Point source, const Point target)
 	int lineWidth = pDoc->getLineWidth();
 
 	int maxdist = lineLength;
-	int t = rand() % 2 + 3;
-	// cout << "t is " << t << endl;
+	int t = rand() % 2 + 3; // generate 3 or 4 lines
+
 	for (int i = 0; i < t; i++) {
 		double dist = rand() % maxdist;
 		double angle = frand() * 2 * M_PI;
 		Point lineCtrl(target.x + dist*cos(angle), target.y + dist*sin(angle));
 		Point lineCtrlSource(source.x + dist*cos(angle), source.y + dist*sin(angle));
 
-		int lineAngle = pDoc->getLineAngle();
+		int lineAngle = pDoc->getLineAngle(); // Slider or Right Mouse
 		int lineType = pDoc->getStrokeDirection();
 		switch (lineType)
 		{

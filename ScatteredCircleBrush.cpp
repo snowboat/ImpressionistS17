@@ -39,43 +39,28 @@ void ScatteredCircleBrush::BrushMove(const Point source, const Point target)
 		printf("ScatteredCircleBrush::BrushMove  document is NULL\n");
 		return;
 	}
-	float pi = 3.14159265359;
-	double radius = pDoc->getSize() / 2;
 
-	//Draw the central circle
-	glBegin(GL_POLYGON);
-	SetColor(source);
-	for (double i = 0; i < 2 * pi; i += pi / 36) {
-		glVertex2d(cos(i)*radius + target.x, sin(i)*radius + target.y);
-	}
-	glEnd();
+	double radius = pDoc->getSize() / 2;
 
 	//Draw the surrounding circles
 	int maxdist = 2 * radius;
-	double dist1 = rand() % maxdist;
-	double angle1 = frand() * 2 * pi;
-	Point circleCtr1(target.x + dist1*cos(angle1), target.y + dist1*sin(angle1));
-	Point circleCtr1Source(source.x + dist1*cos(angle1), source.y + dist1*sin(angle1));
-	glBegin(GL_POLYGON);
-	SetColor(circleCtr1Source);
-	for (double i = 0; i < 2 * pi; i += pi / 36) {
-		glVertex2d(cos(i)*radius + circleCtr1.x, sin(i)*radius + circleCtr1.y);
-	}
-	glEnd();
+	int t = rand() % 2 + 3; // generate 3 or 4 circles
 
-	double dist2 = rand() % maxdist;
-	double angle2 = frand() * 2 * pi;
-	Point circleCtr2(target.x + dist2*cos(angle2), target.y + dist2*sin(angle2));
-	Point circleCtr2Source(source.x + dist1*cos(angle2), source.y + dist1*sin(angle2));
-	glBegin(GL_POLYGON);
-	SetColor(circleCtr2Source);
-	for (double i = 0; i < 2 * pi; i += pi / 36) {
-		glVertex2d(cos(i)*radius + circleCtr2.x, sin(i)*radius + circleCtr2.y);
+	for (int i = 0; i < t; i++) {
+		double dist = rand() % maxdist;
+		double angle = frand() * 2 * M_PI;
+		Point circleCtr1(target.x + dist*cos(angle), target.y + dist*sin(angle));
+		Point circleCtr1Source(source.x + dist*cos(angle), source.y + dist*sin(angle));
+		glBegin(GL_POLYGON);
+		SetColor(circleCtr1Source);
+		for (double i = 0; i < 2 * M_PI; i += M_PI / 36) {
+			glVertex2d(cos(i)*radius + circleCtr1.x, sin(i)*radius + circleCtr1.y);
+		}
+		glEnd();
 	}
-	glEnd();
+	
 	glFlush();
 	
-
 }
 
 void ScatteredCircleBrush::BrushEnd(const Point source, const Point target)
