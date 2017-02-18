@@ -131,23 +131,16 @@ void ImpressionistDoc::applyManipulation()
 	float greenScale = m_pUI->getGreen();
 	float blueScale = m_pUI->getBlue();
 
-	//unsigned char* backupBitmap = m_ucBitmap;
-	
-
-	//m_ucBitmap = backupBitmap;	//backup bitmap is always equal to the very-original image. it's immutable
-	memcpy(m_ucBitmap, backupBitmap, m_nPaintWidth*m_nPaintHeight * 3);
-	for (int i = 0; i < m_nPaintWidth*m_nPaintHeight; i++) {
-		m_ucBitmap[3*i +0] *= redScale;
-		m_ucBitmap[3*i+1] *= greenScale;
-		m_ucBitmap[3*i+2] *= blueScale;
+	if (backupBitmap) {
+		memcpy(m_ucBitmap, backupBitmap, m_nPaintWidth*m_nPaintHeight * 3);
+		for (int i = 0; i < m_nPaintWidth*m_nPaintHeight; i++) {
+			m_ucBitmap[3 * i + 0] *= redScale;
+			m_ucBitmap[3 * i + 1] *= greenScale;
+			m_ucBitmap[3 * i + 2] *= blueScale;
+		}
+		m_pUI->m_origView->refresh();
 	}
 
-	cout << "ucbitmap" << (int)m_ucBitmap[0] << " " << (int)m_ucBitmap[1] << " " << (int)m_ucBitmap[2] << endl;
-	cout << "backupbitmap" << (int)backupBitmap[0] << " " << (int)backupBitmap[1] << " " << (int)backupBitmap[2] << endl;
-
-
-	//m_ucBitmap = backupBitmap;
-	m_pUI->m_origView->refresh();
 }
 
 void ImpressionistDoc::undo()
