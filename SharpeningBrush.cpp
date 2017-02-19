@@ -72,12 +72,22 @@ void SharpeningBrush::BrushMove(const Point source, const Point target)
 					for (int yref = ypos - 1; yref <= ypos + 1; yref++) {
 						int* refpointRgb = GetColor(Point(xref, yref));
 						newRed += (int)((double)refpointRgb[0] * sharpeningFilter[xref - xpos + 1][yref - ypos + 1]);
-						//newGreen += (int)((double)refpointRgb[1]/(double)9);
 						newGreen += (int)((double)refpointRgb[1] * sharpeningFilter[xref - xpos + 1][yref - ypos + 1]);
 						newBlue += (int)((double)refpointRgb[2] * sharpeningFilter[xref - xpos + 1][yref - ypos + 1]);
-						//newBlue += (int)((double)refpointRgb[2] /(double)9);
 					}
 				}
+				if (newRed < 0)
+					newRed = 0;
+				if (newRed > 255)
+					newRed = 255;
+				if (newGreen < 0)
+					newGreen = 0;
+				if (newGreen > 255)
+					newGreen = 255;
+				if (newBlue < 0)
+					newBlue = 0;
+				if (newBlue > 255)
+					newBlue = 255;
 				glColor4ub(newRed, newGreen, newBlue, pDoc->m_pUI->getAlpha() * 255);
 				glVertex2i(target.x + i, target.y + j);
 			}
