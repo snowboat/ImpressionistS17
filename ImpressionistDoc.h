@@ -24,6 +24,7 @@ public:
 	int		saveImage(char *iname);			// called by the UI to save image
 	int		loadDissolveImage(char* iname);	//load the dissolve image (1 bell)
 	int		loadMuralImage(char* iname);	//load the mural image (1.5 bells)
+	int		loadAlphaMappedImage(char* iname);	//load the alpha image, then store its alpha values into m_alphaMappedValues
 
 
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
@@ -51,11 +52,16 @@ public:
 	// Dimensions of the paint window.
 	int				m_nPaintWidth,
 					m_nPaintHeight;
+	
+	//dimensions of the alpha image
+	int				m_alphaWidth, m_alphaHeight;
+
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;//original image
 	unsigned char*  backupBitmap;	//immutable bitmap which records the original stagte of left image
 	unsigned char*	m_ucPainting;//painting image
 	unsigned char*  m_undoImage;
+	unsigned char*  m_alphaMappedValues; //the alpha value of each pixel in the alphamapped brush (in 0-255 scale)
 
 	unsigned char*  m_ucEdgeMap;
 	unsigned char*  m_ucAnotherBitmap;

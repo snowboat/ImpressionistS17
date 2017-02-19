@@ -25,6 +25,7 @@ using namespace std;
 #include "BlackandwhiteBrush.h"
 #include "BlurringBrush.h"
 #include "SharpeningBrush.h"
+#include "AlphaMappedBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -40,6 +41,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_undoImage = NULL;
 	m_ucEdgeMap = NULL;
 	m_ucAnotherBitmap = NULL;
+	m_alphaMappedValues = NULL;
 	strokeDirection = 1;
 	brushType = BRUSH_POINTS;
 
@@ -70,6 +72,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new BlurringBrush(this, "Bluring Brush");
 	ImpBrush::c_pBrushes[BRUSH_SHARPENING]
 		= new SharpeningBrush(this, "Sharpening Brush");
+	ImpBrush::c_pBrushes[BRUSH_ALPHA_MAPPED]
+		= new AlphaMappedBrush(this, "Alpha Mapped Brush");
 
 	// make one of the brushes current
 	m_pCurrentBrush = ImpBrush::c_pBrushes[0];
@@ -395,6 +399,57 @@ int ImpressionistDoc::loadMuralImage(char * iname)
 	// refresh paint view as well
 	m_pUI->m_paintView->resizeWindow(width, height);
 	m_pUI->m_paintView->refresh();
+
+
+	return 1;
+
+}
+
+int ImpressionistDoc::loadAlphaMappedImage(char * iname)
+{
+	// try to open the image to read
+	unsigned char*	data;	//data is the new loaded image
+	int				width, height;	//width, height are the attributes of the newly loaded image
+
+	if ((data = readBMP(iname, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+
+	if (width > m_nPaintWidth || height > m_nPaintHeight) {
+		fl_alert("Dimensions of the alpha mapped image is larger than the current image.");
+		return 0;
+	}
+
+	m_alphaHeight = height;
+	m_alphaWidth = width;
+
+
+
+	//make the alpha values the grayscale of loaded image (pixel-wise)
+	m_alphaMappedValues = new unsigned char[width*height];
+	for (int i = 0; i < width*height; i++) { 
+		m_alphaMappedValues[i] = (unsigned char)((int)data[3 * i] * 0.299 + (int)data[3 * i + 1] * 0.587 + (int)data[3 * i + 2] * 0.114);
+	}
+
+
+
+
+	////m_nPainting is not changed
+
+	//m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
+	//	m_pUI->m_mainWindow->y(),
+	//	width * 2,
+	//	height + 25);
+
+	//// display it on origView
+	//m_pUI->m_origView->resizeWindow(width, height);
+	//m_pUI->m_origView->refresh();
+
+	//// refresh paint view as well
+	//m_pUI->m_paintView->resizeWindow(width, height);
+	//m_pUI->m_paintView->refresh();
 
 
 	return 1;

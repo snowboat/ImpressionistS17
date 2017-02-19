@@ -206,6 +206,16 @@ void ImpressionistUI::cb_load_mural_image(Fl_Menu_ * o, void * v)
 	}
 }
 
+void ImpressionistUI::cb_load_alpha_mapped_image(Fl_Menu_ * o, void * v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL) {
+		pDoc->loadAlphaMappedImage(newfile);
+	}
+}
+
 
 //------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
@@ -280,6 +290,12 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
 
 
 	pDoc->setBrushType(type);
+	if (type == BRUSH_ALPHA_MAPPED && pDoc->m_alphaMappedValues == NULL) {
+		char* newfile = fl_file_chooser("Please load an alpha image", "*.bmp", pDoc->getImageName());
+		if (newfile != NULL) {
+			pDoc->loadAlphaMappedImage(newfile);
+		}
+	}
 	// cout << "brushchoice is " << type << endl;
 }
 
@@ -526,6 +542,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&Manipulate Color...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_manipulate_color },
 	{ "&Dissolve Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_dissolve_image },
 	{ "&Load Mural Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_mural_image },
+	{ "&Load Alpha Mapped Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_alpha_mapped_image },
 	{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 
 	{ "&Colors...",	FL_ALT + 'k', (Fl_Callback *)ImpressionistUI::cb_brushes },
@@ -567,6 +584,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{ "Black and White",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLACKANDWHITE_BRUSH },
 	{ "Blur",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLURRING },
 	{ "Sharpen",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SHARPENING },
+	{ "Alpha Mapped",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_ALPHA_MAPPED },
 	{ 0 }
 };
 

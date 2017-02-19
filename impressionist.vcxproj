@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlphaMappedBrush.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BlackandwhiteBrush.cpp" />
     <ClCompile Include="BlurringBrush.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="SobelFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlphaMappedBrush.h" />
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="BlackandwhiteBrush.h" />
     <ClInclude Include="BlurringBrush.h" />
