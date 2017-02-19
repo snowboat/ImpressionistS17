@@ -54,13 +54,6 @@ void ScatteredPointBrush::BrushMove(const Point source, const Point target)
 	}
 	glEnd();
 	glFlush();
-	/*	glBegin(GL_POINTS);
-	SetColor(source);
-
-	glVertex2d(target.x, target.y);
-
-	glEnd();*/
-
 }
 
 void ScatteredPointBrush::BrushEnd(const Point source, const Point target)
