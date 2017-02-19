@@ -15,6 +15,7 @@
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Light_Button.H>
+#include <FL/Fl_Float_Input.H>
 
 #include "Impressionist.h"
 #include "OriginalView.h"
@@ -42,6 +43,19 @@ public:
 	Fl_Slider*			m_LineAngleSlider;
 	Fl_Slider*			m_AlphaValueSlider;
 	Fl_Button*          m_ClearCanvasButton;
+
+	//For designing new convolution matrix
+	Fl_Window*			m_convolutionDialog;
+	Fl_Float_Input*	    m_convolution00;
+	Fl_Float_Input*	    m_convolution01;
+	Fl_Float_Input*	    m_convolution02;
+	Fl_Float_Input*	    m_convolution10;
+	Fl_Float_Input*	    m_convolution11;
+	Fl_Float_Input*	    m_convolution12;
+	Fl_Float_Input*	    m_convolution20;
+	Fl_Float_Input*	    m_convolution21;
+	Fl_Float_Input*	    m_convolution22;
+
 
 	//for color manipulation
 	Fl_Window*		m_colorManipulationDialog;
@@ -86,6 +100,9 @@ private:
 	double	m_greenValue;
 	double	m_blueValue;
 
+	//the nine convolution values
+	double conv00, conv01, conv02, conv10, conv11, conv12, conv20, conv21, conv22;
+
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
 	static Fl_Menu_Item		brushTypeMenu[NUM_BRUSH_TYPE + 1];
@@ -121,7 +138,18 @@ private:
 
 	//undo option
 	static void	cb_undo(Fl_Menu_* o, void* v);
+	static void	cb_customize_convolution(Fl_Menu_* o, void* v);
 
+	//callbacks for the customized convolution
+	static void cb_conv00changes(Fl_Widget* o, void* v);
+	static void cb_conv01changes(Fl_Widget* o, void* v);
+	static void cb_conv02changes(Fl_Widget* o, void* v);
+	static void cb_conv10changes(Fl_Widget* o, void* v);
+	static void cb_conv11changes(Fl_Widget* o, void* v);
+	static void cb_conv12changes(Fl_Widget* o, void* v);
+	static void cb_conv20changes(Fl_Widget* o, void* v);
+	static void cb_conv21changes(Fl_Widget* o, void* v);
+	static void cb_conv22changes(Fl_Widget* o, void* v);
 
 
 };

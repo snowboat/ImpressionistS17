@@ -12,6 +12,7 @@
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 #include <iostream>
+#include <string>
 using namespace std;
 
 /*
@@ -400,6 +401,59 @@ void ImpressionistUI::cb_undo(Fl_Menu_ * o, void * v)
 {
 	whoami(o)->getDocument()->undo();
 }
+void ImpressionistUI::cb_customize_convolution(Fl_Menu_ * o, void * v)
+{
+	whoami(o)->m_convolutionDialog->show();
+}
+void ImpressionistUI::cb_conv00changes(Fl_Widget * o, void * v)
+{
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->conv00 = std::stof(tempstr);
+
+}
+void ImpressionistUI::cb_conv01changes(Fl_Widget * o, void * v)
+{
+
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->conv01 = std::stof(tempstr);
+}
+void ImpressionistUI::cb_conv02changes(Fl_Widget * o, void * v)
+{
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->conv02 = std::stof(tempstr);
+}
+void ImpressionistUI::cb_conv10changes(Fl_Widget * o, void * v)
+{
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->conv10 = std::stof(tempstr);
+}
+void ImpressionistUI::cb_conv11changes(Fl_Widget * o, void * v)
+{
+
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->conv11 = std::stof(tempstr);
+}
+void ImpressionistUI::cb_conv12changes(Fl_Widget * o, void * v)
+{
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->conv12 = std::stof(tempstr);
+}
+void ImpressionistUI::cb_conv20changes(Fl_Widget * o, void * v)
+{
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->conv20 = std::stof(tempstr);
+}
+void ImpressionistUI::cb_conv21changes(Fl_Widget * o, void * v)
+{
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->conv21 = std::stof(tempstr);
+}
+void ImpressionistUI::cb_conv22changes(Fl_Widget * o, void * v)
+{
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->conv22 = std::stof(tempstr);
+
+}
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -561,6 +615,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 
 	{ "&Options",		0, 0, 0, FL_SUBMENU },
 	{ "&Undo...",	FL_ALT + 'u', (Fl_Callback *)ImpressionistUI::cb_undo },
+	{ "&Customize Convolution...",	FL_ALT + 'u', (Fl_Callback *)ImpressionistUI::cb_customize_convolution },
 	{ "&Faster...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
 	{ "&Safer...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 	{ 0 },
@@ -716,6 +771,7 @@ ImpressionistUI::ImpressionistUI() {
 	m_brushDialog->end();
 
 	m_colorManipulationDialog = new Fl_Window(400, 325, "Color Manipulation Dialog");
+	
 	// Red Channel Slider
 	m_redSlider = new Fl_Value_Slider(10, 110, 300, 20, "Red");
 	m_redSlider->user_data((void*)(this));	// record self to be used by static callback functions
@@ -761,5 +817,46 @@ ImpressionistUI::ImpressionistUI() {
 
 	m_colorManipulationDialog->end();
 
+
+	//construct the customized convolution dialog one-by-one
+	m_convolutionDialog = new Fl_Window(400, 325, "Make your OWN convolution");
+	
+	conv00 = 0.0;
+	m_convolution00 = new Fl_Float_Input(10, 200, 60, 30, "");
+	m_convolution00->user_data((void*)(this));	// record self to be used by static callback functions
+	m_convolution00->callback(cb_conv00changes);
+	conv01 = 0.0;
+	m_convolution01 = new Fl_Float_Input(80, 200, 60, 30, "");
+	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
+	m_convolution01->callback(cb_conv01changes);
+	conv02 = 0.0;
+	m_convolution01 = new Fl_Float_Input(150, 200, 60, 30, "");
+	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
+	m_convolution01->callback(cb_conv02changes);
+	conv10 = 0.0;
+	m_convolution01 = new Fl_Float_Input(10, 160, 60, 30, "");
+	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
+	m_convolution01->callback(cb_conv10changes);
+	conv11 = 0.0;
+	m_convolution01 = new Fl_Float_Input(80, 160, 60, 30, "");
+	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
+	m_convolution01->callback(cb_conv11changes);
+	conv12 = 0.0;
+	m_convolution01 = new Fl_Float_Input(150, 160, 60, 30, "");
+	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
+	m_convolution01->callback(cb_conv12changes);
+	conv20 = 0.0;
+	m_convolution01 = new Fl_Float_Input(10, 120, 60, 30, "");
+	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
+	m_convolution01->callback(cb_conv20changes);
+	conv21 = 0.0;
+	m_convolution01 = new Fl_Float_Input(80, 120, 60, 30, "");
+	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
+	m_convolution01->callback(cb_conv21changes);
+	conv22 = 0.0;
+	m_convolution01 = new Fl_Float_Input(150, 120, 60, 30, "");
+	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
+	m_convolution01->callback(cb_conv22changes);
+	m_convolutionDialog->end();
 
 }

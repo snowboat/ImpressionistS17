@@ -48,7 +48,13 @@ void AlphaMappedBrush::BrushMove(const Point source, const Point target)
 			int numPixel = rowNum*pDoc->m_alphaWidth + colNum;
 
 			glColor4ub(sourceColor[0], sourceColor[1], sourceColor[2], pDoc->m_alphaMappedValues[numPixel]);
-			glVertex2i(target.x + xOffset, target.y + yOffset);
+			
+			//boundary clipping
+			int xUpperBound = pDoc->m_nPaintWidth;
+			int yLowerBound = pDoc->m_pUI->m_paintView->getWindowHeight() - pDoc->m_nPaintHeight;
+
+			if (target.x + xOffset <= xUpperBound && target.y + yOffset >= yLowerBound)
+				glVertex2i(target.x + xOffset, target.y + yOffset);
 		}
 	}
 
