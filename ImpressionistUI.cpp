@@ -283,7 +283,7 @@ void ImpressionistUI::cb_exit(Fl_Menu_* o, void* v)
 //-----------------------------------------------------------
 void ImpressionistUI::cb_about(Fl_Menu_* o, void* v)
 {
-	fl_message("Impressionist FLTK version for CS341, Spring 2002");
+	fl_message("Impressionist FLTK version for COMP4411, Spring 2017 - HE, ZHOU");
 }
 
 //------- UI should keep track of the current for all the controls for answering the query from Doc ---------
@@ -644,33 +644,40 @@ bool ImpressionistUI::getAnotherGradient() {
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
 	{ "&Load Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
-	{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
-	{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
-	{ "&Manipulate Color...",	FL_ALT + 'n', (Fl_Callback *)ImpressionistUI::cb_manipulate_color },
-	{ "&Dissolve Image...",	FL_ALT + 'd', (Fl_Callback *)ImpressionistUI::cb_load_dissolve_image },
+	{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image, 0, FL_MENU_DIVIDER },
+	
 	{ "&Load Mural Image...",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_load_mural_image },
 	{ "&Load Alpha Mapped Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_alpha_mapped_image },
-	{ "&Load Another Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_load_another_image },
-	{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
-
-	{ "&Colors...",	FL_ALT + 'k', (Fl_Callback *)ImpressionistUI::cb_brushes },
-	{ "&Paintly", FL_ALT + 'p', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
-
+	{ "&Load Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_load_image },
+	{ "&Load Another Image...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_load_another_image, 0, FL_MENU_DIVIDER },
 
 	{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 	{ 0 },
 
+	{ "&Edit",		0, 0, 0, FL_SUBMENU },
+	{ "&Undo...",	FL_ALT + 'u', (Fl_Callback *)ImpressionistUI::cb_undo },
+	{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
+
+	{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
+	{ "&Manipulate Color...",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_manipulate_color },
+	{ "&Dissolve Image...",	FL_ALT + 'd', (Fl_Callback *)ImpressionistUI::cb_load_dissolve_image },
+	{ "&Customize Convolution...",	FL_ALT + 'v', (Fl_Callback *)ImpressionistUI::cb_customize_convolution },
+	{ "&Swap Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_swap_image, 0, FL_MENU_DIVIDER },
+
+	{ "&Colors...",	FL_ALT + 'k', (Fl_Callback *)ImpressionistUI::cb_brushes },
+	{ "&Paintly", FL_ALT + 'p', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
+	{ 0 },
+
 	{ "&Display",		0, 0, 0, FL_SUBMENU },
-	{ "&Swap Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_swap_image },
-	{ "&Original Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
-	{ "&Edge Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
-	{ "&Another Image...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_load_another_image },
+	{ "&Original Image...",	FL_ALT + 'o', (Fl_Callback *)ImpressionistUI::cb_load_image },
+	{ "&Mural Image...",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_save_image },
+	{ "&Alpha Mapped Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_save_image },
+	{ "&Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_save_image },
+	{ "&Another Image...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_save_image },
 	{ 0 },
 
 	{ "&Options",		0, 0, 0, FL_SUBMENU },
-	{ "&Undo...",	FL_ALT + 'u', (Fl_Callback *)ImpressionistUI::cb_undo },
-	{ "&Customize Convolution...",	FL_ALT + 'u', (Fl_Callback *)ImpressionistUI::cb_customize_convolution },
-	{ "&Faster...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
+	{ "&Faster...",	FL_ALT + 'f', (Fl_Callback *)ImpressionistUI::cb_load_image },
 	{ "&Safer...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 	{ 0 },
 
