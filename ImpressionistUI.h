@@ -86,6 +86,8 @@ public:
 	float				getRed();
 	float				getGreen();
 	float				getBlue();
+	bool				getEdgeClipping();
+	bool				getAnotherGradient();
 
 
 private:
@@ -99,6 +101,9 @@ private:
 	double	m_redValue;
 	double	m_greenValue;
 	double	m_blueValue;
+
+	bool	m_edgeClipping;
+	bool	m_anotherGradient;
 
 	//the nine convolution values
 	double conv00, conv01, conv02, conv10, conv11, conv12, conv20, conv21, conv22;

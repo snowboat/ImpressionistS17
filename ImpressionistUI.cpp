@@ -413,26 +413,22 @@ void ImpressionistUI::cb_undo(Fl_Menu_ * o, void * v)
 
 void ImpressionistUI::cb_edgeClipping(Fl_Widget* o, void* v)
 {
-	ImpressionistUI *pUI = ((ImpressionistUI*)(o->user_data()));
-
-	if (((ImpressionistUI*)(o->user_data()))->getDocument()->getFlagOfEdgeClipping() == TRUE)
-		((ImpressionistUI*)(o->user_data()))->getDocument()->setFlagOfEdgeClipping(FALSE);
-	else ((ImpressionistUI*)(o->user_data()))->getDocument()->setFlagOfEdgeClipping(TRUE);
+	((ImpressionistUI*)(o->user_data()))->m_edgeClipping = bool(((Fl_Light_Button *)o)->value());
 }
 
 void ImpressionistUI::cb_anotherGradient(Fl_Widget* o, void* v)
 {
 	ImpressionistUI *pUI = ((ImpressionistUI*)(o->user_data()));
 
-	if (((ImpressionistUI*)(o->user_data()))->getDocument()->getFlagOfAnotherGradient() == TRUE)
-		((ImpressionistUI*)(o->user_data()))->getDocument()->setFlagOfAnotherGradient(FALSE);
+	if (pUI->m_anotherGradient == true)
+		pUI->m_anotherGradient = false;
 	else {
-		if (((ImpressionistUI*)(o->user_data()))->getDocument()->m_ucAnotherBitmap) {
-			((ImpressionistUI*)(o->user_data()))->getDocument()->setFlagOfAnotherGradient(TRUE);
+		if (pUI->getDocument()->m_ucAnotherBitmap) {
+			pUI->m_anotherGradient = true;
 		}
 		else {
 			fl_alert("Please load another image!");
-			pUI->m_AnotherGradientButton->value(FALSE);
+			pUI->m_AnotherGradientButton->value(false);
 		}
 	}
 }
@@ -631,6 +627,18 @@ float ImpressionistUI::getBlue()
 	return m_blueValue;
 }
 
+// get the edge clipping
+bool ImpressionistUI::getEdgeClipping()
+{
+	return m_edgeClipping;
+}
+
+
+// get the another gradient
+bool ImpressionistUI::getAnotherGradient() {
+	return m_anotherGradient;
+}
+
 
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
@@ -735,6 +743,8 @@ ImpressionistUI::ImpressionistUI() {
 	m_redValue = 1.00;
 	m_greenValue = 1.00;
 	m_blueValue = 1.00;
+	m_edgeClipping = true;
+	m_anotherGradient = false;
 
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
@@ -817,14 +827,14 @@ ImpressionistUI::ImpressionistUI() {
 	// edge clipping button
 	m_EdgeClippingButton = new Fl_Light_Button(10, 200, 150, 25, "Edge Clipping");
 	m_EdgeClippingButton->user_data((void*)(this));   // record self to be used by static callback functions
-	m_EdgeClippingButton->value(true);
+	m_EdgeClippingButton->value(m_edgeClipping);
 	m_EdgeClippingButton->callback(cb_edgeClipping); 
 	m_EdgeClippingButton->deactivate();
 
 	// another gradient button
 	m_AnotherGradientButton = new Fl_Light_Button(240, 200, 150, 25, "Another Gradient");
 	m_AnotherGradientButton->user_data((void*)(this));   // record self to be used by static callback functions
-	m_AnotherGradientButton->value(false);
+	m_AnotherGradientButton->value(m_anotherGradient);
 	m_AnotherGradientButton->callback(cb_anotherGradient);
 	m_AnotherGradientButton->deactivate();
 

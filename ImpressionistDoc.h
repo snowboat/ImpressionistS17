@@ -37,9 +37,7 @@ public:
 	char*	getImageName();					// get the current image name
 	void 	setStrokeDirection(int type);
 	int     getStrokeDirection();
-	void    setFlagOfEdgeClipping(bool flag);
 	bool    getFlagOfEdgeClipping();
-	void    setFlagOfAnotherGradient(bool flag);
 	bool    getFlagOfAnotherGradient();
 
 	//apply the color manipulation on original image
@@ -78,9 +76,6 @@ public:
 	// Current Stroke Direction
 	int strokeDirection;	
 	int brushType;
-
-	bool flagOfEdgeClipping;
-	bool flagOfAnotherGradient;
 
 	ImpressionistUI*	m_pUI;
 

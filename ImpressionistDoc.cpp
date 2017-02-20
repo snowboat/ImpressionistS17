@@ -45,10 +45,6 @@ ImpressionistDoc::ImpressionistDoc()
 	strokeDirection = 1;
 	brushType = BRUSH_POINTS;
 
-	// set the edge clipping and another image
-	flagOfEdgeClipping = TRUE;
-	flagOfAnotherGradient = FALSE;
-
 	// create one instance of each brush
 	ImpBrush::c_nBrushCount = NUM_BRUSH_TYPE;
 	ImpBrush::c_pBrushes = new ImpBrush*[ImpBrush::c_nBrushCount];
@@ -208,27 +204,15 @@ double ImpressionistDoc::getAlpha()
 	return  m_pUI->getAlpha();
 }
 
-// set the flag of edge clipping
-void ImpressionistDoc::setFlagOfEdgeClipping(bool flag)
-{
-	flagOfEdgeClipping = flag;
-}
-
-// set the flag of edge clipping
+// get the flag of edge clipping
 bool ImpressionistDoc::getFlagOfEdgeClipping()
 {
-	return flagOfEdgeClipping;
-}
-
-// set the flag of another gradient
-void ImpressionistDoc::setFlagOfAnotherGradient(bool flag)
-{
-	flagOfAnotherGradient = flag;
+	return m_pUI->getEdgeClipping();
 }
 
 // get the flag of another gradient
 bool ImpressionistDoc::getFlagOfAnotherGradient() {
-	return flagOfAnotherGradient;
+	return m_pUI->getAnotherGradient();
 }
 
 //---------------------------------------------------------
