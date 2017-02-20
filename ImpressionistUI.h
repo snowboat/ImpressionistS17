@@ -43,6 +43,8 @@ public:
 	Fl_Slider*			m_LineAngleSlider;
 	Fl_Slider*			m_AlphaValueSlider;
 	Fl_Button*          m_ClearCanvasButton;
+	Fl_Light_Button*    m_EdgeClippingButton;
+	Fl_Light_Button*    m_AnotherGradientButton;
 
 	//For designing new convolution matrix
 	Fl_Window*			m_convolutionDialog;
@@ -86,8 +88,6 @@ public:
 	float				getBlue();
 
 
-
-
 private:
 	ImpressionistDoc*	m_pDoc;		// pointer to document to communicate with the document
 
@@ -95,7 +95,7 @@ private:
 	int		m_nSize;
 	int 	m_lineWidth;
 	int 	m_lineAngle;
-	double   m_alphaValue;
+	double  m_alphaValue;
 	double	m_redValue;
 	double	m_greenValue;
 	double	m_blueValue;
@@ -116,6 +116,7 @@ private:
 	static void	cb_load_dissolve_image(Fl_Menu_* o, void* v);
 	static void	cb_load_mural_image(Fl_Menu_* o, void* v);
 	static void	cb_load_alpha_mapped_image(Fl_Menu_* o, void* v);
+	static void cb_load_another_image(Fl_Menu_ * o, void * v);
 	static void	cb_save_image(Fl_Menu_* o, void* v);
 	static void	cb_brushes(Fl_Menu_* o, void* v);
 	static void	cb_clear_canvas(Fl_Menu_* o, void* v);
@@ -135,9 +136,12 @@ private:
 	static void cb_greenSlides(Fl_Widget* o, void* v);
 	static void cb_blueSlides(Fl_Widget* o, void* v);
 	static void	cb_manipulate_color_button(Fl_Widget* o, void* v);
+	static void cb_edgeClipping(Fl_Widget* o, void* v);
+	static void cb_anotherGradient(Fl_Widget* o, void* v);
 
 	//undo option
 	static void	cb_undo(Fl_Menu_* o, void* v);
+
 	static void	cb_customize_convolution(Fl_Menu_* o, void* v);
 
 	//callbacks for the customized convolution
