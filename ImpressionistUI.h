@@ -55,6 +55,8 @@ public:
 	Fl_Float_Input*	    m_convolution20;
 	Fl_Float_Input*	    m_convolution21;
 	Fl_Float_Input*	    m_convolution22;
+	Fl_Button*		m_normalizeConvolutionButton;
+
 
 
 	//for color manipulation
@@ -150,6 +152,8 @@ private:
 	static void cb_conv20changes(Fl_Widget* o, void* v);
 	static void cb_conv21changes(Fl_Widget* o, void* v);
 	static void cb_conv22changes(Fl_Widget* o, void* v);
+	static void	cb_normalize_convolution(Fl_Widget* o, void* v);
+
 
 
 };

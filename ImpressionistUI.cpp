@@ -355,21 +355,24 @@ void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
 	ImpressionistDoc* m_pDoc = whoami(o)->getDocument();
 
 	//swap the bitmaps
-	unsigned char* temp = whoami(o)->getDocument()->m_ucBitmap;
+	if (whoami(o)->getDocument()->m_ucBitmap && whoami(o)->getDocument()->m_ucPainting) {
+		unsigned char* temp = whoami(o)->getDocument()->m_ucBitmap;
 
-	//update backup bitmap to the new ucBitmap
-	whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucPainting;
-	memcpy(whoami(o)->getDocument()->backupBitmap, whoami(o)->getDocument()->m_ucBitmap, whoami(o)->getDocument()->m_nPaintHeight*whoami(o)->getDocument()->m_nPaintWidth * 3);
-	whoami(o)->getDocument()->m_ucPainting = temp;
-	
-	//update the undo bitmap to be null(nothing to undo)
-	delete[] m_pDoc->m_undoImage;
-	m_pDoc->m_undoImage = NULL;
-	
-	//redraw the two view
-	whoami(o)->m_origView->refresh();
-	whoami(o)->m_paintView->refresh();
-}
+		//update backup bitmap to the new ucBitmap
+		whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucPainting;
+		memcpy(whoami(o)->getDocument()->backupBitmap, whoami(o)->getDocument()->m_ucBitmap, whoami(o)->getDocument()->m_nPaintHeight*whoami(o)->getDocument()->m_nPaintWidth * 3);
+		whoami(o)->getDocument()->m_ucPainting = temp;
+
+		//update the undo bitmap to be null(nothing to undo)
+		delete[] m_pDoc->m_undoImage;
+		m_pDoc->m_undoImage = NULL;
+
+		//redraw the two view
+		whoami(o)->m_origView->refresh();
+		whoami(o)->m_paintView->refresh();
+
+	}
+	}
 
 void ImpressionistUI::cb_manipulate_color(Fl_Menu_ * o, void * v)
 {
@@ -453,6 +456,18 @@ void ImpressionistUI::cb_conv22changes(Fl_Widget * o, void * v)
 	std::string tempstr(((Fl_Float_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->conv22 = std::stof(tempstr);
 
+}
+void ImpressionistUI::cb_normalize_convolution(Fl_Widget * o, void * v)
+{
+	//double sum = conv00 + conv01 + conv02 + conv10 + conv11 + conv12 + conv20 + conv21 + conv22;
+	int sum = 0;
+	if (sum == 0)
+		fl_alert("Invalid convolution. sum is 0");
+	else {
+
+	}
+	fl_message("Impressionist FLTK version for CS341, Spring 2002");
+	
 }
 //---------------------------------- per instance functions --------------------------------------
 
@@ -837,7 +852,7 @@ ImpressionistUI::ImpressionistUI() {
 	m_convolution01 = new Fl_Float_Input(10, 160, 60, 30, "");
 	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
 	m_convolution01->callback(cb_conv10changes);
-	conv11 = 0.0;
+	conv11 = 1.0;
 	m_convolution01 = new Fl_Float_Input(80, 160, 60, 30, "");
 	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
 	m_convolution01->callback(cb_conv11changes);
@@ -857,6 +872,9 @@ ImpressionistUI::ImpressionistUI() {
 	m_convolution01 = new Fl_Float_Input(150, 120, 60, 30, "");
 	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
 	m_convolution01->callback(cb_conv22changes);
+
+	m_normalizeConvolutionButton = new Fl_Button(10, 250, 100, 30, "Normalize");
+	m_normalizeConvolutionButton->callback(cb_normalize_convolution);
 	m_convolutionDialog->end();
 
 }
