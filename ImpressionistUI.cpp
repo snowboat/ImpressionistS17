@@ -495,63 +495,28 @@ void ImpressionistUI::cb_anotherGradient(Fl_Widget* o, void* v)
 
 void ImpressionistUI::cb_customize_convolution(Fl_Menu_ * o, void * v)
 {
-	whoami(o)->m_convolutionDialog->show();
+	whoami(o)->m_askFilterSize->show();
 }
 
-void ImpressionistUI::cb_conv00changes(Fl_Widget * o, void * v)
+void ImpressionistUI::cb_confirmFilterSize(Fl_Widget * o, void * v)
 {
-	std::string tempstr(((Fl_Float_Input *)o)->value());
-	((ImpressionistUI*)(o->user_data()))->conv00 = std::stof(tempstr);
+	ImpressionistUI *pUI = ((ImpressionistUI*)(o->user_data()));
+
+	//create the convolution dialog
+	pUI->m_convolutionDialog = new Fl_Window(400, 325, "Make your OWN convolution");
+	pUI->m_normalizeConvolutionButton = new Fl_Button(10, 250, 100, 30, "Normalize");
+	pUI->m_normalizeConvolutionButton->callback(cb_normalize_convolution);
+	
+	pUI->m_filterParameters = new double*[pUI->m_numFilterRows];
+	for (int row = 0; row < pUI->m_numFilterRows; row++) {
+		pUI->m_filterParameters[row] = new double[pUI->m_numFilterCols];
+	}
+
+	pUI->m_convolutionDialog->end();
+	pUI->m_convolutionDialog->show();
 }
 
-void ImpressionistUI::cb_conv01changes(Fl_Widget * o, void * v)
-{
 
-	std::string tempstr(((Fl_Float_Input *)o)->value());
-	((ImpressionistUI*)(o->user_data()))->conv01 = std::stof(tempstr);
-}
-
-void ImpressionistUI::cb_conv02changes(Fl_Widget * o, void * v)
-{
-	std::string tempstr(((Fl_Float_Input *)o)->value());
-	((ImpressionistUI*)(o->user_data()))->conv02 = std::stof(tempstr);
-}
-
-void ImpressionistUI::cb_conv10changes(Fl_Widget * o, void * v)
-{
-	std::string tempstr(((Fl_Float_Input *)o)->value());
-	((ImpressionistUI*)(o->user_data()))->conv10 = std::stof(tempstr);
-}
-
-void ImpressionistUI::cb_conv11changes(Fl_Widget * o, void * v)
-{
-	std::string tempstr(((Fl_Float_Input *)o)->value());
-	((ImpressionistUI*)(o->user_data()))->conv11 = std::stof(tempstr);
-}
-
-void ImpressionistUI::cb_conv12changes(Fl_Widget * o, void * v)
-{
-	std::string tempstr(((Fl_Float_Input *)o)->value());
-	((ImpressionistUI*)(o->user_data()))->conv12 = std::stof(tempstr);
-}
-
-void ImpressionistUI::cb_conv20changes(Fl_Widget * o, void * v)
-{
-	std::string tempstr(((Fl_Float_Input *)o)->value());
-	((ImpressionistUI*)(o->user_data()))->conv20 = std::stof(tempstr);
-}
-
-void ImpressionistUI::cb_conv21changes(Fl_Widget * o, void * v)
-{
-	std::string tempstr(((Fl_Float_Input *)o)->value());
-	((ImpressionistUI*)(o->user_data()))->conv21 = std::stof(tempstr);
-}
-
-void ImpressionistUI::cb_conv22changes(Fl_Widget * o, void * v)
-{
-	std::string tempstr(((Fl_Float_Input *)o)->value());
-	((ImpressionistUI*)(o->user_data()))->conv22 = std::stof(tempstr);
-}
 
 void ImpressionistUI::cb_normalize_convolution(Fl_Widget * o, void * v)
 {
@@ -564,6 +529,19 @@ void ImpressionistUI::cb_normalize_convolution(Fl_Widget * o, void * v)
 	}
 	fl_message("Impressionist FLTK version for CS341, Spring 2002");
 	
+}
+void ImpressionistUI::cb_filter_numRows_changes(Fl_Widget * o, void * v)
+{
+	
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->m_numFilterRows = std::stof(tempstr);
+
+}
+void ImpressionistUI::cb_filter_numCols_changes(Fl_Widget * o, void * v)
+{
+	std::string tempstr(((Fl_Float_Input *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->m_numFilterCols = std::stof(tempstr);
+
 }
 //---------------------------------- per instance functions --------------------------------------
 
@@ -834,6 +812,8 @@ ImpressionistUI::ImpressionistUI() {
 	m_blueValue = 1.00;
 	m_edgeClipping = true;
 	m_anotherGradient = false;
+	m_numFilterRows = 0;
+	m_numFilterCols = 0;
 
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
@@ -1009,47 +989,27 @@ ImpressionistUI::ImpressionistUI() {
 
 
 	//construct the customized convolution dialog one-by-one
-	m_convolutionDialog = new Fl_Window(400, 325, "Make your OWN convolution");
-	
-	conv00 = 0.0;
-	m_convolution00 = new Fl_Float_Input(10, 200, 60, 30, "");
-	m_convolution00->user_data((void*)(this));	// record self to be used by static callback functions
-	m_convolution00->callback(cb_conv00changes);
-	conv01 = 0.0;
-	m_convolution01 = new Fl_Float_Input(80, 200, 60, 30, "");
-	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
-	m_convolution01->callback(cb_conv01changes);
-	conv02 = 0.0;
-	m_convolution01 = new Fl_Float_Input(150, 200, 60, 30, "");
-	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
-	m_convolution01->callback(cb_conv02changes);
-	conv10 = 0.0;
-	m_convolution01 = new Fl_Float_Input(10, 160, 60, 30, "");
-	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
-	m_convolution01->callback(cb_conv10changes);
-	conv11 = 1.0;
-	m_convolution01 = new Fl_Float_Input(80, 160, 60, 30, "");
-	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
-	m_convolution01->callback(cb_conv11changes);
-	conv12 = 0.0;
-	m_convolution01 = new Fl_Float_Input(150, 160, 60, 30, "");
-	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
-	m_convolution01->callback(cb_conv12changes);
-	conv20 = 0.0;
-	m_convolution01 = new Fl_Float_Input(10, 120, 60, 30, "");
-	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
-	m_convolution01->callback(cb_conv20changes);
-	conv21 = 0.0;
-	m_convolution01 = new Fl_Float_Input(80, 120, 60, 30, "");
-	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
-	m_convolution01->callback(cb_conv21changes);
-	conv22 = 0.0;
-	m_convolution01 = new Fl_Float_Input(150, 120, 60, 30, "");
-	m_convolution01->user_data((void*)(this));	// record self to be used by static callback functions
-	m_convolution01->callback(cb_conv22changes);
 
-	m_normalizeConvolutionButton = new Fl_Button(10, 250, 100, 30, "Normalize");
-	m_normalizeConvolutionButton->callback(cb_normalize_convolution);
-	m_convolutionDialog->end();
+	
+
+
+
+
+	//the window which asks for filter size
+	m_askFilterSize = new Fl_Window(300, 100, "Input the size");
+
+	m_filterSizex = new Fl_Float_Input(40, 10, 60, 30, "Rows");
+	m_filterSizex->user_data((void*)(this));
+	m_filterSizex->callback(cb_filter_numRows_changes);
+
+	m_filterSizey = new Fl_Float_Input(150, 10, 60, 30, "Cols");
+	m_filterSizey->user_data((void*)(this));
+	m_filterSizey->callback(cb_filter_numCols_changes);
+
+	m_confirmFilterSize = new Fl_Button(40, 50, 60, 30, "Confirm");
+	m_confirmFilterSize->user_data((void*)(this));
+	m_confirmFilterSize->callback(cb_confirmFilterSize);
+
+	m_askFilterSize->end();
 
 }

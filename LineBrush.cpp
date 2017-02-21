@@ -43,7 +43,8 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	int lineLength = pDoc->getSize(); // get the line length from UI size
 	int lineWidth = pDoc->getLineWidth();
 
-	int lineAngle = pDoc->getLineAngle(); // Slider or Right Mouse
+	float lineAngle = pDoc->getLineAngle() * M_PI / 180; // Slider or Right Mouse, IN RADIANS
+
 	int lineType = pDoc->getStrokeDirection();
 	switch (lineType)
 	{
@@ -61,28 +62,70 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	default:
 		break;
 	}
-
-	glPushMatrix();
-	glTranslated(target.x, target.y, 0);
-	//glRotated(lineAngle, 0.0, 0.0, 1.0);
 	
+	/*
+		glPushMatrix();
+	glTranslated(target.x, target.y, 0);
+	glRotated(lineAngle, 0.0, 0.0, 1.0);
+
 	glBegin(GL_POLYGON);
-		SetColor(source);
-		int xUpperBound = pDoc->m_nPaintWidth;
-		int yLowerBound = pDoc->m_pUI->m_paintView->getWindowHeight() - pDoc->m_nPaintHeight;
-		//if (target.x + (double)-lineLength / 2 <= xUpperBound && target.y + (double)-lineWidth / 2 >= yLowerBound)
-			glVertex3d((double)-lineLength / 2, (double)-lineWidth / 2, 0.0);
-		//std::cout << "point at" << target.x + (double)-lineLength / 2 << " " << target.y + (double)-lineWidth / 2 << std::endl;
-		//if (target.x + (double)lineLength / 2 <= xUpperBound && target.y + (double)-lineWidth / 2 >= yLowerBound)
-			glVertex3d((double)lineLength / 2, (double)-lineWidth / 2, 0.0);
-		//if (target.x + (double)lineLength / 2 <= xUpperBound && target.y + (double)lineWidth / 2 >= yLowerBound)
-			glVertex3d((double)lineLength / 2, (double)lineWidth / 2, 0.0);
-		//if (target.x + (double)-lineLength / 2 <= xUpperBound && target.y + (double)lineWidth / 2 >= yLowerBound)
-			glVertex3d((double)-lineLength / 2, (double)lineWidth / 2, 0.0);
+	SetColor(source);
+	int xUpperBound = pDoc->m_nPaintWidth;
+	int yLowerBound = pDoc->m_pUI->m_paintView->getWindowHeight() - pDoc->m_nPaintHeight;
+	//if (target.x + (double)-lineLength / 2 <= xUpperBound && target.y + (double)-lineWidth / 2 >= yLowerBound)
+	glVertex3d((double)-lineLength / 2, (double)-lineWidth / 2, 0.0);
+	//if (target.x + (double)lineLength / 2 <= xUpperBound && target.y + (double)-lineWidth / 2 >= yLowerBound)
+	glVertex3d((double)lineLength / 2, (double)-lineWidth / 2, 0.0);
+	//if (target.x + (double)lineLength / 2 <= xUpperBound && target.y + (double)lineWidth / 2 >= yLowerBound)
+	glVertex3d((double)lineLength / 2, (double)lineWidth / 2, 0.0);
+	//if (target.x + (double)-lineLength / 2 <= xUpperBound && target.y + (double)lineWidth / 2 >= yLowerBound)
+	glVertex3d((double)-lineLength / 2, (double)lineWidth / 2, 0.0);
 	glEnd();
 
 	//glTranslated(-target.x, -target.y, 0.0);
 	glPopMatrix();
+	*/
+
+	
+
+
+		int xUpperBound = pDoc->m_nPaintWidth;
+	int yLowerBound = pDoc->m_pUI->m_paintView->getWindowHeight() - pDoc->m_nPaintHeight;
+
+	glLineWidth((float)lineWidth);
+	glBegin(GL_LINES);
+	SetColor(source);
+	std::cout << lineAngle << std::endl;
+	int x1 = (lineLength / 2) * cos(lineAngle) + target.x;
+	int y1 = (lineLength / 2)*sin(lineAngle) + target.y;
+	int x2 = -(lineLength / 2) * cos(lineAngle) + target.x;
+	int y2 = -(lineLength / 2)*sin(lineAngle) + target.y;
+	
+	
+	if (y1 < yLowerBound) {
+		float xl = (float)(target.x - x1)* (float)(yLowerBound - y1) / (float)(target.y - y1);
+		int newXoffset = (target.x - x1 - xl);
+		y1 = yLowerBound;
+		x1 = target.x - newXoffset;
+	}
+	if (y2 < yLowerBound) {
+		float xl =(float)(target.x-x2)* (float)(yLowerBound - y2) / (float)(target.y - y2);
+		int newXoffset = (target.x - x2 - xl);
+		y2 = yLowerBound;
+		x2 = target.x - newXoffset;
+	}
+
+	if (x1 > xUpperBound) {
+		float yl = (float)(y1-target.y)*(float)(x1 - xUpperBound) / (float)(x1 - target.x);
+		int newyOffset = (y1 - target.y - yl);
+		y1 = target.y + newyOffset;
+		x1 = xUpperBound;
+	}
+
+
+	glVertex2i(x1, y1);
+	glVertex2i(x2, y2);
+	glEnd();
 
 	lastPos = source;
 }

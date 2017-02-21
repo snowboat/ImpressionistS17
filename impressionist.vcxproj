@@ -181,6 +181,7 @@
     <ClInclude Include="SobelFilter.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
     <None Include="impressionist.dsp" />
     <None Include="impressionist.opt" />
     <None Include="impressionist.VC.db" />
