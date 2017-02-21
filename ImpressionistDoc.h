@@ -62,7 +62,7 @@ public:
 
 	// Bitmaps for original image and painting.
 	unsigned char*	m_ucBitmap;//original image
-	unsigned char*  backupBitmap;	//immutable bitmap which records the original stagte of left image
+	unsigned char*  backupBitmap;	//immutable bitmap which records the original stage of left image
 	unsigned char*	m_ucPainting;//painting image
 	unsigned char*  m_undoImage;
 	unsigned char*  m_alphaMappedValues; //the alpha value of each pixel in the alphamapped brush (in 0-255 scale)

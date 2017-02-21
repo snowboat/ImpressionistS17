@@ -153,7 +153,9 @@ void PaintView::draw()
 		case RIGHT_MOUSE_DRAG:
 			if (m_pDoc->brushType == BRUSH_LINES || m_pDoc->brushType == BRUSH_SCATTERED_LINES) {
 				RestoreContent();
+				glLineWidth(1.0f);
 				glBegin(GL_LINE_STRIP);
+				
 					glColor3ub(255, 0, 0);
 					glVertex3d(startPoint.x, startPoint.y, 0.0);
 					glVertex3d(target.x, target.y, 0.0);
