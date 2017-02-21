@@ -18,7 +18,6 @@ public:
 	ImpressionistDoc();
 
 	void	setUI(ImpressionistUI* ui);		// Assign the UI to use
-	void    setFilter(SobelFilter* filter); // Assign the filter to use
 
 	int		loadImage(char *iname);			// called by the UI to load image
 	int		saveImage(char *iname);			// called by the UI to save image
@@ -66,11 +65,13 @@ public:
 	unsigned char*  m_ucOriginalBitmap; // original image
 	unsigned char*  backupBitmap;	//immutable bitmap which records the original stagte of left image
 
-	unsigned char*	m_ucPainting;//painting image
+	unsigned char*	m_ucPainting;// painting image
 	unsigned char*  m_undoImage;
 	unsigned char*  m_alphaMappedValues; //the alpha value of each pixel in the alphamapped brush (in 0-255 scale)
 
 	unsigned char*  m_ucEdgeMap;
+	unsigned char*  m_ucEdge; 
+	unsigned char*  m_ucGradient;
 	unsigned char*  m_ucAnotherBitmap;
 
 	// The current active brush.
@@ -83,9 +84,6 @@ public:
 
 	ImpressionistUI*	m_pUI;
 
-	// set the filter to use
-	SobelFilter* m_sobelFilter;
-
 	// Operations
 public:
 	// Get the color of the original picture at the specified coord
@@ -96,6 +94,18 @@ public:
 	GLubyte* GetAnotherPixel(int x, int y);
 	// Get the color of the another picture at the specified point	
 	GLubyte* GetAnotherPixel(const Point p);
+
+	int getGreyscale(const Point source);
+	int getGreyscale(int x, int y);
+	int getAnotherGreyscale(const Point source);
+
+	int getGradientAngle(const Point source);
+	int getAnotherGradientAngle(const Point source);
+
+	void getEdgeMapAt(int threshold);
+	int getGradient(int x, int y);
+
+	void calculateGradient();
 
 private:
 	char			m_imageName[256];

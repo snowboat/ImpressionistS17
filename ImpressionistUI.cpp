@@ -254,8 +254,13 @@ void ImpressionistUI::cb_save_image(Fl_Menu_* o, void* v)
 
 void ImpressionistUI::cb_display_original(Fl_Menu_* o, void* v)
 {
-	whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucOriginalBitmap;
-	whoami(o)->m_origView->refresh();
+	if (whoami(o)->getDocument()->m_ucOriginalBitmap) {
+		whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucOriginalBitmap;
+		whoami(o)->m_origView->refresh();
+	}
+	else {
+		fl_alert("There is no image!");
+	}
 }
 
 void ImpressionistUI::cb_display_edge(Fl_Menu_* o, void* v)
@@ -279,7 +284,6 @@ void ImpressionistUI::cb_display_another(Fl_Menu_* o, void* v)
 	else {
 		fl_alert("There is no another image!");
 	}
-	
 }
 
 //-------------------------------------------------------------
@@ -414,10 +418,13 @@ void ImpressionistUI::cb_paintEdgeMap(Fl_Widget* o, void* v)
 {
 	ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
 
-	if (pDoc->m_ucOriginalBitmap)
-		pDoc->m_sobelFilter->getEdgeMapAt(((ImpressionistUI*)(o->user_data()))->m_edgeThreshold);
+	if (pDoc->m_ucOriginalBitmap) {
+		pDoc->getEdgeMapAt(((ImpressionistUI*)(o->user_data()))->m_edgeThreshold);
+	}	
 	else
+	{
 		fl_alert("Please load the image!");
+	}
 }
 
 //swap the painting&original image
