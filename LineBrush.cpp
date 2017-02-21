@@ -8,6 +8,7 @@
 #include "impressionistUI.h"
 #include "LineBrush.h"
 #include <math.h>
+#include <iostream>
 
 extern float frand();
 
@@ -63,14 +64,21 @@ void LineBrush::BrushMove(const Point source, const Point target)
 
 	glPushMatrix();
 	glTranslated(target.x, target.y, 0);
-	glRotated(lineAngle, 0.0, 0.0, 1.0);
+	//glRotated(lineAngle, 0.0, 0.0, 1.0);
 	
 	glBegin(GL_POLYGON);
 		SetColor(source);
-		glVertex3d((double)-lineLength / 2, (double)-lineWidth / 2, 0.0);
-		glVertex3d((double)lineLength / 2, (double)-lineWidth / 2, 0.0);
-		glVertex3d((double)lineLength / 2, (double)lineWidth / 2, 0.0);
-		glVertex3d((double)-lineLength / 2, (double)lineWidth / 2, 0.0);
+		int xUpperBound = pDoc->m_nPaintWidth;
+		int yLowerBound = pDoc->m_pUI->m_paintView->getWindowHeight() - pDoc->m_nPaintHeight;
+		//if (target.x + (double)-lineLength / 2 <= xUpperBound && target.y + (double)-lineWidth / 2 >= yLowerBound)
+			glVertex3d((double)-lineLength / 2, (double)-lineWidth / 2, 0.0);
+		//std::cout << "point at" << target.x + (double)-lineLength / 2 << " " << target.y + (double)-lineWidth / 2 << std::endl;
+		//if (target.x + (double)lineLength / 2 <= xUpperBound && target.y + (double)-lineWidth / 2 >= yLowerBound)
+			glVertex3d((double)lineLength / 2, (double)-lineWidth / 2, 0.0);
+		//if (target.x + (double)lineLength / 2 <= xUpperBound && target.y + (double)lineWidth / 2 >= yLowerBound)
+			glVertex3d((double)lineLength / 2, (double)lineWidth / 2, 0.0);
+		//if (target.x + (double)-lineLength / 2 <= xUpperBound && target.y + (double)lineWidth / 2 >= yLowerBound)
+			glVertex3d((double)-lineLength / 2, (double)lineWidth / 2, 0.0);
 	glEnd();
 
 	//glTranslated(-target.x, -target.y, 0.0);

@@ -496,7 +496,6 @@ void ImpressionistUI::cb_conv22changes(Fl_Widget * o, void * v)
 	((ImpressionistUI*)(o->user_data()))->conv22 = std::stof(tempstr);
 }
 
-}
 void ImpressionistUI::cb_normalize_convolution(Fl_Widget * o, void * v)
 {
 	//double sum = conv00 + conv01 + conv02 + conv10 + conv11 + conv12 + conv20 + conv21 + conv22;

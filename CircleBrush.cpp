@@ -44,7 +44,13 @@ void CircleBrush::BrushMove(const Point source, const Point target)
 	SetColor(source);
 	double radius =  pDoc->getSize()/2;
 	for (double i = 0; i < 2 * M_PI; i += M_PI / 36) {
-		glVertex2d(cos(i)*radius + target.x, sin(i)*radius + target.y);
+		int xToDraw = (int)(cos(i)*radius + target.x);
+		int xUpperBound = pDoc->m_nPaintWidth;
+		int yToDraw = (int)(sin(i)*radius + target.y);
+		int yLowerBound = pDoc->m_pUI->m_paintView->getWindowHeight() - pDoc->m_nPaintHeight;
+		
+		//if x is to large or y is too small, then mark the polygon vertex on the nearest boundary point.
+		glVertex2i(min(xToDraw,xUpperBound), max(yToDraw,yLowerBound));
 	}
 	glEnd();
 }
