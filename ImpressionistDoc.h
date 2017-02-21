@@ -97,7 +97,6 @@ public:
 	// Get the color of the another picture at the specified point	
 	GLubyte* GetAnotherPixel(const Point p);
 
-
 private:
 	char			m_imageName[256];
 

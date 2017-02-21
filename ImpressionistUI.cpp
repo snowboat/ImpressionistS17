@@ -412,7 +412,12 @@ void ImpressionistUI::cb_edgeThresholdChange(Fl_Widget* o, void* v)
 // paint the edge map on original view
 void ImpressionistUI::cb_paintEdgeMap(Fl_Widget* o, void* v)
 {
-	cout << "paint edge" << endl;
+	ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+
+	if (pDoc->m_ucOriginalBitmap)
+		pDoc->m_sobelFilter->getEdgeMapAt(((ImpressionistUI*)(o->user_data()))->m_edgeThreshold);
+	else
+		fl_alert("Please load the image!");
 }
 
 //swap the painting&original image
@@ -432,6 +437,9 @@ void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
 		//update the undo bitmap to be null(nothing to undo)
 		delete[] m_pDoc->m_undoImage;
 		m_pDoc->m_undoImage = NULL;
+
+		// update the main view
+		whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucOriginalBitmap;
 
 		//redraw the two view
 		whoami(o)->m_origView->refresh();

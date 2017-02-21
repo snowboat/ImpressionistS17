@@ -472,10 +472,7 @@ int ImpressionistDoc::loadEdgeImage(char * iname)
 	}
 
 	// release the old edge map
-	if (m_ucEdgeMap) {
-		delete[] m_ucEdgeMap;
-		m_ucAnotherBitmap = NULL;
-	}
+	if (m_ucEdgeMap) delete[] m_ucEdgeMap;
 
 	m_ucEdgeMap = data;
 	m_ucBitmap = m_ucEdgeMap;
@@ -590,5 +587,3 @@ GLubyte* ImpressionistDoc::GetAnotherPixel(const Point p)
 {
 	return GetAnotherPixel(p.x, p.y);
 }
-
-
