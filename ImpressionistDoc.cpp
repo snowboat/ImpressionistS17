@@ -45,7 +45,6 @@ ImpressionistDoc::ImpressionistDoc()
 	strokeDirection = 1;
 	brushType = BRUSH_POINTS;
 
-
 	// create one instance of each brush
 	ImpBrush::c_nBrushCount = NUM_BRUSH_TYPE;
 	ImpBrush::c_pBrushes = new ImpBrush*[ImpBrush::c_nBrushCount];
@@ -121,20 +120,24 @@ void ImpressionistDoc::setBrushType(int type)
 		m_pUI->m_strokeDirectionChoice->activate();
 		m_pUI->m_LineAngleSlider->activate();
 		m_pUI->m_LineWidthSlider->activate();
+		m_pUI->m_EdgeClippingButton->activate();
+		m_pUI->m_AnotherGradientButton->activate();
 	}
 	else {
 		m_pUI->m_strokeDirectionChoice->deactivate();
 		m_pUI->m_LineAngleSlider->deactivate();
 		m_pUI->m_LineWidthSlider->deactivate();
+		m_pUI->m_EdgeClippingButton->deactivate();
+		m_pUI->m_AnotherGradientButton->deactivate();
 	}
 }
 
-//change the stroke direction
+// change the stroke direction
 void ImpressionistDoc::setStrokeDirection(int type) {
 	strokeDirection = type;
 }
 
-//get the stroke direction
+// get the stroke direction
 int ImpressionistDoc::getStrokeDirection() {
 	return strokeDirection;
 }
@@ -199,6 +202,17 @@ int ImpressionistDoc::getLineAngle()
 double ImpressionistDoc::getAlpha()
 {
 	return  m_pUI->getAlpha();
+}
+
+// get the flag of edge clipping
+bool ImpressionistDoc::getFlagOfEdgeClipping()
+{
+	return m_pUI->getEdgeClipping();
+}
+
+// get the flag of another gradient
+bool ImpressionistDoc::getFlagOfAnotherGradient() {
+	return m_pUI->getAnotherGradient();
 }
 
 //---------------------------------------------------------
@@ -375,10 +389,7 @@ int ImpressionistDoc::loadMuralImage(char * iname)
 		m_undoImage = NULL;
 	}
 
-
-
-
-	////update m_ucBitmap
+	//update m_ucBitmap
 	m_ucBitmap = data;
 
 	//do deep copy to initialize backupbitmap
@@ -433,9 +444,6 @@ int ImpressionistDoc::loadAlphaMappedImage(char * iname)
 		m_alphaMappedValues[i] = (unsigned char)((int)data[3 * i] * 0.299 + (int)data[3 * i + 1] * 0.587 + (int)data[3 * i + 2] * 0.114);
 	}
 
-
-
-
 	////m_nPainting is not changed
 
 	//m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
@@ -451,6 +459,34 @@ int ImpressionistDoc::loadAlphaMappedImage(char * iname)
 	//m_pUI->m_paintView->resizeWindow(width, height);
 	//m_pUI->m_paintView->refresh();
 
+
+	return 1;
+
+}
+
+int ImpressionistDoc::loadAnotherImage(char * iname)
+{
+	// try to open the image to read
+	unsigned char*	data;	//data is the another loaded image
+	int				width, height;	//width, height are the attributes of the another loaded image
+
+	if ((data = readBMP(iname, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
+
+	if (width != m_nPaintWidth || height != m_nPaintHeight) {
+		fl_alert("Dimensions of the another image should be same as the current image.");
+		return 0;
+	}
+
+	if (m_ucAnotherBitmap) {
+		delete[] m_ucAnotherBitmap;
+		m_ucAnotherBitmap = NULL;
+	}
+
+	m_ucAnotherBitmap = data;
 
 	return 1;
 
@@ -498,6 +534,21 @@ GLubyte* ImpressionistDoc::GetOriginalPixel(int x, int y)
 	return (GLubyte*)(m_ucBitmap + 3 * (y*m_nWidth + x));
 }
 
+GLubyte* ImpressionistDoc::GetAnotherPixel(int x, int y)
+{
+	if (x < 0)
+		x = 0;
+	else if (x >= m_nWidth)
+		x = m_nWidth - 1;
+
+	if (y < 0)
+		y = 0;
+	else if (y >= m_nHeight)
+		y = m_nHeight - 1;
+
+	return (GLubyte*)(m_ucAnotherBitmap + 3 * (y*m_nWidth + x));
+}
+
 //----------------------------------------------------------------
 // Get the color of the pixel in the original image at point p
 //----------------------------------------------------------------
@@ -505,4 +556,10 @@ GLubyte* ImpressionistDoc::GetOriginalPixel(const Point p)
 {
 	return GetOriginalPixel(p.x, p.y);
 }
+
+GLubyte* ImpressionistDoc::GetAnotherPixel(const Point p)
+{
+	return GetAnotherPixel(p.x, p.y);
+}
+
 

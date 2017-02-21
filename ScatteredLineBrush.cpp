@@ -57,7 +57,12 @@ void ScatteredLineBrush::BrushMove(const Point source, const Point target)
 		switch (lineType)
 		{
 		case 2: // Gradient
-			lineAngle = pDoc->m_sobelFilter->getGradientAngle(lineCtrlSource) + 90;
+			if (pDoc->getFlagOfAnotherGradient()) {
+				lineAngle = pDoc->m_sobelFilter->getAnotherGradientAngle(source) + 90;
+			}
+			else {
+				lineAngle = pDoc->m_sobelFilter->getGradientAngle(source) + 90;
+			}
 			break;
 		case 3: // Brush Direction
 			lineAngle = (int)(atan2((source.y - lastPosition.y), (source.x - lastPosition.x)) / M_PI * 180);

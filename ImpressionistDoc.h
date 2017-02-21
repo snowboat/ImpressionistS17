@@ -22,9 +22,10 @@ public:
 
 	int		loadImage(char *iname);			// called by the UI to load image
 	int		saveImage(char *iname);			// called by the UI to save image
-	int		loadDissolveImage(char* iname);	//load the dissolve image (1 bell)
-	int		loadMuralImage(char* iname);	//load the mural image (1.5 bells)
-	int		loadAlphaMappedImage(char* iname);	//load the alpha image, then store its alpha values into m_alphaMappedValues
+	int		loadDissolveImage(char* iname);	// load the dissolve image (1 bell)
+	int		loadMuralImage(char* iname);	// load the mural image (1.5 bells)
+	int		loadAlphaMappedImage(char* iname);	// load the alpha image, then store its alpha values into m_alphaMappedValues
+	int     loadAnotherImage(char* iname); // load another image for gradient painting (1.5 bells)
 
 
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
@@ -32,10 +33,12 @@ public:
 	int		getSize();						// get the UI size
 	int     getLineWidth();
 	int     getLineAngle();
-	double 	getAlpha();					//return the alpha as double for setcolor() to use
+	double 	getAlpha();					// return the alpha as double for setcolor() to use
 	char*	getImageName();					// get the current image name
 	void 	setStrokeDirection(int type);
 	int     getStrokeDirection();
+	bool    getFlagOfEdgeClipping();
+	bool    getFlagOfAnotherGradient();
 
 	//apply the color manipulation on original image
 	void applyManipulation();
@@ -66,7 +69,6 @@ public:
 	unsigned char*  m_ucEdgeMap;
 	unsigned char*  m_ucAnotherBitmap;
 
-
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;
 	// Size of the brush.
@@ -86,6 +88,10 @@ public:
 	GLubyte* GetOriginalPixel(int x, int y);
 	// Get the color of the original picture at the specified point	
 	GLubyte* GetOriginalPixel(const Point p);
+	// Get the color of the another picture at the specified coord
+	GLubyte* GetAnotherPixel(int x, int y);
+	// Get the color of the another picture at the specified point	
+	GLubyte* GetAnotherPixel(const Point p);
 
 
 private:

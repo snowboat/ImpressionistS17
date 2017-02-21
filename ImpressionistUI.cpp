@@ -198,7 +198,6 @@ void ImpressionistUI::cb_load_dissolve_image(Fl_Menu_ * o, void * v)
 
 void ImpressionistUI::cb_load_mural_image(Fl_Menu_ * o, void * v)
 {
-
 	ImpressionistDoc *pDoc = whoami(o)->getDocument();
 
 	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
@@ -216,6 +215,17 @@ void ImpressionistUI::cb_load_alpha_mapped_image(Fl_Menu_ * o, void * v)
 		pDoc->loadAlphaMappedImage(newfile);
 	}
 }
+
+void ImpressionistUI::cb_load_another_image(Fl_Menu_ * o, void * v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL) {
+		pDoc->loadAnotherImage(newfile);
+	}
+}
+
 
 
 //------------------------------------------------------------------
@@ -273,7 +283,7 @@ void ImpressionistUI::cb_exit(Fl_Menu_* o, void* v)
 //-----------------------------------------------------------
 void ImpressionistUI::cb_about(Fl_Menu_* o, void* v)
 {
-	fl_message("Impressionist FLTK version for CS341, Spring 2002");
+	fl_message("Impressionist FLTK version for COMP4411, Spring 2017 - HE, ZHOU");
 }
 
 //------- UI should keep track of the current for all the controls for answering the query from Doc ---------
@@ -311,7 +321,7 @@ void ImpressionistUI::cb_clear_canvas_button(Fl_Widget* o, void* v)
 	pDoc->clearCanvas();
 }
 
-//callback function of stroke direction change
+// callback function of stroke direction change
 void ImpressionistUI::cb_setStrokeDirection(Fl_Widget* o, void* v) {
 	ImpressionistUI* pUI = ((ImpressionistUI *)(o->user_data()));
 	ImpressionistDoc* pDoc = pUI->getDocument();
@@ -332,22 +342,21 @@ void ImpressionistUI::cb_sizeSlides(Fl_Widget* o, void* v)
 	((ImpressionistUI*)(o->user_data()))->m_nSize = int(((Fl_Slider *)o)->value());
 }
 
-//change line width when slider changes
+// change line width when slider changes
 void ImpressionistUI::cb_lineWidthChanges(Fl_Widget* o, void* v) {
 	((ImpressionistUI*)(o->user_data()))->m_lineWidth = int(((Fl_Slider *)o)->value());
 }
 
-//change line angle when slider slides
+// change line angle when slider slides
 void ImpressionistUI::cb_lineAngleChanges(Fl_Widget* o, void* v) {
 	((ImpressionistUI*)(o->user_data()))->m_lineAngle = int(((Fl_Slider *)o)->value());
 }
 
-//Change the ALPHA value when the slider changes.
+// change the ALPHA value when the slider changes.
 void ImpressionistUI::cb_alphaSlides(Fl_Widget * o, void * v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_alphaValue = float(((Fl_Slider *)o)->value());
 }
-
 
 //swap the painting&original image
 void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
@@ -382,19 +391,19 @@ void ImpressionistUI::cb_manipulate_color(Fl_Menu_ * o, void * v)
 void ImpressionistUI::cb_redSlides(Fl_Widget * o, void * v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_redValue = float(((Fl_Slider *)o)->value());
-
 }
 
 void ImpressionistUI::cb_greenSlides(Fl_Widget * o, void * v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_greenValue = float(((Fl_Slider *)o)->value());
-
 }
+
 void ImpressionistUI::cb_blueSlides(Fl_Widget * o, void * v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_blueValue = float(((Fl_Slider *)o)->value());
 
 }
+
 void ImpressionistUI::cb_manipulate_color_button(Fl_Widget * o, void * v)
 {
 	((ImpressionistUI*)(o->user_data()))->getDocument()->applyManipulation();
@@ -404,57 +413,88 @@ void ImpressionistUI::cb_undo(Fl_Menu_ * o, void * v)
 {
 	whoami(o)->getDocument()->undo();
 }
+
+void ImpressionistUI::cb_edgeClipping(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_edgeClipping = bool(((Fl_Light_Button *)o)->value());
+}
+
+void ImpressionistUI::cb_anotherGradient(Fl_Widget* o, void* v)
+{
+	ImpressionistUI *pUI = ((ImpressionistUI*)(o->user_data()));
+
+	if (pUI->m_anotherGradient == true)
+		pUI->m_anotherGradient = false;
+	else {
+		if (pUI->getDocument()->m_ucAnotherBitmap) {
+			pUI->m_anotherGradient = true;
+		}
+		else {
+			fl_alert("Please load another image!");
+			pUI->m_AnotherGradientButton->value(false);
+		}
+	}
+}
+
 void ImpressionistUI::cb_customize_convolution(Fl_Menu_ * o, void * v)
 {
 	whoami(o)->m_convolutionDialog->show();
 }
+
 void ImpressionistUI::cb_conv00changes(Fl_Widget * o, void * v)
 {
 	std::string tempstr(((Fl_Float_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->conv00 = std::stof(tempstr);
-
 }
+
 void ImpressionistUI::cb_conv01changes(Fl_Widget * o, void * v)
 {
 
 	std::string tempstr(((Fl_Float_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->conv01 = std::stof(tempstr);
 }
+
 void ImpressionistUI::cb_conv02changes(Fl_Widget * o, void * v)
 {
 	std::string tempstr(((Fl_Float_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->conv02 = std::stof(tempstr);
 }
+
 void ImpressionistUI::cb_conv10changes(Fl_Widget * o, void * v)
 {
 	std::string tempstr(((Fl_Float_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->conv10 = std::stof(tempstr);
 }
+
 void ImpressionistUI::cb_conv11changes(Fl_Widget * o, void * v)
 {
-
 	std::string tempstr(((Fl_Float_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->conv11 = std::stof(tempstr);
 }
+
 void ImpressionistUI::cb_conv12changes(Fl_Widget * o, void * v)
 {
 	std::string tempstr(((Fl_Float_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->conv12 = std::stof(tempstr);
 }
+
 void ImpressionistUI::cb_conv20changes(Fl_Widget * o, void * v)
 {
 	std::string tempstr(((Fl_Float_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->conv20 = std::stof(tempstr);
 }
+
 void ImpressionistUI::cb_conv21changes(Fl_Widget * o, void * v)
 {
 	std::string tempstr(((Fl_Float_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->conv21 = std::stof(tempstr);
 }
+
 void ImpressionistUI::cb_conv22changes(Fl_Widget * o, void * v)
 {
 	std::string tempstr(((Fl_Float_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->conv22 = std::stof(tempstr);
+}
 
 }
 void ImpressionistUI::cb_normalize_convolution(Fl_Widget * o, void * v)
@@ -602,36 +642,58 @@ float ImpressionistUI::getBlue()
 {
 	return m_blueValue;
 }
+
+// get the edge clipping
+bool ImpressionistUI::getEdgeClipping()
+{
+	return m_edgeClipping;
+}
+
+
+// get the another gradient
+bool ImpressionistUI::getAnotherGradient() {
+	return m_anotherGradient;
+}
+
+
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
 	{ "&Load Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
-	{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
-	{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
-	{ "&Manipulate Color...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_manipulate_color },
-	{ "&Dissolve Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_dissolve_image },
-	{ "&Load Mural Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_mural_image },
-	{ "&Load Alpha Mapped Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_alpha_mapped_image },
-	{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
-
-	{ "&Colors...",	FL_ALT + 'k', (Fl_Callback *)ImpressionistUI::cb_brushes },
-	{ "&Paintly", FL_ALT + 'p', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
-
+	{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image, 0, FL_MENU_DIVIDER },
+	
+	{ "&Load Mural Image...",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_load_mural_image },
+	{ "&Load Alpha Mapped Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_alpha_mapped_image },
+	{ "&Load Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_load_image },
+	{ "&Load Another Image...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_load_another_image, 0, FL_MENU_DIVIDER },
 
 	{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 	{ 0 },
 
+	{ "&Edit",		0, 0, 0, FL_SUBMENU },
+	{ "&Undo...",	FL_ALT + 'u', (Fl_Callback *)ImpressionistUI::cb_undo },
+	{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
+
+	{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
+	{ "&Manipulate Color...",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_manipulate_color },
+	{ "&Dissolve Image...",	FL_ALT + 'd', (Fl_Callback *)ImpressionistUI::cb_load_dissolve_image },
+	{ "&Customize Convolution...",	FL_ALT + 'v', (Fl_Callback *)ImpressionistUI::cb_customize_convolution },
+	{ "&Swap Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_swap_image, 0, FL_MENU_DIVIDER },
+
+	{ "&Colors...",	FL_ALT + 'k', (Fl_Callback *)ImpressionistUI::cb_brushes },
+	{ "&Paintly", FL_ALT + 'p', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
+	{ 0 },
+
 	{ "&Display",		0, 0, 0, FL_SUBMENU },
-	{ "&Swap Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_swap_image },
-	{ "&Original Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
-	{ "&Edge Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
-	{ "&Another Image...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
+	{ "&Original Image...",	FL_ALT + 'o', (Fl_Callback *)ImpressionistUI::cb_load_image },
+	{ "&Mural Image...",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_save_image },
+	{ "&Alpha Mapped Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_save_image },
+	{ "&Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_save_image },
+	{ "&Another Image...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_save_image },
 	{ 0 },
 
 	{ "&Options",		0, 0, 0, FL_SUBMENU },
-	{ "&Undo...",	FL_ALT + 'u', (Fl_Callback *)ImpressionistUI::cb_undo },
-	{ "&Customize Convolution...",	FL_ALT + 'u', (Fl_Callback *)ImpressionistUI::cb_customize_convolution },
-	{ "&Faster...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
+	{ "&Faster...",	FL_ALT + 'f', (Fl_Callback *)ImpressionistUI::cb_load_image },
 	{ "&Safer...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
 	{ 0 },
 
@@ -704,6 +766,8 @@ ImpressionistUI::ImpressionistUI() {
 	m_redValue = 1.00;
 	m_greenValue = 1.00;
 	m_blueValue = 1.00;
+	m_edgeClipping = true;
+	m_anotherGradient = false;
 
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
@@ -782,6 +846,20 @@ ImpressionistUI::ImpressionistUI() {
 	m_AlphaValueSlider->value(m_alphaValue);
 	m_AlphaValueSlider->align(FL_ALIGN_RIGHT);
 	m_AlphaValueSlider->callback(cb_alphaSlides);
+
+	// edge clipping button
+	m_EdgeClippingButton = new Fl_Light_Button(10, 200, 150, 25, "Edge Clipping");
+	m_EdgeClippingButton->user_data((void*)(this));   // record self to be used by static callback functions
+	m_EdgeClippingButton->value(m_edgeClipping);
+	m_EdgeClippingButton->callback(cb_edgeClipping); 
+	m_EdgeClippingButton->deactivate();
+
+	// another gradient button
+	m_AnotherGradientButton = new Fl_Light_Button(240, 200, 150, 25, "Another Gradient");
+	m_AnotherGradientButton->user_data((void*)(this));   // record self to be used by static callback functions
+	m_AnotherGradientButton->value(m_anotherGradient);
+	m_AnotherGradientButton->callback(cb_anotherGradient);
+	m_AnotherGradientButton->deactivate();
 
 	m_brushDialog->end();
 

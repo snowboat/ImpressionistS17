@@ -19,8 +19,10 @@ public:
 	ImpressionistDoc* GetDocument(void);
 
 	int getGreyscale(const Point source);
+	int getAnotherGreyscale(const Point source);
 
 	int getGradientAngle(const Point source);
+	int getAnotherGradientAngle(const Point source);
 
 
 private:
