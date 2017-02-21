@@ -358,6 +358,24 @@ void ImpressionistUI::cb_alphaSlides(Fl_Widget * o, void * v)
 	((ImpressionistUI*)(o->user_data()))->m_alphaValue = float(((Fl_Slider *)o)->value());
 }
 
+// change the paint spacing when the slider changes.
+void ImpressionistUI::cb_paintSpacingChange(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_paintSpacing = float(((Fl_Slider *)o)->value());
+}
+
+// change the edge threshold when the slider changes.
+void ImpressionistUI::cb_edgeThresholdChange(Fl_Widget* o, void* v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_edgeThreshold = float(((Fl_Slider *)o)->value());
+}
+
+// paint the edge map on original view
+void ImpressionistUI::cb_paintEdgeMap(Fl_Widget* o, void* v)
+{
+	cout << "paint edge" << endl;
+}
+
 //swap the painting&original image
 void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
 {
@@ -381,7 +399,7 @@ void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
 		whoami(o)->m_paintView->refresh();
 
 	}
-	}
+}
 
 void ImpressionistUI::cb_manipulate_color(Fl_Menu_ * o, void * v)
 {
@@ -627,6 +645,16 @@ void ImpressionistUI::setAlpha(double alpha)
 		m_AlphaValueSlider->value(m_alphaValue);
 }
 
+int ImpressionistUI::getPaintSpacing()
+{
+	return m_paintSpacing;
+}
+
+int ImpressionistUI::getEdgeThreshold()
+{
+	return m_edgeThreshold;
+}
+
 float ImpressionistUI::getRed()
 {
 	return m_redValue;
@@ -762,6 +790,8 @@ ImpressionistUI::ImpressionistUI() {
 	m_lineWidth = 1;
 	m_lineAngle = 0;
 	m_alphaValue = 1.00;
+	m_paintSpacing = 4;
+	m_edgeThreshold = 200;
 	m_redValue = 1.00;
 	m_greenValue = 1.00;
 	m_blueValue = 1.00;
@@ -859,6 +889,37 @@ ImpressionistUI::ImpressionistUI() {
 	m_AnotherGradientButton->value(m_anotherGradient);
 	m_AnotherGradientButton->callback(cb_anotherGradient);
 	m_AnotherGradientButton->deactivate();
+
+	// Add paint space slider
+	m_PaintSpacingSlider = new Fl_Value_Slider(10, 230, 150, 20, "Spacing");
+	m_PaintSpacingSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_PaintSpacingSlider->type(FL_HOR_NICE_SLIDER);
+	m_PaintSpacingSlider->labelfont(FL_COURIER);
+	m_PaintSpacingSlider->labelsize(12);
+	m_PaintSpacingSlider->minimum(1);
+	m_PaintSpacingSlider->maximum(16);
+	m_PaintSpacingSlider->step(1);
+	m_PaintSpacingSlider->value(m_paintSpacing);
+	m_PaintSpacingSlider->align(FL_ALIGN_RIGHT);
+	m_PaintSpacingSlider->callback(cb_paintSpacingChange);
+
+	// Add edge threshold slider
+	m_EdgeThresholdSlider = new Fl_Value_Slider(10, 260, 200, 20, "Edge Threshold");
+	m_EdgeThresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_EdgeThresholdSlider->type(FL_HOR_NICE_SLIDER);
+	m_EdgeThresholdSlider->labelfont(FL_COURIER);
+	m_EdgeThresholdSlider->labelsize(12);
+	m_EdgeThresholdSlider->minimum(0);
+	m_EdgeThresholdSlider->maximum(500);
+	m_EdgeThresholdSlider->step(1);
+	m_EdgeThresholdSlider->value(m_edgeThreshold);
+	m_EdgeThresholdSlider->align(FL_ALIGN_RIGHT);
+	m_EdgeThresholdSlider->callback(cb_edgeThresholdChange);
+
+	// add button for painting edge map
+	m_EdgeButton = new Fl_Button(300, 260, 50, 25, "&Do it");
+	m_EdgeButton->user_data((void*)(this));
+	m_EdgeButton->callback(cb_paintEdgeMap);
 
 	m_brushDialog->end();
 

@@ -204,6 +204,11 @@ double ImpressionistDoc::getAlpha()
 	return  m_pUI->getAlpha();
 }
 
+int ImpressionistDoc::getEdgeThreshold()
+{
+	return m_pUI->getEdgeThreshold();
+}
+
 // get the flag of edge clipping
 bool ImpressionistDoc::getFlagOfEdgeClipping()
 {

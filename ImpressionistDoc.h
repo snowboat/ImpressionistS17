@@ -34,6 +34,7 @@ public:
 	int     getLineWidth();
 	int     getLineAngle();
 	double 	getAlpha();					// return the alpha as double for setcolor() to use
+	int     getEdgeThreshold();
 	char*	getImageName();					// get the current image name
 	void 	setStrokeDirection(int type);
 	int     getStrokeDirection();

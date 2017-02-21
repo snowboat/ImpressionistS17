@@ -42,9 +42,14 @@ public:
 	Fl_Slider*			m_LineWidthSlider;
 	Fl_Slider*			m_LineAngleSlider;
 	Fl_Slider*			m_AlphaValueSlider;
+	Fl_Slider*          m_PaintSpacingSlider;
+	Fl_Slider*          m_EdgeThresholdSlider;
 	Fl_Button*          m_ClearCanvasButton;
+	Fl_Button*          m_PaintButton;
+	Fl_Button*          m_EdgeButton;
 	Fl_Light_Button*    m_EdgeClippingButton;
 	Fl_Light_Button*    m_AnotherGradientButton;
+	Fl_Light_Button*    m_RandomSizeButton;
 
 	//For designing new convolution matrix
 	Fl_Window*			m_convolutionDialog;
@@ -85,6 +90,8 @@ public:
 	void                setLineAngle(int lineAngle);
 	double				getAlpha();
 	void				setAlpha(double alpha);
+	int                 getPaintSpacing();
+	int					getEdgeThreshold();
 	float				getRed();
 	float				getGreen();
 	float				getBlue();
@@ -100,6 +107,10 @@ private:
 	int 	m_lineWidth;
 	int 	m_lineAngle;
 	double  m_alphaValue;
+
+	int		m_paintSpacing;
+	int     m_edgeThreshold;
+
 	double	m_redValue;
 	double	m_greenValue;
 	double	m_blueValue;
@@ -136,6 +147,9 @@ private:
 	static void cb_lineAngleChanges(Fl_Widget* o, void* v);
 	static void cb_lineWidthChanges(Fl_Widget* o, void* v);
 	static void cb_alphaSlides(Fl_Widget* o, void* v);
+	static void cb_paintSpacingChange(Fl_Widget* o, void* v);
+	static void cb_edgeThresholdChange(Fl_Widget* o, void* v);
+	static void cb_paintEdgeMap(Fl_Widget* o, void* v);
 	static void cb_swap_image(Fl_Menu_* o, void* v);
 	//color manipulation callbacks
 	static void cb_manipulate_color(Fl_Menu_* o, void* v);
