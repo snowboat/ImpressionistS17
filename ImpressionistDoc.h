@@ -25,6 +25,7 @@ public:
 	int		loadDissolveImage(char* iname);	// load the dissolve image (1 bell)
 	int		loadMuralImage(char* iname);	// load the mural image (1.5 bells)
 	int		loadAlphaMappedImage(char* iname);	// load the alpha image, then store its alpha values into m_alphaMappedValues
+	int		loadEdgeImage(char* iname);  // load the edge image
 	int     loadAnotherImage(char* iname); // load another image for gradient painting (1.5 bells)
 
 
@@ -61,8 +62,10 @@ public:
 	int				m_alphaWidth, m_alphaHeight;
 
 	// Bitmaps for original image and painting.
-	unsigned char*	m_ucBitmap;//original image
-	unsigned char*  backupBitmap;	//immutable bitmap which records the original stage of left image
+	unsigned char*	m_ucBitmap; // image in main view
+	unsigned char*  m_ucOriginalBitmap; // original image
+	unsigned char*  backupBitmap;	//immutable bitmap which records the original stagte of left image
+
 	unsigned char*	m_ucPainting;//painting image
 	unsigned char*  m_undoImage;
 	unsigned char*  m_alphaMappedValues; //the alpha value of each pixel in the alphamapped brush (in 0-255 scale)

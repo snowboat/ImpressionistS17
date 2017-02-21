@@ -36,6 +36,7 @@ ImpressionistDoc::ImpressionistDoc()
 
 	m_nWidth = -1;
 	m_ucBitmap = NULL;
+	m_ucOriginalBitmap = NULL;
 	backupBitmap = NULL;
 	m_ucPainting = NULL;
 	m_undoImage = NULL;
@@ -150,11 +151,11 @@ void ImpressionistDoc::applyManipulation()
 	float blueScale = m_pUI->getBlue();
 
 	if (backupBitmap) {
-		memcpy(m_ucBitmap, backupBitmap, m_nPaintWidth*m_nPaintHeight * 3);
+		memcpy(m_ucOriginalBitmap, backupBitmap, m_nPaintWidth*m_nPaintHeight * 3);
 		for (int i = 0; i < m_nPaintWidth*m_nPaintHeight; i++) {
-			m_ucBitmap[3 * i + 0] *= redScale;
-			m_ucBitmap[3 * i + 1] *= greenScale;
-			m_ucBitmap[3 * i + 2] *= blueScale;
+			m_ucOriginalBitmap[3 * i + 0] *= redScale;
+			m_ucOriginalBitmap[3 * i + 1] *= greenScale;
+			m_ucOriginalBitmap[3 * i + 2] *= blueScale;
 		}
 		m_pUI->m_origView->refresh();
 	}
@@ -245,6 +246,7 @@ int ImpressionistDoc::loadImage(char *iname)
 
 	// release old storage
 	if (m_ucBitmap) delete[] m_ucBitmap;
+	if (m_ucOriginalBitmap) delete[] m_ucOriginalBitmap;
 	if (m_ucPainting) delete[] m_ucPainting;
 	if (backupBitmap) {
 		delete[] backupBitmap;
@@ -255,11 +257,11 @@ int ImpressionistDoc::loadImage(char *iname)
 		m_undoImage = NULL;
 	}
 
-
-	m_ucBitmap = data;
+	m_ucOriginalBitmap = data;
+	m_ucBitmap = m_ucOriginalBitmap;
 	//do deep copy to initialize backupbitmap
 	backupBitmap = new unsigned char[width*height * 3];
-	memcpy(backupBitmap, m_ucBitmap, width*height * 3);
+	memcpy(backupBitmap, m_ucOriginalBitmap, width*height * 3);
 
 	// allocate space for draw view
 	m_ucPainting = new unsigned char[width*height * 3];
@@ -309,10 +311,10 @@ int ImpressionistDoc::loadDissolveImage(char * iname)
 	}
 
 	// reflect the fact of loading the new image
-	//m_nWidth = width;
-	//m_nPaintWidth = width;
-	//m_nHeight = height;
-	//m_nPaintHeight = height;
+	// m_nWidth = width;
+	// m_nPaintWidth = width;
+	// m_nHeight = height;
+	// m_nPaintHeight = height;
 	if (width != m_nPaintWidth || height != m_nPaintHeight) {
 		fl_alert("Dimensions of dissolved image not correct!!");
 		return 0;
@@ -328,22 +330,19 @@ int ImpressionistDoc::loadDissolveImage(char * iname)
 		m_undoImage = NULL;
 	}
 
-
-
-
-	//update m_ucBitmap
+	//update Original Bitmap
 	int imageSize = 3*m_nPaintWidth*m_nPaintHeight;
 	for (int i = 0; i < imageSize; i++) {
-		m_ucBitmap[i] = (unsigned char)((int)m_ucBitmap[i] * 0.5 + (int)data[i] * 0.5);
+		m_ucOriginalBitmap[i] = (unsigned char)((int)m_ucOriginalBitmap[i] * 0.5 + (int)data[i] * 0.5);
 	}
 
 	//do deep copy to initialize backupbitmap
 	backupBitmap = new unsigned char[width*height * 3];
-	memcpy(backupBitmap, m_ucBitmap, width*height * 3);
+	memcpy(backupBitmap, m_ucOriginalBitmap, width*height * 3);
 
-	// allocate space for draw view
-	//m_ucPainting = new unsigned char[width*height * 3];
-	//memset(m_ucPainting, 0, width*height * 3);
+	// allocate space for draw view 
+	// m_ucPainting = new unsigned char[width*height * 3];
+	// memset(m_ucPainting, 0, width*height * 3);
 
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
 		m_pUI->m_mainWindow->y(),
@@ -357,7 +356,6 @@ int ImpressionistDoc::loadDissolveImage(char * iname)
 	// refresh paint view as well
 	m_pUI->m_paintView->resizeWindow(width, height);
 	m_pUI->m_paintView->refresh();
-
 
 	return 1;
 }
@@ -375,16 +373,17 @@ int ImpressionistDoc::loadMuralImage(char * iname)
 	}
 
 	// reflect the fact of loading the new image
-	//m_nWidth = width;
-	//m_nPaintWidth = width;
-	//m_nHeight = height;
-	//m_nPaintHeight = height;
+	// m_nWidth = width;
+	// m_nPaintWidth = width;
+	// m_nHeight = height;
+	// m_nPaintHeight = height;
 	if (width != m_nPaintWidth || height != m_nPaintHeight) {
 		fl_alert("Dimensions of mural image not correct!!");
 		return 0;
 	}
 
 	// release old storage
+	delete[] m_ucOriginalBitmap;
 	if (backupBitmap) {
 		delete[] backupBitmap;
 		backupBitmap = NULL;
@@ -394,12 +393,12 @@ int ImpressionistDoc::loadMuralImage(char * iname)
 		m_undoImage = NULL;
 	}
 
-	//update m_ucBitmap
-	m_ucBitmap = data;
+	//update m_ucOriginalBitmap
+	m_ucOriginalBitmap = data;
 
 	//do deep copy to initialize backupbitmap
 	backupBitmap = new unsigned char[width*height * 3];
-	memcpy(backupBitmap, m_ucBitmap, width*height * 3);
+	memcpy(backupBitmap, m_ucOriginalBitmap, width*height * 3);
 
 	//m_nPainting is not changed
 
@@ -415,7 +414,6 @@ int ImpressionistDoc::loadMuralImage(char * iname)
 	// refresh paint view as well
 	m_pUI->m_paintView->resizeWindow(width, height);
 	m_pUI->m_paintView->refresh();
-
 
 	return 1;
 
@@ -441,7 +439,11 @@ int ImpressionistDoc::loadAlphaMappedImage(char * iname)
 	m_alphaHeight = height;
 	m_alphaWidth = width;
 
-
+	// release the old alpha value
+	if (m_alphaMappedValues) {
+		delete[] m_alphaMappedValues;
+		m_alphaMappedValues = NULL;
+	}
 
 	//make the alpha values the grayscale of loaded image (pixel-wise)
 	m_alphaMappedValues = new unsigned char[width*height];
@@ -449,24 +451,45 @@ int ImpressionistDoc::loadAlphaMappedImage(char * iname)
 		m_alphaMappedValues[i] = (unsigned char)((int)data[3 * i] * 0.299 + (int)data[3 * i + 1] * 0.587 + (int)data[3 * i + 2] * 0.114);
 	}
 
-	////m_nPainting is not changed
+	return 1;
+}
 
-	//m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
-	//	m_pUI->m_mainWindow->y(),
-	//	width * 2,
-	//	height + 25);
+int ImpressionistDoc::loadEdgeImage(char * iname)
+{
+	// try to open the image to read
+	unsigned char*	data;	//data is the another loaded image
+	int				width, height;	//width, height are the attributes of the another loaded image
 
-	//// display it on origView
-	//m_pUI->m_origView->resizeWindow(width, height);
-	//m_pUI->m_origView->refresh();
+	if ((data = readBMP(iname, width, height)) == NULL)
+	{
+		fl_alert("Can't load bitmap file");
+		return 0;
+	}
 
-	//// refresh paint view as well
-	//m_pUI->m_paintView->resizeWindow(width, height);
-	//m_pUI->m_paintView->refresh();
+	if (width != m_nPaintWidth || height != m_nPaintHeight) {
+		fl_alert("Dimensions of the edge image should be same as the current image.");
+		return 0;
+	}
 
+	// release the old edge map
+	if (m_ucEdgeMap) {
+		delete[] m_ucEdgeMap;
+		m_ucAnotherBitmap = NULL;
+	}
+
+	m_ucEdgeMap = data;
+	m_ucBitmap = m_ucEdgeMap;
+
+	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(),
+		m_pUI->m_mainWindow->y(),
+		width * 2,
+		height + 25);
+
+	// display it on origView
+	m_pUI->m_origView->resizeWindow(width, height);
+	m_pUI->m_origView->refresh();
 
 	return 1;
-
 }
 
 int ImpressionistDoc::loadAnotherImage(char * iname)
@@ -486,6 +509,7 @@ int ImpressionistDoc::loadAnotherImage(char * iname)
 		return 0;
 	}
 
+	// release the old another image
 	if (m_ucAnotherBitmap) {
 		delete[] m_ucAnotherBitmap;
 		m_ucAnotherBitmap = NULL;
@@ -536,7 +560,7 @@ GLubyte* ImpressionistDoc::GetOriginalPixel(int x, int y)
 	else if (y >= m_nHeight)
 		y = m_nHeight - 1;
 
-	return (GLubyte*)(m_ucBitmap + 3 * (y*m_nWidth + x));
+	return (GLubyte*)(m_ucOriginalBitmap + 3 * (y*m_nWidth + x));
 }
 
 GLubyte* ImpressionistDoc::GetAnotherPixel(int x, int y)

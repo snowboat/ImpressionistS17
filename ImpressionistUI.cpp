@@ -216,6 +216,16 @@ void ImpressionistUI::cb_load_alpha_mapped_image(Fl_Menu_ * o, void * v)
 	}
 }
 
+void ImpressionistUI::cb_load_edge_image(Fl_Menu_ * o, void * v)
+{
+	ImpressionistDoc *pDoc = whoami(o)->getDocument();
+
+	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
+	if (newfile != NULL) {
+		pDoc->loadEdgeImage(newfile);
+	}
+}
+
 void ImpressionistUI::cb_load_another_image(Fl_Menu_ * o, void * v)
 {
 	ImpressionistDoc *pDoc = whoami(o)->getDocument();
@@ -242,6 +252,36 @@ void ImpressionistUI::cb_save_image(Fl_Menu_* o, void* v)
 	}
 }
 
+void ImpressionistUI::cb_display_original(Fl_Menu_* o, void* v)
+{
+	whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucOriginalBitmap;
+	whoami(o)->m_origView->refresh();
+}
+
+void ImpressionistUI::cb_display_edge(Fl_Menu_* o, void* v)
+{
+	if (whoami(o)->getDocument()->m_ucEdgeMap) {
+		whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucEdgeMap;
+		whoami(o)->m_origView->refresh();
+	}
+	else
+	{
+		fl_alert("There is no edge image!");
+	}
+}
+
+void ImpressionistUI::cb_display_another(Fl_Menu_* o, void* v)
+{
+	if (whoami(o)->getDocument()->m_ucAnotherBitmap) {
+		whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucAnotherBitmap;
+		whoami(o)->m_origView->refresh();
+	}
+	else {
+		fl_alert("There is no another image!");
+	}
+	
+}
+
 //-------------------------------------------------------------
 // Brings up the paint dialog
 // This is called by the UI when the brushes menu item
@@ -251,6 +291,7 @@ void ImpressionistUI::cb_brushes(Fl_Menu_* o, void* v)
 {
 	whoami(o)->m_brushDialog->show();
 }
+
 
 //------------------------------------------------------------
 // Clears the paintview canvas.
@@ -274,8 +315,6 @@ void ImpressionistUI::cb_exit(Fl_Menu_* o, void* v)
 	whoami(o)->m_colorManipulationDialog->hide();
 
 }
-
-
 
 //-----------------------------------------------------------
 // Brings up an about dialog box
@@ -382,12 +421,12 @@ void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
 	ImpressionistDoc* m_pDoc = whoami(o)->getDocument();
 
 	//swap the bitmaps
-	if (whoami(o)->getDocument()->m_ucBitmap && whoami(o)->getDocument()->m_ucPainting) {
-		unsigned char* temp = whoami(o)->getDocument()->m_ucBitmap;
+	if (whoami(o)->getDocument()->m_ucOriginalBitmap && whoami(o)->getDocument()->m_ucPainting) {
+		unsigned char* temp = whoami(o)->getDocument()->m_ucOriginalBitmap;
 
-		//update backup bitmap to the new ucBitmap
-		whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucPainting;
-		memcpy(whoami(o)->getDocument()->backupBitmap, whoami(o)->getDocument()->m_ucBitmap, whoami(o)->getDocument()->m_nPaintHeight*whoami(o)->getDocument()->m_nPaintWidth * 3);
+		//update backup bitmap to the new OriginalBitmap
+		whoami(o)->getDocument()->m_ucOriginalBitmap = whoami(o)->getDocument()->m_ucPainting;
+		memcpy(whoami(o)->getDocument()->backupBitmap, whoami(o)->getDocument()->m_ucOriginalBitmap, whoami(o)->getDocument()->m_nPaintHeight*whoami(o)->getDocument()->m_nPaintWidth * 3);
 		whoami(o)->getDocument()->m_ucPainting = temp;
 
 		//update the undo bitmap to be null(nothing to undo)
@@ -669,7 +708,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	
 	{ "&Load Mural Image...",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_load_mural_image },
 	{ "&Load Alpha Mapped Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_alpha_mapped_image },
-	{ "&Load Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_load_image },
+	{ "&Load Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_load_edge_image },
 	{ "&Load Another Image...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_load_another_image, 0, FL_MENU_DIVIDER },
 
 	{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
@@ -690,11 +729,9 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ 0 },
 
 	{ "&Display",		0, 0, 0, FL_SUBMENU },
-	{ "&Original Image...",	FL_ALT + 'o', (Fl_Callback *)ImpressionistUI::cb_load_image },
-	{ "&Mural Image...",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_save_image },
-	{ "&Alpha Mapped Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_save_image },
-	{ "&Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_save_image },
-	{ "&Another Image...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_save_image },
+	{ "&Original Image...",	FL_ALT + 'o', (Fl_Callback *)ImpressionistUI::cb_display_original },
+	{ "&Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_display_edge },
+	{ "&Another Image...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_display_another },
 	{ 0 },
 
 	{ "&Options",		0, 0, 0, FL_SUBMENU },
@@ -857,14 +894,14 @@ ImpressionistUI::ImpressionistUI() {
 	m_AlphaValueSlider->callback(cb_alphaSlides);
 
 	// edge clipping button
-	m_EdgeClippingButton = new Fl_Light_Button(10, 200, 150, 25, "Edge Clipping");
+	m_EdgeClippingButton = new Fl_Light_Button(10, 200, 150, 25, "&Edge Clipping");
 	m_EdgeClippingButton->user_data((void*)(this));   // record self to be used by static callback functions
 	m_EdgeClippingButton->value(m_edgeClipping);
 	m_EdgeClippingButton->callback(cb_edgeClipping); 
 	m_EdgeClippingButton->deactivate();
 
 	// another gradient button
-	m_AnotherGradientButton = new Fl_Light_Button(240, 200, 150, 25, "Another Gradient");
+	m_AnotherGradientButton = new Fl_Light_Button(240, 200, 150, 25, "&Another Gradient");
 	m_AnotherGradientButton->user_data((void*)(this));   // record self to be used by static callback functions
 	m_AnotherGradientButton->value(m_anotherGradient);
 	m_AnotherGradientButton->callback(cb_anotherGradient);
@@ -897,7 +934,7 @@ ImpressionistUI::ImpressionistUI() {
 	m_EdgeThresholdSlider->callback(cb_edgeThresholdChange);
 
 	// add button for painting edge map
-	m_EdgeButton = new Fl_Button(300, 260, 50, 25, "&Do it");
+	m_EdgeButton = new Fl_Button(330, 260, 50, 20, "&Do it");
 	m_EdgeButton->user_data((void*)(this));
 	m_EdgeButton->callback(cb_paintEdgeMap);
 

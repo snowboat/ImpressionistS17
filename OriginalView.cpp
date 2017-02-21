@@ -8,6 +8,8 @@
 #include "impressionistDoc.h"
 #include "originalview.h"
 #include <iostream>
+#include <FL/fl_ask.h>
+
 using namespace std;
 
 #ifndef WIN32
@@ -81,9 +83,7 @@ void OriginalView::draw()
 
 		drawCursor();
 		
-	}
-
-			
+	}		
 	glFlush();
 }
 
