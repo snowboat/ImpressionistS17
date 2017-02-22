@@ -144,6 +144,7 @@
     <ClCompile Include="BlackandwhiteBrush.cpp" />
     <ClCompile Include="BlurringBrush.cpp" />
     <ClCompile Include="CircleBrush.cpp" />
+    <ClCompile Include="CustomizedBrush.cpp" />
     <ClCompile Include="ImpBrush.cpp" />
     <ClCompile Include="Impressionist.cpp" />
     <ClCompile Include="ImpressionistDoc.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="BlackandwhiteBrush.h" />
     <ClInclude Include="BlurringBrush.h" />
     <ClInclude Include="CircleBrush.h" />
+    <ClInclude Include="CustomizedBrush.h" />
     <ClInclude Include="ImpBrush.h" />
     <ClInclude Include="impressionist.h" />
     <ClInclude Include="impressionistDoc.h" />
