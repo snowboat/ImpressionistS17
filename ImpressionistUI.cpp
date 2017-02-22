@@ -518,18 +518,40 @@ void ImpressionistUI::cb_confirmFilterSize(Fl_Widget * o, void * v)
 {
 	ImpressionistUI *pUI = ((ImpressionistUI*)(o->user_data()));
 
-	//create the convolution dialog
-	pUI->m_convolutionDialog = new Fl_Window(400, 325, "Make your OWN convolution");
-	pUI->m_normalizeConvolutionButton = new Fl_Button(10, 250, 100, 30, "Normalize");
-	pUI->m_normalizeConvolutionButton->callback(cb_normalize_convolution);
-	
-	pUI->m_filterParameters = new double*[pUI->m_numFilterRows];
-	for (int row = 0; row < pUI->m_numFilterRows; row++) {
-		pUI->m_filterParameters[row] = new double[pUI->m_numFilterCols];
+	int rows = pUI->m_numFilterRows;
+	int cols = pUI->m_numFilterCols;
+	if (pUI->m_numFilterCols % 2 == 0 || pUI->m_numFilterRows % 2 == 0 || pUI->m_numFilterCols <3 || pUI->m_numFilterRows <3) {
+		fl_alert("Invalid numbers of rows and/or columns.");
+		
 	}
+	else {
+		pUI->m_askFilterSize->hide();
+		
+			
+		
+					//create the convolution dialog
+		pUI->m_convolutionDialog = new Fl_Window(70 * cols, 40 * rows + 100, "Make your OWN convolution");
+		pUI->m_normalizeConvolutionButton = new Fl_Button(10, 40 * rows + 40, 100, 30, "Normalize");
+		pUI->m_normalizeConvolutionButton->callback(cb_normalize_convolution);
+		
 
-	pUI->m_convolutionDialog->end();
-	pUI->m_convolutionDialog->show();
+		pUI->m_filterInputBoxes = new Fl_Float_Input*[rows*cols];
+		pUI->m_vectorOfInputBoxes.clear();
+		for (int i = 0; i < cols; i++) {
+			for (int j = 0; j < rows; j++) {
+				std::string label = std::to_string(i) + "," + std::to_string(j);
+				const char* charLabel = label.c_str();
+				pUI->m_filterInputBoxes[i*rows + j] = new Fl_Float_Input(70 * i, 40 * rows - 40 * (rows - j), 40, 20, charLabel);
+				pUI->m_filterInputBoxes[i*rows + j]->value("0");
+				pUI->m_vectorOfInputBoxes.push_back(pUI->m_filterInputBoxes[i*rows + j]);
+				
+			}
+			
+		}
+		
+		pUI->m_convolutionDialog->end();
+		pUI->m_convolutionDialog->show();
+	}
 }
 
 
@@ -549,13 +571,13 @@ void ImpressionistUI::cb_normalize_convolution(Fl_Widget * o, void * v)
 void ImpressionistUI::cb_filter_numRows_changes(Fl_Widget * o, void * v)
 {
 	
-	std::string tempstr(((Fl_Float_Input *)o)->value());
+	std::string tempstr(((Fl_Int_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->m_numFilterRows = std::stof(tempstr);
 
 }
 void ImpressionistUI::cb_filter_numCols_changes(Fl_Widget * o, void * v)
 {
-	std::string tempstr(((Fl_Float_Input *)o)->value());
+	std::string tempstr(((Fl_Int_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->m_numFilterCols = std::stof(tempstr);
 
 }
@@ -715,6 +737,16 @@ bool ImpressionistUI::getAnotherGradient() {
 	return m_anotherGradient;
 }
 
+int ImpressionistUI::getFilterRows()
+{
+	return this->m_numFilterRows;
+}
+
+int ImpressionistUI::getFilterCols()
+{
+	return this->m_numFilterCols;
+}
+
 
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
@@ -775,6 +807,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{ "Blur",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLURRING },
 	{ "Sharpen",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SHARPENING },
 	{ "Alpha Mapped",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_ALPHA_MAPPED },
+	{ "Customized",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_CUSTOMIZED },
 	{ 0 }
 };
 
@@ -1014,11 +1047,11 @@ ImpressionistUI::ImpressionistUI() {
 	//the window which asks for filter size
 	m_askFilterSize = new Fl_Window(300, 100, "Input the size");
 
-	m_filterSizex = new Fl_Float_Input(40, 10, 60, 30, "Rows");
+	m_filterSizex = new Fl_Int_Input(40, 10, 60, 30, "Rows");
 	m_filterSizex->user_data((void*)(this));
 	m_filterSizex->callback(cb_filter_numRows_changes);
 
-	m_filterSizey = new Fl_Float_Input(150, 10, 60, 30, "Cols");
+	m_filterSizey = new Fl_Int_Input(150, 10, 60, 30, "Cols");
 	m_filterSizey->user_data((void*)(this));
 	m_filterSizey->callback(cb_filter_numCols_changes);
 

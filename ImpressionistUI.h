@@ -16,6 +16,7 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Light_Button.H>
 #include <FL/Fl_Float_Input.H>
+#include <FL/Fl_Int_Input.H>
 #include <vector>
 
 #include "Impressionist.h"
@@ -55,12 +56,12 @@ public:
 	//For designing new convolution matrix
 	Fl_Window*			m_convolutionDialog;
 	Fl_Window*			m_askFilterSize;
-	Fl_Float_Input*		m_filterSizex;
-	Fl_Float_Input*		m_filterSizey;
+	Fl_Int_Input*		m_filterSizex;
+	Fl_Int_Input*		m_filterSizey;
 	Fl_Button*			m_confirmFilterSize;
 	Fl_Button*			m_normalizeConvolutionButton;
-	Fl_Float_Input***	m_filterInputBoxes;
-	double**			m_filterParameters;
+	Fl_Float_Input**	m_filterInputBoxes;		//1D array of pointers
+	std::vector<Fl_Float_Input*>	m_vectorOfInputBoxes;
 
 
 
@@ -95,6 +96,8 @@ public:
 	float				getBlue();
 	bool				getEdgeClipping();
 	bool				getAnotherGradient();
+	int					getFilterRows();
+	int					getFilterCols();
 
 
 private:

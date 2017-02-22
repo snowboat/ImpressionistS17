@@ -23,6 +23,7 @@ enum
 	BRUSH_BLURRING,
 	BRUSH_SHARPENING,
 	BRUSH_ALPHA_MAPPED,
+	BRUSH_CUSTOMIZED,
 	NUM_BRUSH_TYPE // Make sure this stays at the end!
 };
 
