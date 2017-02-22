@@ -252,6 +252,9 @@ int ImpressionistDoc::loadImage(char *iname)
 	backupBitmap = new unsigned char[width*height * 3];
 	memcpy(backupBitmap, m_ucOriginalBitmap, width*height * 3);
 
+	calculateGradient();
+	getEdgeMapAt(m_pUI->getEdgeThreshold());
+
 	// allocate space for draw view
 	m_ucPainting = new unsigned char[width*height * 3];
 	memset(m_ucPainting, 0, width*height * 3);
@@ -269,8 +272,6 @@ int ImpressionistDoc::loadImage(char *iname)
 	// refresh paint view as well
 	m_pUI->m_paintView->resizeWindow(width, height);
 	m_pUI->m_paintView->refresh();
-
-	calculateGradient();
 
 	return 1;
 }
@@ -425,7 +426,6 @@ int ImpressionistDoc::loadEdgeImage(char * iname)
 
 	for (int i = 0; i < m_nWidth*m_nHeight; i++) 
 	{
-
 		GLubyte color[3];
 		memcpy(color, (GLubyte*)(data + i*3), 3);
 

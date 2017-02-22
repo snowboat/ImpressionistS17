@@ -43,7 +43,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	int lineLength = pDoc->getSize(); // get the line length from UI size
 	int lineWidth = pDoc->getLineWidth();
 
-	float lineAngle = pDoc->getLineAngle() * M_PI / 180; // Slider or Right Mouse, IN RADIANS
+	int lineAngle = pDoc->getLineAngle();
 
 	int lineType = pDoc->getStrokeDirection();
 	switch (lineType)
@@ -64,7 +64,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	}
 	
 	/*
-		glPushMatrix();
+	glPushMatrix();
 	glTranslated(target.x, target.y, 0);
 	glRotated(lineAngle, 0.0, 0.0, 1.0);
 
@@ -86,42 +86,184 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	glPopMatrix();
 	*/
 
-	
+	double lineAngleRadius = lineAngle * M_PI / 180;
 
+	// std::cout << lineAngleRadius << std::endl;
+	int x1 = (lineLength / 2) * cos(lineAngleRadius) + target.x + 0.5;
+	int y1 = (lineLength / 2) * sin(lineAngleRadius) + target.y + 0.5;
+	int x2 = -(lineLength / 2) * cos(lineAngleRadius) + target.x + 0.5;
+	int y2 = -(lineLength / 2) * sin(lineAngleRadius) + target.y + 0.5;
 
-		int xUpperBound = pDoc->m_nPaintWidth;
+	int width = pDoc->m_nWidth;
+	int height = pDoc->m_nHeight;
+
+	// check edge clipping
+	if (pDoc->getFlagOfEdgeClipping()) {
+		int standard = (int)(pDoc->m_ucEdge[target.y*width + target.x]);
+		// std::cout << standard << std::endl;
+		// x1 < target.x < x2
+		if (x1 < target.x) {
+			for (int i = target.x-1; i >= x1; i--) { 
+				int j = target.y - ((target.y - y1)*(target.x - i) / (target.x - x1)); // calculate the y of this point
+				if ((int)(pDoc->m_ucEdge[j * width + i]) != standard)
+				{
+					x1 = i;
+					y1 = j;
+					break;
+				}
+			}
+			for (int i = target.x+1; i <= x2; i++) {
+				int j = target.y - ((target.y - y2)*(target.x - i) / (target.x - x2)); // calculate the y of this point
+				if ((int)(pDoc->m_ucEdge[j * width + i]) != standard)
+				{
+					x2 = i;
+					y2 = j;
+					break;
+				}
+			}
+		}
+
+		// x2 < target.x < x1
+		if (x1 > target.x) {
+			for (int i = target.x - 1; i >= x2; i--) {
+				int j = target.y - ((target.y - y2)*(target.x - i) / (target.x - x2)); // calculate the y of this point
+				if ((int)(pDoc->m_ucEdge[j * width + i]) != standard)
+				{
+					x2 = i;
+					y2 = j;
+					break;
+				}
+			}
+			for (int i = target.x + 1; i <= x1; i++) {
+				int j = target.y - ((target.y - y1)*(target.x - i) / (target.x - x1)); // calculate the y of this point
+				if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
+				{
+					x1 = i;
+					y1 = j;
+					break;
+				}
+			}
+		}
+
+		// x1 = target.x = x2
+		if (x1 == x2) {
+			int i = x1;
+			if (y1 < y2) {
+				for (int j = target.y - 1; j >= y1; j--) {
+					if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
+					{
+						x1 = i;
+						y1 = j;
+						break;
+					}
+				}
+				for (int j = target.y + 1; j <= y2; j++) {
+					if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
+					{
+						x2 = i;
+						y2 = j;
+						break;
+					}
+				}
+			}
+			else {
+				for (int j = target.y - 1; j >= y2; j--) {
+					if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
+					{
+						x2 = i;
+						y2 = j;
+						break;
+					}
+				}
+				for (int j = target.y + 1; j <= y1; j++) {
+					if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
+					{
+						x1 = i;
+						y1 = j;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	/*
+	int xUpperBound = pDoc->m_nPaintWidth;
 	int yLowerBound = pDoc->m_pUI->m_paintView->getWindowHeight() - pDoc->m_nPaintHeight;
 
-	glLineWidth((float)lineWidth);
-	glBegin(GL_LINES);
-	SetColor(source);
-	std::cout << lineAngle << std::endl;
-	int x1 = (lineLength / 2) * cos(lineAngle) + target.x;
-	int y1 = (lineLength / 2)*sin(lineAngle) + target.y;
-	int x2 = -(lineLength / 2) * cos(lineAngle) + target.x;
-	int y2 = -(lineLength / 2)*sin(lineAngle) + target.y;
-	
-	
 	if (y1 < yLowerBound) {
-		float xl = (float)(target.x - x1)* (float)(yLowerBound - y1) / (float)(target.y - y1);
-		int newXoffset = (target.x - x1 - xl);
-		y1 = yLowerBound;
-		x1 = target.x - newXoffset;
+	float xl = (float)(target.x - x1)* (float)(yLowerBound - y1) / (float)(target.y - y1);
+	int newXoffset = (target.x - x1 - xl);
+	y1 = yLowerBound;
+	x1 = target.x - newXoffset;
 	}
 	if (y2 < yLowerBound) {
-		float xl =(float)(target.x-x2)* (float)(yLowerBound - y2) / (float)(target.y - y2);
-		int newXoffset = (target.x - x2 - xl);
-		y2 = yLowerBound;
-		x2 = target.x - newXoffset;
+	float xl =(float)(target.x-x2)* (float)(yLowerBound - y2) / (float)(target.y - y2);
+	int newXoffset = (target.x - x2 - xl);
+	y2 = yLowerBound;
+	x2 = target.x - newXoffset;
 	}
 
 	if (x1 > xUpperBound) {
-		float yl = (float)(y1-target.y)*(float)(x1 - xUpperBound) / (float)(x1 - target.x);
-		int newyOffset = (y1 - target.y - yl);
-		y1 = target.y + newyOffset;
-		x1 = xUpperBound;
+	float yl = (float)(y1-target.y)*(float)(x1 - xUpperBound) / (float)(x1 - target.x);
+	int newyOffset = (y1 - target.y - yl);
+	y1 = target.y + newyOffset;
+	x1 = xUpperBound;
 	}
+	*/
 
+	/*
+	// boundary check
+	if (x1 != x2) {
+		if (x1 < 0) {
+			y1 = target.y - ((target.y - y1)*(target.x - 0) / (target.x - x1));
+			x1 = 0;
+			if (x2 > width) {
+				y2 = target.y - ((target.y - y2)*(target.x - width) / (target.x - x2));
+				x2 = width;
+			}
+		}
+		else if (x1 > width) {
+			y1 = target.y - ((target.y - y1)*(target.x - width) / (target.x - x1));
+			x1 = width;
+			if (x2 < 0) {
+				y2 = target.y - ((target.y - y2)*(target.x - 0) / (target.x - x2));
+				x2 = 0;
+			}
+		}
+	}
+	
+	if (y1 < 0) {
+		if (x1 != x2) {
+			x1 = target.x - ((target.x - x1)*(target.y - 0) / (target.y - y1));
+		}
+		y1 = 0;
+		if (y2 > height) {
+			if (x1 != x2) {
+				x2 = target.x - ((target.x - x1)*(target.y - height) / (target.y - y1));
+			}
+			y2 = height;
+		}
+	}
+	else if (y1 > height) {
+		if (x1 != x2) {
+			x1 = target.x - ((target.x - x1)*(target.y - height) / (target.y - y1));
+		}
+		y1 = height;
+		if (y2 < 0) {
+			if (x1 != x2) {
+				x2 = target.x - ((target.x - x1)*(target.y - 0) / (target.y - y1));
+			}
+			y2 = 0;
+		}
+	}
+	*/
+	glLineWidth((float)lineWidth);
+	glBegin(GL_LINES);
+	SetColor(source);
+	
+	// std::cout << "x1 is" << x1 << " " << y1 << std::endl;
+	// std::cout << "x2 is" << x2 << " " << y2 << std::endl;
 
 	glVertex2i(x1, y1);
 	glVertex2i(x2, y2);
