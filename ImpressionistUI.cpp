@@ -6,6 +6,7 @@
 
 
 #include <FL/fl_ask.h>
+#include <FL/Fl_Box.H>
 
 #include <math.h>
 
@@ -923,7 +924,7 @@ ImpressionistUI::ImpressionistUI() {
 	m_AnotherGradientButton->deactivate();
 
 	// Add paint space slider
-	m_PaintSpacingSlider = new Fl_Value_Slider(10, 230, 150, 20, "Spacing");
+	m_PaintSpacingSlider = new Fl_Value_Slider(10, 240, 150, 20, "Spacing");
 	m_PaintSpacingSlider->user_data((void*)(this));	// record self to be used by static callback functions
 	m_PaintSpacingSlider->type(FL_HOR_NICE_SLIDER);
 	m_PaintSpacingSlider->labelfont(FL_COURIER);
@@ -936,20 +937,20 @@ ImpressionistUI::ImpressionistUI() {
 	m_PaintSpacingSlider->callback(cb_paintSpacingChange);
 
 	// Add edge threshold slider
-	m_EdgeThresholdSlider = new Fl_Value_Slider(10, 260, 200, 20, "Edge Threshold");
+	m_EdgeThresholdSlider = new Fl_Value_Slider(10, 275, 200, 20, "Edge Threshold");
 	m_EdgeThresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions
 	m_EdgeThresholdSlider->type(FL_HOR_NICE_SLIDER);
 	m_EdgeThresholdSlider->labelfont(FL_COURIER);
 	m_EdgeThresholdSlider->labelsize(12);
 	m_EdgeThresholdSlider->minimum(0);
-	m_EdgeThresholdSlider->maximum(500);
+	m_EdgeThresholdSlider->maximum(250);
 	m_EdgeThresholdSlider->step(1);
 	m_EdgeThresholdSlider->value(m_edgeThreshold);
 	m_EdgeThresholdSlider->align(FL_ALIGN_RIGHT);
 	m_EdgeThresholdSlider->callback(cb_edgeThresholdChange);
 
 	// add button for painting edge map
-	m_EdgeButton = new Fl_Button(330, 260, 50, 20, "&Do it");
+	m_EdgeButton = new Fl_Button(330, 275, 50, 20, "&Do it");
 	m_EdgeButton->user_data((void*)(this));
 	m_EdgeButton->callback(cb_paintEdgeMap);
 
