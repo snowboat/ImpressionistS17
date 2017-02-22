@@ -24,7 +24,7 @@ void LineBrush::BrushBegin(const Point source, const Point target)
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
-	lastPos = target;
+	lastPos = source;
 
 	BrushMove(source, target);
 }
@@ -89,22 +89,22 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	double lineAngleRadius = lineAngle * M_PI / 180;
 
 	// std::cout << lineAngleRadius << std::endl;
-	int x1 = (lineLength / 2) * cos(lineAngleRadius) + target.x + 0.5;
-	int y1 = (lineLength / 2) * sin(lineAngleRadius) + target.y + 0.5;
-	int x2 = -(lineLength / 2) * cos(lineAngleRadius) + target.x + 0.5;
-	int y2 = -(lineLength / 2) * sin(lineAngleRadius) + target.y + 0.5;
+	int x1 = (lineLength / 2) * cos(lineAngleRadius) + source.x + 0.5;
+	int y1 = (lineLength / 2) * sin(lineAngleRadius) + source.y + 0.5;
+	int x2 = -(lineLength / 2) * cos(lineAngleRadius) + source.x + 0.5;
+	int y2 = -(lineLength / 2) * sin(lineAngleRadius) + source.y + 0.5;
 
 	int width = pDoc->m_nWidth;
-	int height = pDoc->m_nHeight;
+	int lowerHeight = target.y - source.y;
 
 	// check edge clipping
 	if (pDoc->getFlagOfEdgeClipping()) {
-		int standard = (int)(pDoc->m_ucEdge[target.y*width + target.x]);
+		int standard = (int)(pDoc->m_ucEdge[source.y*width + source.x]);
 		// std::cout << standard << std::endl;
-		// x1 < target.x < x2
-		if (x1 < target.x) {
-			for (int i = target.x-1; i >= x1; i--) { 
-				int j = target.y - ((target.y - y1)*(target.x - i) / (target.x - x1)); // calculate the y of this point
+		// x1 < source.x < x2
+		if (x1 < source.x) {
+			for (int i = source.x-1; i >= x1; i--) {
+				int j = source.y - ((source.y - y1)*(source.x - i) / (source.x - x1)); // calculate the y of this point
 				if ((int)(pDoc->m_ucEdge[j * width + i]) != standard)
 				{
 					x1 = i;
@@ -112,8 +112,8 @@ void LineBrush::BrushMove(const Point source, const Point target)
 					break;
 				}
 			}
-			for (int i = target.x+1; i <= x2; i++) {
-				int j = target.y - ((target.y - y2)*(target.x - i) / (target.x - x2)); // calculate the y of this point
+			for (int i = source.x+1; i <= x2; i++) {
+				int j = source.y - ((source.y - y2)*(source.x - i) / (source.x - x2)); // calculate the y of this point
 				if ((int)(pDoc->m_ucEdge[j * width + i]) != standard)
 				{
 					x2 = i;
@@ -123,10 +123,10 @@ void LineBrush::BrushMove(const Point source, const Point target)
 			}
 		}
 
-		// x2 < target.x < x1
-		if (x1 > target.x) {
-			for (int i = target.x - 1; i >= x2; i--) {
-				int j = target.y - ((target.y - y2)*(target.x - i) / (target.x - x2)); // calculate the y of this point
+		// x2 < source.x < x1
+		if (x1 > source.x) {
+			for (int i = source.x - 1; i >= x2; i--) {
+				int j = source.y - ((source.y - y2)*(source.x - i) / (source.x - x2)); // calculate the y of this point
 				if ((int)(pDoc->m_ucEdge[j * width + i]) != standard)
 				{
 					x2 = i;
@@ -134,8 +134,8 @@ void LineBrush::BrushMove(const Point source, const Point target)
 					break;
 				}
 			}
-			for (int i = target.x + 1; i <= x1; i++) {
-				int j = target.y - ((target.y - y1)*(target.x - i) / (target.x - x1)); // calculate the y of this point
+			for (int i = source.x + 1; i <= x1; i++) {
+				int j = source.y - ((source.y - y1)*(source.x - i) / (source.x - x1)); // calculate the y of this point
 				if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
 				{
 					x1 = i;
@@ -145,11 +145,11 @@ void LineBrush::BrushMove(const Point source, const Point target)
 			}
 		}
 
-		// x1 = target.x = x2
+		// x1 = source.x = x2
 		if (x1 == x2) {
 			int i = x1;
 			if (y1 < y2) {
-				for (int j = target.y - 1; j >= y1; j--) {
+				for (int j = source.y - 1; j >= y1; j--) {
 					if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
 					{
 						x1 = i;
@@ -157,7 +157,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 						break;
 					}
 				}
-				for (int j = target.y + 1; j <= y2; j++) {
+				for (int j = source.y + 1; j <= y2; j++) {
 					if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
 					{
 						x2 = i;
@@ -167,7 +167,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 				}
 			}
 			else {
-				for (int j = target.y - 1; j >= y2; j--) {
+				for (int j = source.y - 1; j >= y2; j--) {
 					if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
 					{
 						x2 = i;
@@ -175,7 +175,7 @@ void LineBrush::BrushMove(const Point source, const Point target)
 						break;
 					}
 				}
-				for (int j = target.y + 1; j <= y1; j++) {
+				for (int j = source.y + 1; j <= y1; j++) {
 					if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
 					{
 						x1 = i;
@@ -212,58 +212,46 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	}
 	*/
 
-	/*
 	// boundary check
-	if (x1 != x2) {
-		if (x1 < 0) {
-			y1 = target.y - ((target.y - y1)*(target.x - 0) / (target.x - x1));
-			x1 = 0;
-			if (x2 > width) {
-				y2 = target.y - ((target.y - y2)*(target.x - width) / (target.x - x2));
-				x2 = width;
-			}
-		}
-		else if (x1 > width) {
-			y1 = target.y - ((target.y - y1)*(target.x - width) / (target.x - x1));
+	if (x1 != x2) 
+	{
+		if (x1 > width) 
+		{
+			y1 = source.y - ((source.y - y1)*(source.x - width) / (source.x - x1));
 			x1 = width;
-			if (x2 < 0) {
-				y2 = target.y - ((target.y - y2)*(target.x - 0) / (target.x - x2));
-				x2 = 0;
-			}
+		}
+		if (x2 > width) 
+		{
+			y2 = source.y - ((source.y - y2)*(source.x - width) / (source.x - x2));
+			x2 = width;
 		}
 	}
 	
-	if (y1 < 0) {
-		if (x1 != x2) {
-			x1 = target.x - ((target.x - x1)*(target.y - 0) / (target.y - y1));
-		}
-		y1 = 0;
-		if (y2 > height) {
+	
+	if (y1 != y2) {
+		if (y1 < 0) {
 			if (x1 != x2) {
-				x2 = target.x - ((target.x - x1)*(target.y - height) / (target.y - y1));
+				x1 = source.x - ((source.x - x1)*(source.y - 0) / (source.y - y1));
 			}
-			y2 = height;
+			y1 = 0;
 		}
-	}
-	else if (y1 > height) {
-		if (x1 != x2) {
-			x1 = target.x - ((target.x - x1)*(target.y - height) / (target.y - y1));
-		}
-		y1 = height;
 		if (y2 < 0) {
 			if (x1 != x2) {
-				x2 = target.x - ((target.x - x1)*(target.y - 0) / (target.y - y1));
+				x2 = source.x - ((source.x - x2)*(source.y - 0) / (source.y - y2));
 			}
 			y2 = 0;
 		}
 	}
-	*/
+
+	y1 += lowerHeight;
+	y2 += lowerHeight;
+
 	glLineWidth((float)lineWidth);
 	glBegin(GL_LINES);
 	SetColor(source);
 	
-	// std::cout << "x1 is" << x1 << " " << y1 << std::endl;
-	// std::cout << "x2 is" << x2 << " " << y2 << std::endl;
+	std::cout << "1 is " << x1 << " " << y1 << std::endl;
+	std::cout << "2 is " << x2 << " " << y2 << std::endl;
 
 	glVertex2i(x1, y1);
 	glVertex2i(x2, y2);
