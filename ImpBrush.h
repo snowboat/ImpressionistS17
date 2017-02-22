@@ -53,7 +53,11 @@ public:
 	// according to the source image and the position, determine the draw color
 	void SetColor( const Point source );
 
+	//interfaces to get color
 	int * GetColor(const Point source);
+	int getColorRed(const Point source);
+	int getColorGreen(const Point source);
+	int getColorBlue(const Point source);
 
 	// get Doc to communicate with it
 	ImpressionistDoc* GetDocument( void );

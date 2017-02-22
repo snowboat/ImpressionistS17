@@ -85,3 +85,39 @@ int* ImpBrush::GetColor(const Point source) {
 	}
 	return rgbColor;
 }
+
+int ImpBrush::getColorRed(const Point source)
+{
+	ImpressionistDoc* pDoc = GetDocument();
+	GLubyte color[3];
+	memcpy(color, pDoc->GetOriginalPixel(source), 3);
+	int rgbColor[3];
+	for (int i = 0; i < 3; i++) {
+		rgbColor[i] = (int)(color[i]);
+	}
+	return rgbColor[0];
+}
+
+int ImpBrush::getColorGreen(const Point source)
+{
+	ImpressionistDoc* pDoc = GetDocument();
+	GLubyte color[3];
+	memcpy(color, pDoc->GetOriginalPixel(source), 3);
+	int rgbColor[3];
+	for (int i = 0; i < 3; i++) {
+		rgbColor[i] = (int)(color[i]);
+	}
+	return rgbColor[1];
+}
+
+int ImpBrush::getColorBlue(const Point source)
+{
+	ImpressionistDoc* pDoc = GetDocument();
+	GLubyte color[3];
+	memcpy(color, pDoc->GetOriginalPixel(source), 3);
+	int rgbColor[3];
+	for (int i = 0; i < 3; i++) {
+		rgbColor[i] = (int)(color[i]);
+	}
+	return rgbColor[2];
+}

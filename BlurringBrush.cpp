@@ -65,6 +65,7 @@ void BlurringBrush::BrushMove(const Point source, const Point target)
 				for (int xref = xpos - 1; xref <= xpos + 1; xref++) {
 					for (int yref = ypos - 1; yref <= ypos + 1; yref++) {
 						int* refpointRgb = GetColor(Point(xref, yref));
+						//std::cout << refpointRgb[0] << std::endl;
 						newRed += (int)((double)refpointRgb[0] * gaussianFilter[xref - xpos + 1][yref - ypos + 1]);
 						newGreen += (int)((double)refpointRgb[1] * gaussianFilter[xref - xpos + 1][yref - ypos + 1]);
 						newBlue += (int)((double)refpointRgb[2] * gaussianFilter[xref - xpos + 1][yref - ypos + 1]);

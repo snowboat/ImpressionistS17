@@ -8,6 +8,8 @@
 #include "impressionistUI.h"
 #include "CustomizedBrush.h"
 #include <iostream>
+#include <string>
+using namespace std;
 
 extern float frand();
 
@@ -43,50 +45,69 @@ void CustomizedBrush::BrushMove(const Point source, const Point target)
 	}
 	int size = pDoc->getSize();
 
-	for (std::vector<Fl_Float_Input*>::iterator itr = dlg->m_vectorOfInputBoxes.begin(); itr != dlg->m_vectorOfInputBoxes.end(); itr++) {
-		std::cout << (*itr)->value() << std::endl;
-	}
 
+	int filterRows = dlg->getFilterRows();
+	int filterCols = dlg->getFilterCols();
 
 
 
 	glPointSize(1.0);
 	glBegin(GL_POINTS);
-	double gaussianFilter[3][3] = {
-		{ 0.0625,0.125,0.0625 },
-		{ 0.125,0.25,0.125 },
-		{ 0.0625,0.125,0.0625 }
-	};
 
 	for (int i = -size / 2; i < size / 2; i++) {
-		for (int j = -size / 2; j < size / 2; j++) {
-			//(xpos,ypos) is the coordinates of the point BEING PROCESSED
+		for (int j = -size / 2; j < size / 2; j++) {//these two loops traverse all points covered by the brush.
+			//(xpos,ypos) is the coordinates of the point BEING PROCESSED by the brush
 			int xpos = source.x + i;
 			int ypos = source.y + j;
 
-			//point not on boundary
-			if (xpos >= 1 && xpos < pDoc->m_nPaintWidth && ypos >= 1 && ypos < pDoc->m_nPaintHeight) {
-				int newRed = 0;
-				int newGreen = 0;
-				int newBlue = 0;
-				//(xref,yref) is one of the ref points in the 3*3 matrix
-				for (int xref = xpos - 1; xref <= xpos + 1; xref++) {
-					for (int yref = ypos - 1; yref <= ypos + 1; yref++) {
-						int* refpointRgb = GetColor(Point(xref, yref));
-						newRed += (int)((double)refpointRgb[0] * gaussianFilter[xref - xpos + 1][yref - ypos + 1]);
-						newGreen += (int)((double)refpointRgb[1] * gaussianFilter[xref - xpos + 1][yref - ypos + 1]);
-						newBlue += (int)((double)refpointRgb[2] * gaussianFilter[xref - xpos + 1][yref - ypos + 1]);
+			int verticalBleed = (filterRows -1) / 2;
+			int horizontalBleed = (filterCols - 1) / 2;
+			
+			int newRed = 0;
+			int newGreen = 0;
+			int newBlue = 0;
+
+			int counter = 0;
+			if (!dlg->m_vectorOfInputBoxes.empty()) {
+				//the following two for loops scans thru the ref grid, right to left, top to bottom
+				for (int yref = ypos - verticalBleed; yref <= ypos + verticalBleed; yref++) {
+					for (int xref = xpos - horizontalBleed; xref <= xpos + horizontalBleed; xref++) {
+						
+						Point samplePoint = Point(min(xref, pDoc->m_nPaintWidth), min(yref, pDoc->m_nPaintHeight));
+						float refpointWeight = std::stof(dlg->m_vectorOfInputBoxes[counter]->value());
+						float refRed = (float)getColorRed(samplePoint);
+						float refGreen = (float)getColorGreen(samplePoint);
+						float refBlue = (float)getColorBlue(samplePoint);
+						
+						
+						
+						newRed += (int)(refpointWeight *refRed);
+						newGreen += (int)(refpointWeight * refGreen);
+						newBlue += (int)(refpointWeight * refBlue);
+						
+
+
+							
+						counter++;
 					}
 				}
-				glColor4ub(newRed, newGreen, newBlue, pDoc->m_pUI->getAlpha() * 255);
+				if (newRed < 0)
+					newRed = 0;
+				if (newRed > 255)
+					newRed = 255;
+				if (newGreen < 0)
+					newGreen = 0;
+				if (newGreen > 255)
+					newGreen = 255;
+				if (newBlue < 0)
+					newBlue = 0;
+				if (newBlue > 255)
+					newBlue = 255;
+				glColor4ub(newRed, newGreen, newBlue,pDoc->m_pUI->getAlpha() * 255);
+				//glColor3ub(0, 255, 0);
 				glVertex2i(target.x + i, target.y + j);
 			}
-			//point on boundary
-			else {
-				Point samplePoint(source.x + i, source.y + j);
-				SetColor(samplePoint);
-				glVertex2i(target.x + i, target.y + j);
-			}
+
 		}
 	}
 	glEnd();

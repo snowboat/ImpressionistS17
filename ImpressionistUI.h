@@ -62,6 +62,7 @@ public:
 	Fl_Button*			m_normalizeConvolutionButton;
 	Fl_Float_Input**	m_filterInputBoxes;		//1D array of pointers
 	std::vector<Fl_Float_Input*>	m_vectorOfInputBoxes;
+	std::vector<float>				m_vectorOfFilterValues;
 
 
 

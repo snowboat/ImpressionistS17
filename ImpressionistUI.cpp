@@ -351,7 +351,11 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
 			pDoc->loadAlphaMappedImage(newfile);
 		}
 	}
-	// cout << "brushchoice is " << type << endl;
+	else if (type == BRUSH_CUSTOMIZED && pUI->m_vectorOfInputBoxes.empty()) {
+		fl_message("Please set your own filter first.");
+		pUI->m_askFilterSize->show();
+	}
+
 }
 
 //------------------------------------------------------------
@@ -532,16 +536,17 @@ void ImpressionistUI::cb_confirmFilterSize(Fl_Widget * o, void * v)
 					//create the convolution dialog
 		pUI->m_convolutionDialog = new Fl_Window(70 * cols, 40 * rows + 100, "Make your OWN convolution");
 		pUI->m_normalizeConvolutionButton = new Fl_Button(10, 40 * rows + 40, 100, 30, "Normalize");
+		pUI->m_normalizeConvolutionButton->user_data((void*)(pUI));
 		pUI->m_normalizeConvolutionButton->callback(cb_normalize_convolution);
 		
 
 		pUI->m_filterInputBoxes = new Fl_Float_Input*[rows*cols];
 		pUI->m_vectorOfInputBoxes.clear();
-		for (int i = 0; i < cols; i++) {
-			for (int j = 0; j < rows; j++) {
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
 				std::string label = std::to_string(i) + "," + std::to_string(j);
 				const char* charLabel = label.c_str();
-				pUI->m_filterInputBoxes[i*rows + j] = new Fl_Float_Input(70 * i, 40 * rows - 40 * (rows - j), 40, 20, charLabel);
+				pUI->m_filterInputBoxes[i*rows + j] = new Fl_Float_Input(70 * j, 40 * rows - 40*i, 40, 20, charLabel);
 				pUI->m_filterInputBoxes[i*rows + j]->value("0");
 				pUI->m_vectorOfInputBoxes.push_back(pUI->m_filterInputBoxes[i*rows + j]);
 				
@@ -558,14 +563,48 @@ void ImpressionistUI::cb_confirmFilterSize(Fl_Widget * o, void * v)
 
 void ImpressionistUI::cb_normalize_convolution(Fl_Widget * o, void * v)
 {
-	//double sum = conv00 + conv01 + conv02 + conv10 + conv11 + conv12 + conv20 + conv21 + conv22;
-	int sum = 0;
+	float sum = 0;
+	ImpressionistUI *pUI = ((ImpressionistUI*)(o->user_data()));
+	int rows = pUI->m_numFilterRows;
+	int cols = pUI->m_numFilterCols;
+
+
+	for (std::vector<Fl_Float_Input*>::iterator itr = pUI->m_vectorOfInputBoxes.begin(); itr != pUI->m_vectorOfInputBoxes.end(); itr++) {
+		sum += std::stof((*itr)->value());
+		cout << sum << endl;
+	}
+	
+	
+	/*
+	int numBoxes = (pUI->getFilterRows()) * (pUI->getFilterCols());
+	for (int i = 0; i < numBoxes; i++) {
+	sum += std::stof(pUI->m_vectorOfInputBoxes[i]->value());
+	}
+	cout << sum << endl;
+	*/	
+
+
 	if (sum == 0)
 		fl_alert("Invalid convolution. sum is 0");
 	else {
+		for (std::vector<Fl_Float_Input*>::iterator itr = pUI->m_vectorOfInputBoxes.begin(); itr != pUI->m_vectorOfInputBoxes.end(); itr++) {
+			float boxValue = std::stof((*itr)->value());
+			float newBoxNumericalValue = boxValue / sum;
+
+
+			std::string str = std::to_string(newBoxNumericalValue);
+			char* newBoxValue = new char[str.length() + 1];
+			strcpy(newBoxValue, str.c_str());
+
+			cout << newBoxValue << endl;
+			(*itr)->value(newBoxValue);
+			delete[] newBoxValue;
+		}
+		fl_message("this filter has been normalized.");
+		pUI->m_convolutionDialog->hide();
+
 
 	}
-	fl_message("Impressionist FLTK version for CS341, Spring 2002");
 	
 }
 void ImpressionistUI::cb_filter_numRows_changes(Fl_Widget * o, void * v)
@@ -739,12 +778,12 @@ bool ImpressionistUI::getAnotherGradient() {
 
 int ImpressionistUI::getFilterRows()
 {
-	return this->m_numFilterRows;
+	return m_numFilterRows;
 }
 
 int ImpressionistUI::getFilterCols()
 {
-	return this->m_numFilterCols;
+	return m_numFilterCols;
 }
 
 
