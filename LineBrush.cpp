@@ -89,10 +89,10 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	double lineAngleRadius = lineAngle * M_PI / 180;
 
 	// std::cout << lineAngleRadius << std::endl;
-	int x1 = (lineLength / 2) * cos(lineAngleRadius) + source.x + 0.5;
-	int y1 = (lineLength / 2) * sin(lineAngleRadius) + source.y + 0.5;
-	int x2 = -(lineLength / 2) * cos(lineAngleRadius) + source.x + 0.5;
-	int y2 = -(lineLength / 2) * sin(lineAngleRadius) + source.y + 0.5;
+	int x1 = round((lineLength / 2) * cos(lineAngleRadius) + source.x);
+	int y1 = round((lineLength / 2) * sin(lineAngleRadius) + source.y);
+	int x2 = round(-(lineLength / 2) * cos(lineAngleRadius) + source.x);
+	int y2 = round(-(lineLength / 2) * sin(lineAngleRadius) + source.y);
 
 	int width = pDoc->m_nWidth;
 	int lowerHeight = target.y - source.y;

@@ -43,60 +43,185 @@ void ScatteredLineBrush::BrushMove(const Point source, const Point target)
 	int lineLength = pDoc->getSize(); // get the line length from UI size
 	int lineWidth = pDoc->getLineWidth();
 
+	int width = pDoc->m_nWidth;
+	// the difference between target and source is the height of lower bound of paint plane
+	int lowerHeight = target.y - source.y; 
+
 	int maxdist = lineLength;
 	int t = rand() % 2 + 3; // generate 3 or 4 lines
 
 	for (int i = 0; i < t; i++) {
 		double dist = rand() % maxdist;
 		double angle = frand() * 2 * M_PI;
-		Point lineCtrl(target.x + dist*cos(angle), target.y + dist*sin(angle));
+	    Point lineCtrl(target.x + dist*cos(angle), target.y + dist*sin(angle));
 		Point lineCtrlSource(source.x + dist*cos(angle), source.y + dist*sin(angle));
 
-		int lineAngle = pDoc->getLineAngle(); // Slider or Right Mouse
+		// do not draw outside the boundary
+		if ((lineCtrlSource.y < 0) || (lineCtrlSource.x > width)) continue; 
+
+		int lineAngle = pDoc->getLineAngle();
+
 		int lineType = pDoc->getStrokeDirection();
 		switch (lineType)
 		{
 		case 2: // Gradient
 			if (pDoc->getFlagOfAnotherGradient()) {
-				lineAngle = pDoc->getAnotherGradientAngle(source) + 90;
+				lineAngle = pDoc->getAnotherGradientAngle(lineCtrlSource) + 90;
 			}
 			else {
-				lineAngle = pDoc->getGradientAngle(source) + 90;
+				lineAngle = pDoc->getGradientAngle(lineCtrlSource) + 90;
 			}
 			break;
 		case 3: // Brush Direction
-			lineAngle = (int)(atan2((source.y - lastPosition.y), (source.x - lastPosition.x)) / M_PI * 180);
+			lineAngle = (int)(atan2((lineCtrlSource.y - lastPosition.y), (lineCtrlSource.x - lastPosition.x)) / M_PI * 180);
 			break;
 		default:
 			break;
 		}
 
-		glPushMatrix();
-		glTranslated(lineCtrl.x, lineCtrl.y, 0);
-		glRotated(lineAngle, 0.0, 0.0, 1.0);
+		double lineAngleRadius = lineAngle * M_PI / 180;
 
-		//boundaries of drawing
-		int xUpperBound = pDoc->m_nPaintWidth;
-		int yLowerBound = pDoc->m_pUI->m_paintView->getWindowHeight() - pDoc->m_nPaintHeight;
-		/*cout << xUpperBound << " " << yLowerBound << endl;
-		cout << "vertex1: " << (double)(-lineLength / 2) + lineCtrl.x << " " << (double)(lineWidth / 2) + lineCtrl.y << endl;
-		cout << "vertex2: " << (double)(-lineLength / 2) + lineCtrl.x << " " << (double)(-lineWidth / 2) + lineCtrl.y << endl;
-		cout << "vertex3: " << (double)(lineLength / 2) + lineCtrl.x << " " << (double)(-lineWidth / 2) + lineCtrl.y << endl;
-		cout << "vertex4: " << (double)(lineLength / 2) + lineCtrl.x << " " << (double)(lineWidth / 2) + lineCtrl.y << endl;
-		*/glBegin(GL_POLYGON);
+		// std::cout << lineAngleRadius << std::endl;
+		int x1 = round((lineLength / 2) * cos(lineAngleRadius) + lineCtrlSource.x);
+		int y1 = round((lineLength / 2) * sin(lineAngleRadius) + lineCtrlSource.y);
+		int x2 = round(-(lineLength / 2) * cos(lineAngleRadius) + lineCtrlSource.x);
+		int y2 = round(-(lineLength / 2) * sin(lineAngleRadius) + lineCtrlSource.y);
+
+		// check edge clipping
+		if (pDoc->getFlagOfEdgeClipping()) {
+			int standard = (int)(pDoc->m_ucEdge[lineCtrlSource.y*width + lineCtrlSource.x]);
+			// std::cout << standard << std::endl;
+			// x1 < lineCtrlSource.x < x2
+			if (x1 < lineCtrlSource.x) {
+				for (int i = lineCtrlSource.x - 1; i >= x1; i--) {
+					int j = lineCtrlSource.y - ((lineCtrlSource.y - y1)*(lineCtrlSource.x - i) / (lineCtrlSource.x - x1)); // calculate the y of this point
+					if ((int)(pDoc->m_ucEdge[j * width + i]) != standard)
+					{
+						x1 = i;
+						y1 = j;
+						break;
+					}
+				}
+				for (int i = lineCtrlSource.x + 1; i <= x2; i++) {
+					int j = lineCtrlSource.y - ((lineCtrlSource.y - y2)*(lineCtrlSource.x - i) / (lineCtrlSource.x - x2)); // calculate the y of this point
+					if ((int)(pDoc->m_ucEdge[j * width + i]) != standard)
+					{
+						x2 = i;
+						y2 = j;
+						break;
+					}
+				}
+			}
+
+			// x2 < lineCtrlSource.x < x1
+			if (x1 > lineCtrlSource.x) {
+				for (int i = lineCtrlSource.x - 1; i >= x2; i--) {
+					int j = lineCtrlSource.y - ((lineCtrlSource.y - y2)*(lineCtrlSource.x - i) / (lineCtrlSource.x - x2)); // calculate the y of this point
+					if ((int)(pDoc->m_ucEdge[j * width + i]) != standard)
+					{
+						x2 = i;
+						y2 = j;
+						break;
+					}
+				}
+				for (int i = lineCtrlSource.x + 1; i <= x1; i++) {
+					int j = lineCtrlSource.y - ((lineCtrlSource.y - y1)*(lineCtrlSource.x - i) / (lineCtrlSource.x - x1)); // calculate the y of this point
+					if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
+					{
+						x1 = i;
+						y1 = j;
+						break;
+					}
+				}
+			}
+
+			// x1 = lineCtrlSource.x = x2
+			if (x1 == x2) {
+				int i = x1;
+				if (y1 < y2) {
+					for (int j = lineCtrlSource.y - 1; j >= y1; j--) {
+						if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
+						{
+							x1 = i;
+							y1 = j;
+							break;
+						}
+					}
+					for (int j = lineCtrlSource.y + 1; j <= y2; j++) {
+						if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
+						{
+							x2 = i;
+							y2 = j;
+							break;
+						}
+					}
+				}
+				else {
+					for (int j = lineCtrlSource.y - 1; j >= y2; j--) {
+						if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
+						{
+							x2 = i;
+							y2 = j;
+							break;
+						}
+					}
+					for (int j = lineCtrlSource.y + 1; j <= y1; j++) {
+						if (((int)(pDoc->m_ucEdge[j * width + i])) != standard)
+						{
+							x1 = i;
+							y1 = j;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		// check if outside the boundary
+		if (x1 != x2)
+		{
+			if (x1 > width)
+			{
+				y1 = lineCtrlSource.y - ((lineCtrlSource.y - y1)*(lineCtrlSource.x - width) / (lineCtrlSource.x - x1));
+				x1 = width;
+			}
+			if (x2 > width)
+			{
+				y2 = lineCtrlSource.y - ((lineCtrlSource.y - y2)*(lineCtrlSource.x - width) / (lineCtrlSource.x - x2));
+				x2 = width;
+			}
+		}
+
+
+		if (y1 != y2) {
+			if (y1 < 0) {
+				if (x1 != x2) {
+					x1 = lineCtrlSource.x - ((lineCtrlSource.x - x1)*(lineCtrlSource.y - 0) / (lineCtrlSource.y - y1));
+				}
+				y1 = 0;
+			}
+			if (y2 < 0) {
+				if (x1 != x2) {
+					x2 = lineCtrlSource.x - ((lineCtrlSource.x - x2)*(lineCtrlSource.y - 0) / (lineCtrlSource.y - y2));
+				}
+				y2 = 0;
+			}
+		}
+
+		y1 += lowerHeight;
+		y2 += lowerHeight;
+
+		glLineWidth((float)lineWidth);
+		glBegin(GL_LINES);
 		SetColor(lineCtrlSource);
-		if ((double)(-lineLength / 2)+lineCtrl.x <= xUpperBound && ((double)(-lineWidth / 2) + lineCtrl.y) >= yLowerBound)
-			glVertex3d((double)-lineLength / 2, (double)-lineWidth / 2, 0.0);
-		if ((double)(lineLength / 2) + lineCtrl.x <= xUpperBound && ((double)(-lineWidth / 2) + lineCtrl.y) >= yLowerBound)
-			glVertex3d((double)lineLength / 2, (double)-lineWidth / 2, 0.0);
-		if ((double)(lineLength / 2) + lineCtrl.x <= xUpperBound && ((double)(lineWidth / 2) + lineCtrl.y) >= yLowerBound)
-			glVertex3d((double)lineLength / 2, (double)lineWidth / 2, 0.0);
-		if ((double)(-lineLength / 2) + lineCtrl.x <= xUpperBound && ((double)(lineWidth / 2) + lineCtrl.y) >= yLowerBound)
-			glVertex3d((double)-lineLength / 2, (double)lineWidth / 2, 0.0);
+
+		std::cout << "1 is " << x1 << " " << y1 << std::endl;
+		std::cout << "2 is " << x2 << " " << y2 << std::endl;
+
+		glVertex2i(x1, y1);
+		glVertex2i(x2, y2);
 		glEnd();
 
-		//glTranslated(-target.x, -target.y, 0.0);
-		glPopMatrix();
 	}
 
 	lastPosition = source;
@@ -106,3 +231,4 @@ void ScatteredLineBrush::BrushEnd(const Point source, const Point target)
 {
 	// do nothing so far
 }
+
