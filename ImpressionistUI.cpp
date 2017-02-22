@@ -216,16 +216,6 @@ void ImpressionistUI::cb_load_alpha_mapped_image(Fl_Menu_ * o, void * v)
 	}
 }
 
-void ImpressionistUI::cb_load_edge_image(Fl_Menu_ * o, void * v)
-{
-	ImpressionistDoc *pDoc = whoami(o)->getDocument();
-
-	char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getImageName());
-	if (newfile != NULL) {
-		pDoc->loadEdgeImage(newfile);
-	}
-}
-
 void ImpressionistUI::cb_load_another_image(Fl_Menu_ * o, void * v)
 {
 	ImpressionistDoc *pDoc = whoami(o)->getDocument();
@@ -252,36 +242,6 @@ void ImpressionistUI::cb_save_image(Fl_Menu_* o, void* v)
 	}
 }
 
-void ImpressionistUI::cb_display_original(Fl_Menu_* o, void* v)
-{
-	whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucOriginalBitmap;
-	whoami(o)->m_origView->refresh();
-}
-
-void ImpressionistUI::cb_display_edge(Fl_Menu_* o, void* v)
-{
-	if (whoami(o)->getDocument()->m_ucEdgeMap) {
-		whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucEdgeMap;
-		whoami(o)->m_origView->refresh();
-	}
-	else
-	{
-		fl_alert("There is no edge image!");
-	}
-}
-
-void ImpressionistUI::cb_display_another(Fl_Menu_* o, void* v)
-{
-	if (whoami(o)->getDocument()->m_ucAnotherBitmap) {
-		whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucAnotherBitmap;
-		whoami(o)->m_origView->refresh();
-	}
-	else {
-		fl_alert("There is no another image!");
-	}
-	
-}
-
 //-------------------------------------------------------------
 // Brings up the paint dialog
 // This is called by the UI when the brushes menu item
@@ -291,7 +251,6 @@ void ImpressionistUI::cb_brushes(Fl_Menu_* o, void* v)
 {
 	whoami(o)->m_brushDialog->show();
 }
-
 
 //------------------------------------------------------------
 // Clears the paintview canvas.
@@ -315,6 +274,8 @@ void ImpressionistUI::cb_exit(Fl_Menu_* o, void* v)
 	whoami(o)->m_colorManipulationDialog->hide();
 
 }
+
+
 
 //-----------------------------------------------------------
 // Brings up an about dialog box
@@ -421,12 +382,12 @@ void ImpressionistUI::cb_swap_image(Fl_Menu_ * o, void * v)
 	ImpressionistDoc* m_pDoc = whoami(o)->getDocument();
 
 	//swap the bitmaps
-	if (whoami(o)->getDocument()->m_ucOriginalBitmap && whoami(o)->getDocument()->m_ucPainting) {
-		unsigned char* temp = whoami(o)->getDocument()->m_ucOriginalBitmap;
+	if (whoami(o)->getDocument()->m_ucBitmap && whoami(o)->getDocument()->m_ucPainting) {
+		unsigned char* temp = whoami(o)->getDocument()->m_ucBitmap;
 
-		//update backup bitmap to the new OriginalBitmap
-		whoami(o)->getDocument()->m_ucOriginalBitmap = whoami(o)->getDocument()->m_ucPainting;
-		memcpy(whoami(o)->getDocument()->backupBitmap, whoami(o)->getDocument()->m_ucOriginalBitmap, whoami(o)->getDocument()->m_nPaintHeight*whoami(o)->getDocument()->m_nPaintWidth * 3);
+		//update backup bitmap to the new ucBitmap
+		whoami(o)->getDocument()->m_ucBitmap = whoami(o)->getDocument()->m_ucPainting;
+		memcpy(whoami(o)->getDocument()->backupBitmap, whoami(o)->getDocument()->m_ucBitmap, whoami(o)->getDocument()->m_nPaintHeight*whoami(o)->getDocument()->m_nPaintWidth * 3);
 		whoami(o)->getDocument()->m_ucPainting = temp;
 
 		//update the undo bitmap to be null(nothing to undo)
@@ -501,19 +462,66 @@ void ImpressionistUI::cb_customize_convolution(Fl_Menu_ * o, void * v)
 void ImpressionistUI::cb_confirmFilterSize(Fl_Widget * o, void * v)
 {
 	ImpressionistUI *pUI = ((ImpressionistUI*)(o->user_data()));
+	int rows = pUI->m_numFilterRows;
+	int cols = pUI->m_numFilterCols;
+	double** params = pUI->m_filterParameters;//shorthands
 
-	//create the convolution dialog
-	pUI->m_convolutionDialog = new Fl_Window(400, 325, "Make your OWN convolution");
-	pUI->m_normalizeConvolutionButton = new Fl_Button(10, 250, 100, 30, "Normalize");
-	pUI->m_normalizeConvolutionButton->callback(cb_normalize_convolution);
-	
-	pUI->m_filterParameters = new double*[pUI->m_numFilterRows];
-	for (int row = 0; row < pUI->m_numFilterRows; row++) {
-		pUI->m_filterParameters[row] = new double[pUI->m_numFilterCols];
+	if (pUI->m_numFilterCols % 2 == 0 || pUI->m_numFilterRows % 2 == 0 || pUI->m_numFilterCols <3 || pUI->m_numFilterRows <3 ) {
+		fl_alert("Invalid numbers of rows and/or columns.");
+	}
+	else {
+		pUI->m_askFilterSize->hide();
+		
+		
+		//initialize the values of filter parameters to 0
+		pUI->m_filterParameters = new double*[pUI->m_numFilterRows];
+		for (int row = 0; row < pUI->m_numFilterRows; row++) {
+			pUI->m_filterParameters[row] = new double[pUI->m_numFilterCols];
+		}
+		for (int i = 0; i<pUI->m_numFilterRows; i++) {
+			for (int j = 0; j < pUI->m_numFilterCols; j++) {
+				pUI->m_filterParameters[i][j] = 0;
+			}
+		}
+		pUI->m_filterParameters[(rows + 1) / 2][(cols + 1) / 2] = 1;	//default: identity filter
+
+
+		//create the convolution dialog
+		pUI->m_convolutionDialog = new Fl_Window(70*cols, 40*rows+100, "Make your OWN convolution");
+		pUI->m_normalizeConvolutionButton = new Fl_Button(10, 40*rows +40, 100, 30, "Normalize");
+		pUI->m_normalizeConvolutionButton->callback(cb_normalize_convolution);
+
+		//create those input boxes
+		/*
+		pUI->m_filterInputBoxes = new Fl_Float_Input** [rows];
+		for (int row = 0; row < rows; row++) {
+		pUI->m_filterInputBoxes[rows] = new Fl_Float_Input*[cols];
+		for (int col = 0; col < cols; col++) {
+		pUI->m_filterInputBoxes[row][col] = new Fl_Float_Input(70 * col, 40 * row,60,30, "");
+		}
+		}
+		*/
+		pUI->m_filterInputBoxes = new Fl_Float_Input* [rows*cols];
+		pUI->m_vectorOfInputBoxes.clear();
+		for (int i = 0; i < cols; i++) {
+			for (int j = 0; j < rows; j++) {
+				std::string label = std::to_string(i) + "," + std::to_string(j);
+				const char* charLabel = label.c_str();
+				pUI->m_filterInputBoxes[i*rows+j] = new Fl_Float_Input(70 * i, 40*rows- 40 * (rows-j), 40, 20, charLabel);
+				pUI->m_filterInputBoxes[i*rows + j]->value("0");
+				pUI->m_vectorOfInputBoxes.push_back(pUI->m_filterInputBoxes[i*rows + j]);
+			}
+		}
+
+
+
+
+		pUI->m_convolutionDialog->end();
+		pUI->m_convolutionDialog->show();
 	}
 
-	pUI->m_convolutionDialog->end();
-	pUI->m_convolutionDialog->show();
+
+
 }
 
 
@@ -533,13 +541,13 @@ void ImpressionistUI::cb_normalize_convolution(Fl_Widget * o, void * v)
 void ImpressionistUI::cb_filter_numRows_changes(Fl_Widget * o, void * v)
 {
 	
-	std::string tempstr(((Fl_Float_Input *)o)->value());
+	std::string tempstr(((Fl_Int_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->m_numFilterRows = std::stof(tempstr);
 
 }
 void ImpressionistUI::cb_filter_numCols_changes(Fl_Widget * o, void * v)
 {
-	std::string tempstr(((Fl_Float_Input *)o)->value());
+	std::string tempstr(((Fl_Int_Input *)o)->value());
 	((ImpressionistUI*)(o->user_data()))->m_numFilterCols = std::stof(tempstr);
 
 }
@@ -699,6 +707,16 @@ bool ImpressionistUI::getAnotherGradient() {
 	return m_anotherGradient;
 }
 
+int ImpressionistUI::getFilterRows()
+{
+	return this->m_numFilterRows;
+}
+
+int ImpressionistUI::getFilterCols()
+{
+	return this->m_numFilterCols;
+}
+
 
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
@@ -708,7 +726,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	
 	{ "&Load Mural Image...",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_load_mural_image },
 	{ "&Load Alpha Mapped Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_alpha_mapped_image },
-	{ "&Load Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_load_edge_image },
+	{ "&Load Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_load_image },
 	{ "&Load Another Image...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_load_another_image, 0, FL_MENU_DIVIDER },
 
 	{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
@@ -729,9 +747,11 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ 0 },
 
 	{ "&Display",		0, 0, 0, FL_SUBMENU },
-	{ "&Original Image...",	FL_ALT + 'o', (Fl_Callback *)ImpressionistUI::cb_display_original },
-	{ "&Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_display_edge },
-	{ "&Another Image...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_display_another },
+	{ "&Original Image...",	FL_ALT + 'o', (Fl_Callback *)ImpressionistUI::cb_load_image },
+	{ "&Mural Image...",	FL_ALT + 'm', (Fl_Callback *)ImpressionistUI::cb_save_image },
+	{ "&Alpha Mapped Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_save_image },
+	{ "&Edge Image...",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_save_image },
+	{ "&Another Image...",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_save_image },
 	{ 0 },
 
 	{ "&Options",		0, 0, 0, FL_SUBMENU },
@@ -759,6 +779,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{ "Blur",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLURRING },
 	{ "Sharpen",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SHARPENING },
 	{ "Alpha Mapped",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_ALPHA_MAPPED },
+	{ "Customized",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_CUSTOMIZED },
 	{ 0 }
 };
 
@@ -894,14 +915,14 @@ ImpressionistUI::ImpressionistUI() {
 	m_AlphaValueSlider->callback(cb_alphaSlides);
 
 	// edge clipping button
-	m_EdgeClippingButton = new Fl_Light_Button(10, 200, 150, 25, "&Edge Clipping");
+	m_EdgeClippingButton = new Fl_Light_Button(10, 200, 150, 25, "Edge Clipping");
 	m_EdgeClippingButton->user_data((void*)(this));   // record self to be used by static callback functions
 	m_EdgeClippingButton->value(m_edgeClipping);
 	m_EdgeClippingButton->callback(cb_edgeClipping); 
 	m_EdgeClippingButton->deactivate();
 
 	// another gradient button
-	m_AnotherGradientButton = new Fl_Light_Button(240, 200, 150, 25, "&Another Gradient");
+	m_AnotherGradientButton = new Fl_Light_Button(240, 200, 150, 25, "Another Gradient");
 	m_AnotherGradientButton->user_data((void*)(this));   // record self to be used by static callback functions
 	m_AnotherGradientButton->value(m_anotherGradient);
 	m_AnotherGradientButton->callback(cb_anotherGradient);
@@ -934,7 +955,7 @@ ImpressionistUI::ImpressionistUI() {
 	m_EdgeThresholdSlider->callback(cb_edgeThresholdChange);
 
 	// add button for painting edge map
-	m_EdgeButton = new Fl_Button(330, 260, 50, 20, "&Do it");
+	m_EdgeButton = new Fl_Button(300, 260, 50, 25, "&Do it");
 	m_EdgeButton->user_data((void*)(this));
 	m_EdgeButton->callback(cb_paintEdgeMap);
 
@@ -998,11 +1019,11 @@ ImpressionistUI::ImpressionistUI() {
 	//the window which asks for filter size
 	m_askFilterSize = new Fl_Window(300, 100, "Input the size");
 
-	m_filterSizex = new Fl_Float_Input(40, 10, 60, 30, "Rows");
+	m_filterSizex = new Fl_Int_Input(40, 10, 60, 30, "Rows");
 	m_filterSizex->user_data((void*)(this));
 	m_filterSizex->callback(cb_filter_numRows_changes);
 
-	m_filterSizey = new Fl_Float_Input(150, 10, 60, 30, "Cols");
+	m_filterSizey = new Fl_Int_Input(150, 10, 60, 30, "Cols");
 	m_filterSizey->user_data((void*)(this));
 	m_filterSizey->callback(cb_filter_numCols_changes);
 
