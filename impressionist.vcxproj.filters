@@ -57,9 +57,6 @@
     <ClCompile Include="BlackandwhiteBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SobelFilter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SharpeningBrush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -117,9 +114,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BlackandwhiteBrush.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SobelFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SharpeningBrush.h">

@@ -158,7 +158,6 @@
     <ClCompile Include="ScatteredLineBrush.cpp" />
     <ClCompile Include="ScatteredPointBrush.cpp" />
     <ClCompile Include="SharpeningBrush.cpp" />
-    <ClCompile Include="SobelFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlphaMappedBrush.h" />
@@ -180,7 +179,6 @@
     <ClInclude Include="ScatteredLineBrush.h" />
     <ClInclude Include="ScatteredPointBrush.h" />
     <ClInclude Include="SharpeningBrush.h" />
-    <ClInclude Include="SobelFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
