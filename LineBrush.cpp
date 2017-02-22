@@ -50,10 +50,10 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	{
 	case 2: // Gradient
 		if (pDoc->getFlagOfAnotherGradient()) {
-			lineAngle = pDoc->m_sobelFilter->getAnotherGradientAngle(source) + 90;
+			lineAngle = pDoc->getAnotherGradientAngle(source) + 90;
 		}
 		else {
-			lineAngle = pDoc->m_sobelFilter->getGradientAngle(source) + 90;
+			lineAngle = pDoc->getGradientAngle(source) + 90;
 		}
 		break;
 	case 3: // Brush Direction
