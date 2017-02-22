@@ -252,6 +252,9 @@ int ImpressionistDoc::loadImage(char *iname)
 	backupBitmap = new unsigned char[width*height * 3];
 	memcpy(backupBitmap, m_ucOriginalBitmap, width*height * 3);
 
+	calculateGradient();
+	getEdgeMapAt(m_pUI->getEdgeThreshold());
+
 	// allocate space for draw view
 	m_ucPainting = new unsigned char[width*height * 3];
 	memset(m_ucPainting, 0, width*height * 3);
@@ -269,8 +272,6 @@ int ImpressionistDoc::loadImage(char *iname)
 	// refresh paint view as well
 	m_pUI->m_paintView->resizeWindow(width, height);
 	m_pUI->m_paintView->refresh();
-
-	calculateGradient();
 
 	return 1;
 }
@@ -414,15 +415,39 @@ int ImpressionistDoc::loadEdgeImage(char * iname)
 		return 0;
 	}
 
-	if (width != m_nPaintWidth || height != m_nPaintHeight) {
+	if (width != m_nWidth || height != m_nHeight)
+	{
 		fl_alert("Dimensions of the edge image should be same as the current image!");
 		return 0;
 	}
 
+	unsigned char* tempEdge = new unsigned char[m_nWidth*m_nHeight];
+	memset(tempEdge, 0, m_nWidth*m_nHeight);
+
+	for (int i = 0; i < m_nWidth*m_nHeight; i++) 
+	{
+		GLubyte color[3];
+		memcpy(color, (GLubyte*)(data + i*3), 3);
+
+		if (((int)color[0] == 255) && ((int)color[1] == 255) && ((int)color[2] == 255)) // this pixel is white
+		{
+			tempEdge[i] = 1;
+		}
+		else {
+			if (!(((int)color[0] == 0) && ((int)color[1] == 0) && ((int)color[2] == 0))) // this pixel is not black
+			{
+				fl_alert("This is not an edge map!");
+				return 0;
+			}
+		}
+	}
+
 	// release the old edge map
 	if (m_ucEdgeMap) delete[] m_ucEdgeMap;
+	if (m_ucEdge) delete[] m_ucEdge;
 
 	m_ucEdgeMap = data;
+	m_ucEdge = tempEdge;
 
 	// display it on origView
 	m_ucBitmap = m_ucEdgeMap;
@@ -604,6 +629,10 @@ void ImpressionistDoc::getEdgeMapAt(int threshold) {
 	m_ucEdgeMap = new unsigned char[m_nWidth*m_nHeight * 3];
 	memset(m_ucEdgeMap, 0, m_nWidth*m_nHeight * 3);
 
+	if (m_ucEdge) delete[] m_ucEdge;
+	m_ucEdge = new unsigned char[m_nWidth*m_nHeight];
+	memset(m_ucEdge, 0, m_nWidth*m_nHeight);
+
 	for (int i = 0; i < m_nWidth*m_nHeight; i++)
 	{
 		if ((int)m_ucGradient[i] > threshold) 
@@ -611,6 +640,7 @@ void ImpressionistDoc::getEdgeMapAt(int threshold) {
 			m_ucEdgeMap[i * 3] = (unsigned char)255;
 			m_ucEdgeMap[i * 3 + 1] = (unsigned char)255;
 			m_ucEdgeMap[i * 3 + 2] = (unsigned char)255;
+			m_ucEdge[i] = 1;
 		}
 	}
 

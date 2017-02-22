@@ -697,7 +697,7 @@ void ImpressionistUI::setLineWidth(int lineWidth)
 {
 	m_lineWidth = lineWidth;
 
-	if (lineWidth <= 40 && lineWidth > 0)
+	if (lineWidth <= 10 && lineWidth > 0)
 		m_LineWidthSlider->value(m_lineWidth);
 }
 
@@ -947,7 +947,7 @@ ImpressionistUI::ImpressionistUI() {
 	m_LineWidthSlider->labelfont(FL_COURIER);
 	m_LineWidthSlider->labelsize(12);
 	m_LineWidthSlider->minimum(1);
-	m_LineWidthSlider->maximum(40);
+	m_LineWidthSlider->maximum(10);
 	m_LineWidthSlider->step(1);
 	m_LineWidthSlider->value(m_lineWidth);
 	m_LineWidthSlider->align(FL_ALIGN_RIGHT);

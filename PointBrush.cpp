@@ -8,6 +8,7 @@
 #include "impressionistUI.h"
 #include "PointBrush.h"
 #include <iostream>
+using namespace std;
 
 extern float frand();
 
@@ -22,10 +23,8 @@ void PointBrush::BrushBegin(const Point source, const Point target)
 	ImpressionistUI* dlg = pDoc->m_pUI;
 
 	int size = pDoc->getSize();
-
-
-
 	glPointSize((float)size);
+	
 
 	BrushMove(source, target);
 
@@ -42,6 +41,7 @@ void PointBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
+	
 	glBegin(GL_POINTS);
 	SetColor(source);
 	glVertex2d(target.x, target.y);
