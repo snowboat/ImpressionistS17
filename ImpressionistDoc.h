@@ -107,6 +107,8 @@ public:
 
 	void calculateGradient();
 
+	void startAutoPaint();
+
 private:
 	char			m_imageName[256];
 

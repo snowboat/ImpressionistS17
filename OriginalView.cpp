@@ -30,6 +30,7 @@ OriginalView::OriginalView(int			x,
 
 void OriginalView::draw()
 {
+
 	if(!valid())
 	{
 		glClearColor(0.7f, 0.7f, 0.7f, 1.0);
@@ -79,7 +80,7 @@ void OriginalView::draw()
 		glPixelStorei( GL_UNPACK_ROW_LENGTH, m_pDoc->m_nWidth );
 		glDrawBuffer( GL_BACK );
 		glDrawPixels( drawWidth, drawHeight, GL_RGB, GL_UNSIGNED_BYTE, bitstart );
-
+		
 
 		drawCursor();
 		
@@ -113,9 +114,7 @@ void OriginalView::drawCursor()
 		glPointSize(10.0);
 		glBegin(GL_POINTS);
 		glColor3ub(255, 0, 0);
-		glVertex2d(cursorPosition.x, cursorPosition.y);/*
-		cout << "cursorPosition is " << cursorPosition.x << " " << cursorPosition.y << endl;
-		cout << m_nWindowHeight << "-w  h- " << m_nWindowWidth << endl;*/
+		glVertex2d(cursorPosition.x, cursorPosition.y);
 		glEnd();
 	}
 

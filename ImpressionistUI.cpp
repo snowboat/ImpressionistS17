@@ -295,6 +295,7 @@ void ImpressionistUI::cb_display_another(Fl_Menu_* o, void* v)
 void ImpressionistUI::cb_brushes(Fl_Menu_* o, void* v)
 {
 	whoami(o)->m_brushDialog->show();
+	
 }
 
 
@@ -416,6 +417,17 @@ void ImpressionistUI::cb_paintSpacingChange(Fl_Widget* o, void* v)
 void ImpressionistUI::cb_edgeThresholdChange(Fl_Widget* o, void* v)
 {
 	((ImpressionistUI*)(o->user_data()))->m_edgeThreshold = float(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_sizeRandom(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_sizeRandom = bool(((Fl_Light_Button *)o)->value());
+}
+
+void ImpressionistUI::cb_startAutoPaint(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_paintView->startAutoPaint();
+	//((ImpressionistUI*)(o->user_data()))->m_pDoc->startAutoPaint();
 }
 
 // paint the edge map on original view
@@ -776,6 +788,11 @@ bool ImpressionistUI::getAnotherGradient() {
 	return m_anotherGradient;
 }
 
+bool ImpressionistUI::getSizeRandom()
+{
+	return m_sizeRandom;
+}
+
 int ImpressionistUI::getFilterRows()
 {
 	return m_numFilterRows;
@@ -1008,6 +1025,17 @@ ImpressionistUI::ImpressionistUI() {
 	m_PaintSpacingSlider->align(FL_ALIGN_RIGHT);
 	m_PaintSpacingSlider->callback(cb_paintSpacingChange);
 
+	//random size button
+	m_RandomSizeButton = new Fl_Light_Button(230, 240, 80, 25, "&Size Rnd");
+	m_RandomSizeButton->user_data((void*)(this));   // record self to be used by static callback functions
+	m_RandomSizeButton->value(m_sizeRandom);
+	m_RandomSizeButton->callback(cb_sizeRandom);
+
+	//startAutoPaintButton
+	m_startAutoPaintButton = new Fl_Button(320, 240, 80, 25, "Auto Paint");
+	m_startAutoPaintButton->user_data((void*)(this));
+	m_startAutoPaintButton->callback(cb_startAutoPaint);
+
 	// Add edge threshold slider
 	m_EdgeThresholdSlider = new Fl_Value_Slider(10, 275, 200, 20, "Edge Threshold");
 	m_EdgeThresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions
@@ -1020,6 +1048,8 @@ ImpressionistUI::ImpressionistUI() {
 	m_EdgeThresholdSlider->value(m_edgeThreshold);
 	m_EdgeThresholdSlider->align(FL_ALIGN_RIGHT);
 	m_EdgeThresholdSlider->callback(cb_edgeThresholdChange);
+
+
 
 	// add button for painting edge map
 	m_EdgeButton = new Fl_Button(330, 275, 50, 20, "&Do it");

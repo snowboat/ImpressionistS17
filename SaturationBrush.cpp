@@ -54,6 +54,10 @@ void SaturationBrush::BrushMove(const Point source, const Point target)
 			double alpha = -1;//degree of saturation
 			for (int i = 0; i < 3; i++) {
 				saturatePixel[i] = (1.0 - alpha)*GetColor(replacedPoint)[i] + alpha*greyscale;
+				if (saturatePixel[i] > 255)
+					saturatePixel[i] = 255;
+				if (saturatePixel[i] < 0)
+					saturatePixel[i] = 0;
 				newColor[i] = (GLubyte)saturatePixel[i];
 			}
 			saturatePixel[3] = (int)(pDoc->getAlpha() * 255);

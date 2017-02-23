@@ -35,6 +35,9 @@ public:
 
 	ImpressionistDoc *m_pDoc;
 
+	void autoPaint();
+	void startAutoPaint();
+
 private:
 	GLvoid* m_pPaintBitstart;
 	int		m_nDrawWidth,

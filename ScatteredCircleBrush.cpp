@@ -42,7 +42,10 @@ void ScatteredCircleBrush::BrushMove(const Point source, const Point target)
 		return;
 	}
 
-	double radius = pDoc->getSize() / 2;
+	int radius = pDoc->getSize() / 2;
+	if (radius == 0)
+		radius = 1;
+	
 
 	//Draw the surrounding circles
 	int maxdist = 2 * radius;

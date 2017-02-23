@@ -10,6 +10,7 @@
 #include "paintview.h"
 #include "ImpBrush.h"
 #include <iostream>
+#include <algorithm>
 #include <math.h>
 using namespace std;
 
@@ -20,6 +21,7 @@ using namespace std;
 #define RIGHT_MOUSE_DOWN	4
 #define RIGHT_MOUSE_DRAG	5
 #define RIGHT_MOUSE_UP		6
+#define AUTO_DRAW			7
 
 
 #ifndef WIN32
@@ -48,6 +50,7 @@ PaintView::PaintView(int			x,
 
 void PaintView::draw()
 {
+	cout << "draw function of paintview called" << endl;
 	#ifndef MESA
 	// To avoid flicker on some machines.
 	glDrawBuffer(GL_FRONT_AND_BACK);
@@ -114,6 +117,24 @@ void PaintView::draw()
 		Point source( coord.x + m_nStartCol, m_nEndRow - coord.y );
 		Point target( coord.x, m_nWindowHeight - coord.y );
 
+		//for auto painting
+		int spacing = m_pDoc->m_pUI->getPaintSpacing();
+		int sizeBeforeRandom = m_pDoc->m_pUI->getSize();
+		int sizeCap = min(40, m_pDoc->m_pUI->getSize()*2);
+		if (sizeCap <= 0)
+			sizeCap = 1;
+
+		//implement random ordering of brush locations
+		std::vector<int> xorder, yorder;
+		for (int i = 0; i < drawWidth ; i+= spacing) {
+			xorder.push_back(i);
+		}
+		for (int j = 0; j < drawHeight; j+= spacing) {
+			yorder.push_back(j);
+		}
+		std::random_shuffle(xorder.begin(), xorder.end());
+		std::random_shuffle(yorder.begin(), yorder.end());
+
 		// This is the event handler
 		switch (eventToDo) 
 		{
@@ -174,6 +195,26 @@ void PaintView::draw()
 					m_pDoc->m_pUI->setLineAngle(lineAngle);
 				}	
 			}
+			break;
+
+		case AUTO_DRAW:
+
+			for (int i = 0; i < xorder.size(); i++) {
+				for (int j = 0; j < yorder.size(); j++) {
+					if (m_pDoc->m_pUI->getSizeRandom())
+						m_pDoc->m_pUI->setSize(rand() % sizeCap);
+
+					m_pDoc->m_pCurrentBrush->BrushBegin(Point(xorder[i] + m_nStartCol, m_nEndRow - yorder[j]), Point(xorder[i], m_nWindowHeight - yorder[j]));
+
+				}
+			}
+
+			
+
+			m_pDoc->m_pUI->setSize(sizeBeforeRandom);
+			SaveCurrentContent();
+			RestoreContent();
+
 			break;
 		default:
 			printf("Unknown event!!\n");		
@@ -306,4 +347,14 @@ int PaintView::getDrawHeight()
 int PaintView::getWindowHeight()
 {
 	return this->m_nWindowHeight;
+}
+
+
+
+
+void PaintView::startAutoPaint()
+{
+	isAnEvent = 1;
+	eventToDo = AUTO_DRAW;
+	redraw();
 }

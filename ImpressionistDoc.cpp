@@ -658,6 +658,14 @@ void ImpressionistDoc::calculateGradient()
 		m_ucGradient[i] = (unsigned char)(getGradient(i%m_nWidth, i/m_nWidth));
 	}
 }
+void ImpressionistDoc::startAutoPaint()
+{
+	Point testPoint(100, 100);
+	m_pCurrentBrush->BrushBegin(testPoint, testPoint);
+	m_pUI->m_paintView->SaveCurrentContent();
+	m_pUI->m_paintView->RestoreContent();
+
+}
 int ImpressionistDoc::getGradient(int x, int y) {
 	//  2 5 8
 	//  1 4 7

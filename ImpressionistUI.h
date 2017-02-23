@@ -52,6 +52,7 @@ public:
 	Fl_Light_Button*    m_EdgeClippingButton;
 	Fl_Light_Button*    m_AnotherGradientButton;
 	Fl_Light_Button*    m_RandomSizeButton;
+	Fl_Button*			m_startAutoPaintButton;
 
 	//For designing new convolution matrix
 	Fl_Window*			m_convolutionDialog;
@@ -97,6 +98,7 @@ public:
 	float				getBlue();
 	bool				getEdgeClipping();
 	bool				getAnotherGradient();
+	bool				getSizeRandom();
 	int					getFilterRows();
 	int					getFilterCols();
 
@@ -119,6 +121,7 @@ private:
 
 	bool	m_edgeClipping;
 	bool	m_anotherGradient;
+	bool    m_sizeRandom;
 
 	//the convolution values
 	int m_numFilterRows, m_numFilterCols;
@@ -153,9 +156,8 @@ private:
 	static void cb_lineAngleChanges(Fl_Widget* o, void* v);
 	static void cb_lineWidthChanges(Fl_Widget* o, void* v);
 	static void cb_alphaSlides(Fl_Widget* o, void* v);
-	static void cb_paintSpacingChange(Fl_Widget* o, void* v);
-	static void cb_edgeThresholdChange(Fl_Widget* o, void* v);
 	static void cb_paintEdgeMap(Fl_Widget* o, void* v);
+	static void cb_edgeThresholdChange(Fl_Widget* o, void* v);
 	static void cb_swap_image(Fl_Menu_* o, void* v);
 	//color manipulation callbacks
 	static void cb_manipulate_color(Fl_Menu_* o, void* v);
@@ -177,6 +179,10 @@ private:
 	static void cb_filter_numRows_changes(Fl_Widget* o, void* v);
 	static void cb_filter_numCols_changes(Fl_Widget* o, void* v);
 
+	//callbacks for auto painting
+	static void cb_paintSpacingChange(Fl_Widget* o, void* v);
+	static void cb_sizeRandom(Fl_Widget* o, void* v);
+	static void cb_startAutoPaint(Fl_Widget* o, void* v);
 
 
 };
