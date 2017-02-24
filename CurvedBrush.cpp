@@ -74,8 +74,9 @@ void CurvedBrush::BrushMove(const Point source, const Point target)
 		currentTarget.x = round((size / 2) * cos(directionAngleRadius) + lastTarget.x);
 		currentTarget.y = round((size / 2) * sin(directionAngleRadius) + lastTarget.y);
 		
-		
-		if (abs(pDoc->getGreyscale(source) - pDoc->getGreyscale(lastSource)) > abs(pDoc->getGreyscale(source) - pDoc->getGreyscale(currentSource)))
+		int a = abs(pDoc->getGreyscale(source) - pDoc->getGreyscale(lastSource));
+		int b = abs(pDoc->getGreyscale(source) - pDoc->getGreyscale(currentSource));
+		if (a>b)
 		{
 			break;
 		}
