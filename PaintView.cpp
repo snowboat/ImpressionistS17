@@ -415,7 +415,7 @@ void PaintView::doPainterly()
 
 		//loop thru all brush sizes
 		for (int i = 0; i < brushSizes.size(); i++) {
-			fl_message("start a new round");
+			//fl_message("start a new round");
 			int currentRadius = brushSizes[i];
 			double gaussianSd = blurFactor*currentRadius;
 
@@ -496,6 +496,7 @@ void PaintView::doPainterly()
 			}
 			//cout << "refimage generated" << endl;
 			paintLayer(canvas, refImage, currentRadius);
+			m_pDoc->m_pUI->m_paintView->flush();
 		}
 
 		//fl_message("painterly completed");
