@@ -136,6 +136,7 @@ void PaintView::draw()
 		}
 		std::random_shuffle(xorder.begin(), xorder.end());
 		std::random_shuffle(yorder.begin(), yorder.end());
+		std::vector<Point> randomDrawingOrder;
 
 		// This is the event handler
 		switch (eventToDo) 
@@ -203,15 +204,27 @@ void PaintView::draw()
 
 			for (int i = 0; i < xorder.size(); i++) {
 				for (int j = 0; j < yorder.size(); j++) {
-					if (m_pDoc->m_pUI->getSizeRandom())
-						m_pDoc->m_pUI->setSize(rand() % sizeCap);
+					randomDrawingOrder.push_back(Point(xorder[i], yorder[j]));
+					
+					
+					
 
-					m_pDoc->m_pCurrentBrush->BrushBegin(Point(xorder[i] + m_nStartCol, m_nEndRow - yorder[j]), Point(xorder[i], m_nWindowHeight - yorder[j]));
 
 				}
 			}
-
+			std::random_shuffle(randomDrawingOrder.begin(), randomDrawingOrder.end());
 			
+			for (int i = 0; i < randomDrawingOrder.size(); i++) {
+				Point source(randomDrawingOrder[i].x + m_nStartCol, m_nEndRow - randomDrawingOrder[i].y);
+				Point target(randomDrawingOrder[i].x, m_nWindowHeight - randomDrawingOrder[i].y);
+				
+				if (m_pDoc->m_pUI->getSizeRandom())
+					m_pDoc->m_pUI->setSize(rand() % sizeCap);
+				m_pDoc->m_pCurrentBrush->BrushBegin(source, target);
+
+			}
+			//m_pDoc->m_pCurrentBrush->BrushBegin(Point(xorder[i] + m_nStartCol, m_nEndRow - yorder[j]), Point(xorder[i], m_nWindowHeight - yorder[j]));
+
 
 			m_pDoc->m_pUI->setSize(sizeBeforeRandom);
 			SaveCurrentContent();
