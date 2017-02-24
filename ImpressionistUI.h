@@ -74,6 +74,21 @@ public:
 	Fl_Slider*		m_blueSlider;
 	Fl_Button*		m_applyManipulationButton;
 
+	//Painterly
+	Fl_Window*		m_painterlyDialog;
+	Fl_Choice*		m_painterlyStyleChoice;
+	Fl_Choice*		m_painterlyStrokeChoice;
+	Fl_Button*		m_painterlyRunButton;
+	Fl_Slider*		m_painterlyThresholdSlider;
+	Fl_Slider*		m_painterlyCurvatureSlider;
+	Fl_Slider*		m_painterlyBlurSlider;
+	Fl_Slider*      m_painterlyGridsizeSlider;
+	Fl_Slider*		m_painterlyMinStrokeSlider;
+	Fl_Slider*		m_painterlyMaxStrokeSlider;
+	Fl_Slider*		m_painterlyAlphaSlider;
+	Fl_Slider*		m_painterlyLayersSlider;
+	Fl_Slider*		m_painterlyR0levelSlider;
+
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -101,6 +116,12 @@ public:
 	bool				getSizeRandom();
 	int					getFilterRows();
 	int					getFilterCols();
+	void				resetColorManipulation();
+	int					getPainterlyThreshold();
+	double				getPainterlyBlur();
+	double				getPainterlyGridsize();
+	int					getPainterlyLayers();
+	int					getPainterlyR0level();
 
 
 private:
@@ -126,10 +147,26 @@ private:
 	//the convolution values
 	int m_numFilterRows, m_numFilterCols;
 
+
+	//painterly parameters
+	int m_painterlyStyle;
+	int m_painterlyStroke;
+	int m_painterlyThreshold;
+	double m_painterlyCurvature;
+	double m_painterlyBlur;
+	double m_painterlyGridsize;
+	int m_painterlyMinStroke;
+	int m_painterlyMaxStroke;
+	double m_painterlyAlpha;
+	int m_painterlyLayers;
+	int m_painterlyR0level;
+
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
 	static Fl_Menu_Item		brushTypeMenu[NUM_BRUSH_TYPE + 1];
 	static Fl_Menu_Item		strokeDirectionMenu[3 + 1];
+	static Fl_Menu_Item		painterlyStyleMenu[5 + 1];
+	static Fl_Menu_Item		painterlyStrokeMenu[3 + 1];
 
 	static ImpressionistUI*	whoami(Fl_Menu_* o);
 
@@ -184,7 +221,21 @@ private:
 	static void cb_sizeRandom(Fl_Widget* o, void* v);
 	static void cb_startAutoPaint(Fl_Widget* o, void* v);
 
-
+	//for painterly
+	static void	cb_painterly(Fl_Menu_* o, void* v);
+	static void cb_setPainterlyStyle(Fl_Widget* o, void* v);
+	static void cb_setPainterlyStroke(Fl_Widget* o, void* v);
+	static void cb_painterlyThresholdChanges(Fl_Widget* o, void* v);
+	static void cb_painterlyCurvatureChanges(Fl_Widget* o, void* v);
+	static void cb_painterlyBlurChanges(Fl_Widget* o, void* v);
+	static void cb_painterlyGridsizeChanges(Fl_Widget* o, void* v);
+	static void cb_painterlyMinStrokeChanges(Fl_Widget* o, void* v);
+	static void cb_painterlyMaxStrokeChanges(Fl_Widget* o, void* v);
+	static void cb_painterlyAlphaChanges(Fl_Widget* o, void* v);
+	static void cb_painterlyLayersChanges(Fl_Widget* o, void* v);
+	static void cb_painterlyR0levelChanges(Fl_Widget* o, void* v);
+	static void cb_runPainterly(Fl_Widget* o, void* v);
+	
 };
 
 #endif

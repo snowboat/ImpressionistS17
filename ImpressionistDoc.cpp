@@ -267,6 +267,9 @@ int ImpressionistDoc::loadImage(char *iname)
 		width * 2,
 		height + 25);
 
+	//reset color manipulation
+	m_pUI->resetColorManipulation();
+
 	// display it on origView
 	m_ucBitmap = m_ucOriginalBitmap;
 	m_pUI->m_origView->resizeWindow(width, height);
@@ -328,6 +331,10 @@ int ImpressionistDoc::loadDissolveImage(char * iname)
 	backupBitmap = new unsigned char[width*height * 3];
 	memcpy(backupBitmap, m_ucOriginalBitmap, width*height * 3);
 
+
+	//reset color manipulation
+	m_pUI->resetColorManipulation();
+
 	// display it on origView
 	m_ucBitmap = m_ucOriginalBitmap;
 	m_pUI->m_origView->refresh();
@@ -362,6 +369,9 @@ int ImpressionistDoc::loadMuralImage(char * iname)
 
 	//update m_ucOriginalBitmap
 	m_ucOriginalBitmap = data;
+
+	//reset color manipulation
+	m_pUI->resetColorManipulation();
 
 	//do deep copy to initialize backupbitmap
 	backupBitmap = new unsigned char[width*height * 3];

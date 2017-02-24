@@ -22,6 +22,7 @@ using namespace std;
 #define RIGHT_MOUSE_DRAG	5
 #define RIGHT_MOUSE_UP		6
 #define AUTO_DRAW			7
+#define	PAINTERLY			8
 
 
 #ifndef WIN32
@@ -50,7 +51,6 @@ PaintView::PaintView(int			x,
 
 void PaintView::draw()
 {
-	cout << "draw function of paintview called" << endl;
 	#ifndef MESA
 	// To avoid flicker on some machines.
 	glDrawBuffer(GL_FRONT_AND_BACK);
@@ -216,6 +216,10 @@ void PaintView::draw()
 			RestoreContent();
 
 			break;
+		case PAINTERLY:
+
+
+
 		default:
 			printf("Unknown event!!\n");		
 			break;
@@ -356,5 +360,31 @@ void PaintView::startAutoPaint()
 {
 	isAnEvent = 1;
 	eventToDo = AUTO_DRAW;
+	redraw();
+}
+
+void PaintView::doPainterly()
+{
+	int threshold = m_pDoc->m_pUI->getPainterlyThreshold();
+	int numLayers = m_pDoc->m_pUI->getPainterlyLayers();
+	int r0level = m_pDoc->m_pUI->getPainterlyR0level();
+	double blurFactor = m_pDoc->m_pUI->getPainterlyBlur();
+	double gridFactor = m_pDoc->m_pUI->getPainterlyGridsize();
+	cout << numLayers << "nl r0" << r0level << endl;
+	int numBrushes = min(numLayers, r0level + 1);
+	std::vector<int> brushSizes;
+	int twoPower = r0level;
+	for (int i = 0; i < numBrushes; i++) {
+		brushSizes.push_back(pow(2, twoPower));
+		twoPower--;
+	}
+	for (int i = 0; i < brushSizes.size(); i++)
+	{
+		cout << brushSizes[i] << endl;
+	}
+
+
+	isAnEvent = 1;
+	eventToDo = PAINTERLY;
 	redraw();
 }
