@@ -442,14 +442,16 @@ void ImpressionistUI::cb_setPainterlyStyle(Fl_Widget * o, void * v)
 
 void ImpressionistUI::cb_setPainterlyStroke(Fl_Widget * o, void * v)
 {
+	int type = (int)v - 1;
+	((ImpressionistUI*)(o->user_data()))->m_pDoc->setBrushType(type);
+		
 	((ImpressionistUI*)(o->user_data()))->m_painterlyStroke = (int)v;
-	cout << "painterly style set to" << ((ImpressionistUI*)(o->user_data()))->m_painterlyStroke << endl;
 
 }
 
 void ImpressionistUI::cb_painterlyThresholdChanges(Fl_Widget * o, void * v)
 {
-	((ImpressionistUI*)(o->user_data()))->m_painterlyThreshold = (int)v;
+	((ImpressionistUI*)(o->user_data()))->m_painterlyThreshold = float(((Fl_Slider *)o)->value());
 }
 
 void ImpressionistUI::cb_painterlyCurvatureChanges(Fl_Widget * o, void * v)
@@ -866,9 +868,19 @@ int ImpressionistUI::getFilterRows()
 	return m_numFilterRows;
 }
 
+void ImpressionistUI::setFilterRows(int r)
+{
+	this->m_numFilterRows = r;
+}
+
 int ImpressionistUI::getFilterCols()
 {
 	return m_numFilterCols;
+}
+
+void ImpressionistUI::setFilterCols(int c)
+{
+	this->m_numFilterCols = c;
 }
 
 void ImpressionistUI::resetColorManipulation()
@@ -988,9 +1000,9 @@ Fl_Menu_Item ImpressionistUI::painterlyStyleMenu[5 + 1] = {
 
 
 Fl_Menu_Item ImpressionistUI::painterlyStrokeMenu[3 + 1] = {
-	{ "Circle Brush",FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStroke, (void *)1 },
+	{ "Point Brush",FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStroke, (void *)1 },
 	{ "Line Brush",FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStroke, (void *)2 },
-	{ "Curved Brush",FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStroke, (void *)3 },
+	{ "Circle Brush",FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStroke, (void *)3 },
 	{ 0 }
 };
 //----------------------------------------------------

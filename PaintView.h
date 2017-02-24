@@ -40,6 +40,11 @@ public:
 
 	//painterly interface
 	void doPainterly();
+	void paintLayer(unsigned char* canvas, unsigned char* refImage, int radius);
+
+	int redbytePosition(int x, int y);
+	int greenbytePosition(int x, int y);
+	int bluebytePosition(int x, int y);
 
 private:
 	GLvoid* m_pPaintBitstart;
@@ -51,6 +56,11 @@ private:
 			m_nEndCol,
 			m_nWindowWidth, 
 			m_nWindowHeight;
+
+	std::vector<Point> strokes; //to record the random stroke positions of painterly
+	int painterlyRadius;
+	unsigned char* painterlyRefimage;
+	unsigned char* painterlyCanvas;
 
 	//The associated original view for drawing the cursor
 	OriginalView* origView;

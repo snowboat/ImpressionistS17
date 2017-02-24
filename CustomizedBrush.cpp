@@ -72,7 +72,7 @@ void CustomizedBrush::BrushMove(const Point source, const Point target)
 				//the following two for loops scans thru the ref grid, right to left, top to bottom
 				for (int yref = ypos - verticalBleed; yref <= ypos + verticalBleed; yref++) {
 					for (int xref = xpos - horizontalBleed; xref <= xpos + horizontalBleed; xref++) {
-						
+				
 						Point samplePoint = Point(min(xref, pDoc->m_nPaintWidth), min(yref, pDoc->m_nPaintHeight));
 						float refpointWeight = std::stof(dlg->m_vectorOfInputBoxes[counter]->value());
 						float refRed = (float)getColorRed(samplePoint);

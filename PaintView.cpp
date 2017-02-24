@@ -46,6 +46,8 @@ PaintView::PaintView(int			x,
 	m_nWindowWidth	= w;
 	m_nWindowHeight	= h;
 	// cout << "paintview is " << w << " and " << h << endl;	
+	painterlyRadius = 10;
+	painterlyRefimage = NULL;
 }
 
 
@@ -217,8 +219,29 @@ void PaintView::draw()
 
 			break;
 		case PAINTERLY:
+			m_pDoc->m_pUI->setSize(painterlyRadius * 2);
+			if (true) {
+				//"borrow" ucbitmap to draw
+				unsigned char* tempUcbitmap = m_pDoc->m_ucBitmap;
+				m_pDoc->m_ucBitmap = painterlyRefimage;
 
 
+				for (int i = 0; i < strokes.size(); i++) {
+					//cout << strokes[i].x << "x y " << strokes[i].y << endl;
+					m_pDoc->m_pCurrentBrush->BrushBegin(Point(strokes[i].x + m_nStartCol, strokes[i].y), Point(strokes[i].x, m_nWindowHeight - (m_nDrawHeight - strokes[i].y)));
+
+				}
+
+				//restore 
+				m_pDoc->m_pUI->setSize(sizeBeforeRandom);
+				m_pDoc->m_ucBitmap = tempUcbitmap;
+				SaveCurrentContent();
+				RestoreContent();
+			}
+
+			
+			
+			break;
 
 		default:
 			printf("Unknown event!!\n");		
@@ -370,21 +393,218 @@ void PaintView::doPainterly()
 	int r0level = m_pDoc->m_pUI->getPainterlyR0level();
 	double blurFactor = m_pDoc->m_pUI->getPainterlyBlur();
 	double gridFactor = m_pDoc->m_pUI->getPainterlyGridsize();
-	cout << numLayers << "nl r0" << r0level << endl;
 	int numBrushes = min(numLayers, r0level + 1);
+	
+	//determine the set of brush sizes
 	std::vector<int> brushSizes;
 	int twoPower = r0level;
 	for (int i = 0; i < numBrushes; i++) {
 		brushSizes.push_back(pow(2, twoPower));
 		twoPower--;
 	}
-	for (int i = 0; i < brushSizes.size(); i++)
-	{
-		cout << brushSizes[i] << endl;
+
+	//for (int i = 0; i < numBrushes; i++) {
+		//cout << brushSizes[i] << "brushsize" << endl;
+	//}
+
+	//initialize the canvas to be the same as current m_ucPainting
+	if (m_pDoc && m_pDoc->m_ucPainting && m_pDoc->m_ucBitmap) {
+		unsigned char* canvas = new unsigned char[m_pDoc->m_nWidth*m_pDoc->m_nHeight * 3];
+		memset(canvas, 255, m_pDoc->m_nWidth*m_pDoc->m_nHeight * 3);
+		//memcpy(canvas, m_pDoc->m_ucPainting, m_pDoc->m_nWidth*m_pDoc->m_nHeight * 3);
+
+		//loop thru all brush sizes
+		for (int i = 0; i < brushSizes.size(); i++) {
+			fl_message("start a new round");
+			int currentRadius = brushSizes[i];
+			double gaussianSd = blurFactor*currentRadius;
+
+
+			unsigned char* refImage = new unsigned char[m_pDoc->m_nWidth*m_pDoc->m_nHeight * 3];
+			memset(refImage, 0, m_pDoc->m_nWidth*m_pDoc->m_nHeight * 3);
+
+			double sigma = m_pDoc->m_pUI->getPainterlyBlur() * currentRadius;
+			cout << currentRadius << endl;
+			double gaussianCorner = (1 / (2 * 3.1416*sigma*sigma))*exp(-(2 / sigma*sigma));
+			double gaussianEdge = (1 / (2 * 3.1416*sigma*sigma))*exp(-(1 / sigma*sigma));
+			double gaussianCenter = (1 / (2 * 3.1416*sigma*sigma));
+			
+
+			double tempCorner = gaussianCorner/(gaussianCorner * 4 + gaussianEdge * 4 + gaussianCenter);
+			double tempEdge = gaussianEdge/(gaussianCorner * 4 + gaussianEdge * 4 + gaussianCenter);
+			double tempCenter = gaussianCenter/(gaussianCorner * 4 + gaussianEdge * 4 + gaussianCenter);
+			gaussianCorner = tempCorner;
+			gaussianEdge = tempEdge;
+			gaussianCenter = tempCenter;
+			cout << gaussianCorner << " " << gaussianEdge << " --" << gaussianCenter << endl;
+			//double gaussianCorner = 0.0625;
+			//double gaussianEdge = 0.125;
+			//double gaussianCenter = 0.25;
+
+			//loop thru every point in m_ucbitmap
+			for (int y = 0; y < m_pDoc->m_nHeight; y++) {
+				for (int x= 0; x < m_pDoc->m_nWidth; x++) {
+					int xpos = x;
+					int ypos = y;
+					//the following two for loops scans thru the ref grid, right to left, top to bottom
+					int newRed = 0;
+					int newGreen = 0;
+					int newBlue = 0;
+
+					for (int yref = ypos - 1; yref <= ypos + 1; yref++) {
+						for (int xref = xpos - 1; xref <= xpos + 1; xref++) {
+
+								
+							int samplex = xref;
+							if (samplex < 0)
+								samplex = 0;
+							if (samplex > m_pDoc->m_nPaintWidth)
+								samplex = m_pDoc->m_nPaintWidth - 1;
+							int sampley = yref;
+							if (sampley < 0)
+								sampley = 0;
+							if (sampley > m_pDoc->m_nPaintWidth)
+								sampley = m_pDoc->m_nPaintHeight - 1;
+								
+							float refRed = (float)m_pDoc->m_ucBitmap[redbytePosition(samplex, sampley)];
+							float refGreen = (float)m_pDoc->m_ucBitmap[greenbytePosition(samplex, sampley)];
+							float refBlue = (float)m_pDoc->m_ucBitmap[bluebytePosition(samplex, sampley)];
+
+							//cout << "refrgb is" << refRed << " " << refGreen << " " << refBlue << endl;
+ 							float refpointWeight = 0.0;
+							if (abs(yref - ypos) + abs(xref - xpos) == 2)
+								refpointWeight = gaussianCorner;
+							else if (abs(yref - ypos) + abs(xref - xpos) == 1)
+								refpointWeight = gaussianEdge;
+							else
+								refpointWeight = gaussianCenter;
+
+								newRed += (int)(refpointWeight *refRed);
+								newGreen += (int)(refpointWeight * refGreen);
+								newBlue += (int)(refpointWeight * refBlue);
+
+								//cout << "newrgb is now" << newRed << " " << newBlue << " " << newGreen << endl;
+
+							}
+						}
+					//cout << (int)refImage[redbytePosition(xpos, ypos)] << endl;
+					refImage[redbytePosition(xpos, ypos)] = newRed;
+					refImage[greenbytePosition(xpos, ypos)] = newGreen;
+					refImage[bluebytePosition(xpos, ypos)] = newBlue;
+					//cout << (int)refImage[redbytePosition(xpos, ypos)] << "afterassigning" << endl;
+				}
+			}
+			//cout << "refimage generated" << endl;
+			paintLayer(canvas, refImage, currentRadius);
+		}
+
+		//fl_message("painterly completed");
+	}
+	else {
+		fl_message("please load an image first");
 	}
 
+}
+
+void PaintView::paintLayer(unsigned char * canvas, unsigned char * refImage, int radius)
+{
+	strokes.clear();
+	//cout << "current radius is " << radius << endl;
+	std::vector<double> difference;
+	int imageSize = m_pDoc->m_nPaintWidth * m_pDoc->m_nPaintHeight;
+	/*
+	for (int i = 0; i < imageSize; i++) {
+	int rdiff = (int)canvas[3 * i] - (int)refImage[3 * i];
+	int gdiff = (int)canvas[3 * i+1] - (int)refImage[3 * i+2];
+	int bdiff = (int)canvas[3 * i+2] - (int)refImage[3 * i+2];
+	double diff = sqrt(rdiff*rdiff + gdiff*gdiff + bdiff*bdiff);
+	difference.push_back(diff);
+	}
+	*/
+
+	//check whether it's first round
+	bool firstRound = (radius == pow(2, m_pDoc->m_pUI->getPainterlyR0level()));
+
+
+	int gridSize = (int)(m_pDoc->m_pUI->getPainterlyGridsize() * (double)radius);
+
+	//scan thru all the sub-regions
+	for (int x = 0; x < m_pDoc->m_nPaintWidth; x += gridSize) {
+		for (int y = 0; y < m_pDoc->m_nPaintHeight; y += gridSize) {
+			double areaError = 0;
+
+			//loop thru the region M and record the point with largest error
+			int regionxStart = max(x - gridSize / 2, 0);
+			int regionxEnd = min(m_pDoc->m_nPaintWidth, x + gridSize / 2);
+			int regionyStart = max(y - gridSize / 2, 0);
+			int regionyEnd = min(m_pDoc->m_nPaintHeight, y + gridSize / 2);
+			//cout << "analyzing region " << regionxStart << " " << regionxEnd << " - " << regionyStart << " " << regionyEnd << endl;
+			double largestColorDiff = 0.0;
+			Point pointwithLargestError(0, 0);
+			for (int regionx = regionxStart; regionx < regionxEnd; regionx++) {
+				for (int regiony = regionyStart; regiony < regionyEnd; regiony++) {
+					int whichPixel = regiony*m_pDoc->m_nPaintWidth + regionx;
+					int rdiff = (int)(canvas[3*whichPixel]) - (int)(refImage[3*whichPixel]);
+					int gdiff = (int)(canvas[3*whichPixel+1]) - (int)(refImage[3*whichPixel+1]);
+					int bdiff = (int)(canvas[3*whichPixel+2]) - (int)(refImage[3*whichPixel+2]);
+					double pointColorDiff = sqrt(rdiff*rdiff + gdiff*gdiff + bdiff*bdiff);
+					areaError += pointColorDiff;
+					if (pointColorDiff > largestColorDiff) {
+						pointwithLargestError.x = regionx;
+						pointwithLargestError.y = regiony;
+						largestColorDiff = pointColorDiff;
+					}
+				}
+			}
+			areaError /= (regionyEnd - regionyStart)*(regionxEnd - regionxStart);
+			//cout << "areaError is " << areaError << endl;
+			//cout << "threshold is" << m_pDoc->m_pUI->getPainterlyThreshold() << endl;
+			//in the first round, any distance is considered above threshold.
+			if (firstRound) {
+				strokes.push_back(pointwithLargestError);
+			}
+			else if (areaError > m_pDoc->m_pUI->getPainterlyThreshold()) {
+				strokes.push_back(pointwithLargestError);
+			}
+
+		}
+	}
+
+	std::random_shuffle (strokes.begin(), strokes.end());
+	painterlyRadius = radius;
+	painterlyRefimage = refImage;
 
 	isAnEvent = 1;
 	eventToDo = PAINTERLY;
 	redraw();
+
+	//update canvas
+	delete[] canvas;
+	canvas = new unsigned char[3 * imageSize];
+	memcpy(canvas, m_pDoc->m_ucPainting, 3 * imageSize);
+	//canvas = m_pDoc->m_ucPainting;
+
+
+
+	//delete[]m_pDoc->m_ucPainting;
+	//m_pDoc->m_ucPainting = canvas;
+	//redraw();
+
+		
 }
+
+int PaintView::redbytePosition(int x, int y)
+{
+	return  (y*m_pDoc->m_nWidth + x) * 3;
+}
+
+int PaintView::greenbytePosition(int x, int y)
+{
+	return  (y*m_pDoc->m_nWidth + x) * 3 +1;
+}
+
+int PaintView::bluebytePosition(int x, int y)
+{
+	return  (y*m_pDoc->m_nWidth + x) * 3+2;
+}
+

@@ -115,7 +115,9 @@ public:
 	bool				getAnotherGradient();
 	bool				getSizeRandom();
 	int					getFilterRows();
+	void				setFilterRows(int r);
 	int					getFilterCols();
+	void				setFilterCols(int c);
 	void				resetColorManipulation();
 	int					getPainterlyThreshold();
 	double				getPainterlyBlur();
