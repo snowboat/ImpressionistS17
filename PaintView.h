@@ -38,6 +38,9 @@ public:
 	void autoPaint();
 	void startAutoPaint();
 
+	//painterly interface
+	void doPainterly();
+
 private:
 	GLvoid* m_pPaintBitstart;
 	int		m_nDrawWidth,

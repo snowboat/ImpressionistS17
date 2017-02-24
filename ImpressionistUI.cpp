@@ -430,6 +430,76 @@ void ImpressionistUI::cb_startAutoPaint(Fl_Widget * o, void * v)
 	//((ImpressionistUI*)(o->user_data()))->m_pDoc->startAutoPaint();
 }
 
+void ImpressionistUI::cb_painterly(Fl_Menu_ * o, void * v)
+{
+	whoami(o)->m_painterlyDialog->show();
+}
+
+void ImpressionistUI::cb_setPainterlyStyle(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyStyle = (int)v;
+}
+
+void ImpressionistUI::cb_setPainterlyStroke(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyStroke = (int)v;
+	cout << "painterly style set to" << ((ImpressionistUI*)(o->user_data()))->m_painterlyStroke << endl;
+
+}
+
+void ImpressionistUI::cb_painterlyThresholdChanges(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyThreshold = (int)v;
+}
+
+void ImpressionistUI::cb_painterlyCurvatureChanges(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyCurvature = (double)(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_painterlyBlurChanges(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyBlur = (double)(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_painterlyGridsizeChanges(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyGridsize = (double)(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_painterlyMinStrokeChanges(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyMinStroke = (int)(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_painterlyMaxStrokeChanges(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyMaxStroke = (int)(((Fl_Slider *)o)->value());
+}
+
+void ImpressionistUI::cb_painterlyAlphaChanges(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyAlpha = (double)(((Fl_Slider *)o)->value());
+	((ImpressionistUI*)(o->user_data()))->setAlpha((double)(((Fl_Slider *)o)->value()));
+}
+
+void ImpressionistUI::cb_painterlyLayersChanges(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyLayers = (int)(((Fl_Slider *)o)->value());
+
+}
+
+void ImpressionistUI::cb_painterlyR0levelChanges(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_painterlyR0level = (int)(((Fl_Slider *)o)->value());
+
+}
+
+void ImpressionistUI::cb_runPainterly(Fl_Widget * o, void * v)
+{
+	((ImpressionistUI*)(o->user_data()))->m_paintView->doPainterly();
+}
+
 // paint the edge map on original view
 void ImpressionistUI::cb_paintEdgeMap(Fl_Widget* o, void* v)
 {
@@ -546,7 +616,7 @@ void ImpressionistUI::cb_confirmFilterSize(Fl_Widget * o, void * v)
 			
 		
 					//create the convolution dialog
-		pUI->m_convolutionDialog = new Fl_Window(70 * cols, 40 * rows + 100, "Make your OWN convolution");
+		pUI->m_convolutionDialog = new Fl_Window(100 * cols, 40 * rows + 100, "Make your OWN convolution");
 		pUI->m_normalizeConvolutionButton = new Fl_Button(10, 40 * rows + 40, 100, 30, "Normalize");
 		pUI->m_normalizeConvolutionButton->user_data((void*)(pUI));
 		pUI->m_normalizeConvolutionButton->callback(cb_normalize_convolution);
@@ -558,7 +628,7 @@ void ImpressionistUI::cb_confirmFilterSize(Fl_Widget * o, void * v)
 			for (int j = 0; j < cols; j++) {
 				std::string label = std::to_string(i) + "," + std::to_string(j);
 				const char* charLabel = label.c_str();
-				pUI->m_filterInputBoxes[i*rows + j] = new Fl_Float_Input(70 * j, 40 * rows - 40*i, 40, 20, charLabel);
+				pUI->m_filterInputBoxes[i*rows + j] = new Fl_Float_Input(100 * j, 40 * rows - 40*i, 80, 20, charLabel);
 				pUI->m_filterInputBoxes[i*rows + j]->value("0");
 				pUI->m_vectorOfInputBoxes.push_back(pUI->m_filterInputBoxes[i*rows + j]);
 				
@@ -583,7 +653,6 @@ void ImpressionistUI::cb_normalize_convolution(Fl_Widget * o, void * v)
 
 	for (std::vector<Fl_Float_Input*>::iterator itr = pUI->m_vectorOfInputBoxes.begin(); itr != pUI->m_vectorOfInputBoxes.end(); itr++) {
 		sum += std::stof((*itr)->value());
-		cout << sum << endl;
 	}
 	
 	
@@ -608,7 +677,6 @@ void ImpressionistUI::cb_normalize_convolution(Fl_Widget * o, void * v)
 			char* newBoxValue = new char[str.length() + 1];
 			strcpy(newBoxValue, str.c_str());
 
-			cout << newBoxValue << endl;
 			(*itr)->value(newBoxValue);
 			delete[] newBoxValue;
 		}
@@ -803,6 +871,41 @@ int ImpressionistUI::getFilterCols()
 	return m_numFilterCols;
 }
 
+void ImpressionistUI::resetColorManipulation()
+{
+	m_redValue = 1.0;
+	m_redSlider->value(1.0);
+	m_greenValue = 1.0;
+	m_greenSlider->value(1.0);
+	m_blueValue = 1.0;
+	m_blueSlider->value(1.0);
+}
+
+int ImpressionistUI::getPainterlyThreshold()
+{
+	return m_painterlyThreshold;
+}
+
+double ImpressionistUI::getPainterlyBlur()
+{
+	return this->m_painterlyBlur;
+}
+
+double ImpressionistUI::getPainterlyGridsize()
+{
+	return this->m_painterlyGridsize;
+}
+
+int ImpressionistUI::getPainterlyLayers()
+{
+	return this->m_painterlyLayers;
+}
+
+int ImpressionistUI::getPainterlyR0level()
+{
+	return this->m_painterlyR0level;
+}
+
 
 // Main menu definition
 Fl_Menu_Item ImpressionistUI::menuitems[] = {
@@ -829,7 +932,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&Swap Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_swap_image, 0, FL_MENU_DIVIDER },
 
 	{ "&Colors...",	FL_ALT + 'k', (Fl_Callback *)ImpressionistUI::cb_brushes },
-	{ "&Paintly", FL_ALT + 'p', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
+	{ "&Painterly", FL_ALT + 'p', (Fl_Callback *)ImpressionistUI::cb_painterly, 0, FL_MENU_DIVIDER },
 	{ 0 },
 
 	{ "&Display",		0, 0, 0, FL_SUBMENU },
@@ -874,8 +977,22 @@ Fl_Menu_Item ImpressionistUI::strokeDirectionMenu[3 + 1] = {
 	{ 0 }
 };
 
+Fl_Menu_Item ImpressionistUI::painterlyStyleMenu[5 + 1] = {
+	{ "Impressionist",FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStyle, (void *)1 },
+	{ "Expressionist",FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStyle, (void *)2 },
+	{ "ColorWash",FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStyle, (void *)3 },
+	{ "Pointillist",FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStyle, (void *)4 },
+	{ "Customized",FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStyle, (void *)5},
+	{ 0 }
+};
 
 
+Fl_Menu_Item ImpressionistUI::painterlyStrokeMenu[3 + 1] = {
+	{ "Circle Brush",FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStroke, (void *)1 },
+	{ "Line Brush",FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStroke, (void *)2 },
+	{ "Curved Brush",FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_setPainterlyStroke, (void *)3 },
+	{ 0 }
+};
 //----------------------------------------------------
 // Constructor.  Creates all of the widgets.
 // Add new widgets here
@@ -919,6 +1036,17 @@ ImpressionistUI::ImpressionistUI() {
 	m_anotherGradient = false;
 	m_numFilterRows = 0;
 	m_numFilterCols = 0;
+	m_painterlyStyle = 0;
+	m_painterlyStroke = 0;
+	m_painterlyThreshold = 100;
+	 m_painterlyCurvature = 1.0;
+	 m_painterlyBlur = 0.5;
+	 m_painterlyGridsize = 1.0;
+	 m_painterlyMinStroke = 4;
+	 m_painterlyMaxStroke = 16;
+	 m_painterlyAlpha = 1.0;
+	 m_painterlyLayers = 3;
+	 m_painterlyR0level = 3;
 
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
@@ -1129,5 +1257,141 @@ ImpressionistUI::ImpressionistUI() {
 	m_confirmFilterSize->callback(cb_confirmFilterSize);
 
 	m_askFilterSize->end();
+
+	//construct painterly dialog
+	m_painterlyDialog = new Fl_Window(500, 500, "Painterly Dialog");
+
+	m_painterlyStyleChoice = new Fl_Choice(50, 20, 150, 25, "&Style");
+	m_painterlyStyleChoice->user_data((void*)(this));	 // record self to be used by static callback functions
+	m_painterlyStyleChoice->menu(painterlyStyleMenu);
+	m_painterlyStyleChoice->callback(cb_setPainterlyStyle);
+
+	m_painterlyStrokeChoice = new Fl_Choice(270, 20, 150, 25, "&Stroke");
+	m_painterlyStrokeChoice->user_data((void*)(this));
+	m_painterlyStrokeChoice->menu(painterlyStrokeMenu);
+	m_painterlyStrokeChoice->callback(cb_setPainterlyStroke);
+
+	m_painterlyRunButton = new Fl_Button(430, 20, 50, 25, "&Run");
+	m_painterlyRunButton->user_data((void*)(this));
+	m_painterlyRunButton->callback(cb_runPainterly);
+
+	//Threshold slider
+	m_painterlyThresholdSlider = new Fl_Value_Slider(10, 80, 200, 20, "Threshold");
+	m_painterlyThresholdSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_painterlyThresholdSlider->type(FL_HOR_NICE_SLIDER);
+	m_painterlyThresholdSlider->labelfont(FL_COURIER);
+	m_painterlyThresholdSlider->labelsize(12);
+	m_painterlyThresholdSlider->minimum(0);
+	m_painterlyThresholdSlider->maximum(250);
+	m_painterlyThresholdSlider->step(1);
+	m_painterlyThresholdSlider->value(m_painterlyThreshold);
+	m_painterlyThresholdSlider->align(FL_ALIGN_RIGHT);
+	m_painterlyThresholdSlider->callback(cb_painterlyThresholdChanges);
+
+	//Threshold slider
+	m_painterlyCurvatureSlider = new Fl_Value_Slider(10, 110, 200, 20, "Curvature");
+	m_painterlyCurvatureSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_painterlyCurvatureSlider->type(FL_HOR_NICE_SLIDER);
+	m_painterlyCurvatureSlider->labelfont(FL_COURIER);
+	m_painterlyCurvatureSlider->labelsize(12);
+	m_painterlyCurvatureSlider->minimum(0.0);
+	m_painterlyCurvatureSlider->maximum(1.0);
+	m_painterlyCurvatureSlider->step(0.01);
+	m_painterlyCurvatureSlider->value(m_painterlyCurvature);
+	m_painterlyCurvatureSlider->align(FL_ALIGN_RIGHT);
+	m_painterlyCurvatureSlider->callback(cb_painterlyCurvatureChanges);
+	
+	//Blur slider
+	m_painterlyBlurSlider = new Fl_Value_Slider(10, 140, 200, 20, "Blur");
+	m_painterlyBlurSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_painterlyBlurSlider->type(FL_HOR_NICE_SLIDER);
+	m_painterlyBlurSlider->labelfont(FL_COURIER);
+	m_painterlyBlurSlider->labelsize(12);
+	m_painterlyBlurSlider->minimum(0.0);
+	m_painterlyBlurSlider->maximum(1.0);
+	m_painterlyBlurSlider->step(0.01);
+	m_painterlyBlurSlider->value(m_painterlyBlur);
+	m_painterlyBlurSlider->align(FL_ALIGN_RIGHT);
+	m_painterlyBlurSlider->callback(cb_painterlyBlurChanges);
+
+	//Blur slider
+	m_painterlyGridsizeSlider = new Fl_Value_Slider(10, 170,200, 20, "Grid Size");
+	m_painterlyGridsizeSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_painterlyGridsizeSlider->type(FL_HOR_NICE_SLIDER);
+	m_painterlyGridsizeSlider->labelfont(FL_COURIER);
+	m_painterlyGridsizeSlider->labelsize(12);
+	m_painterlyGridsizeSlider->minimum(0.0);
+	m_painterlyGridsizeSlider->maximum(1.0);
+	m_painterlyGridsizeSlider->step(0.01);
+	m_painterlyGridsizeSlider->value(m_painterlyGridsize);
+	m_painterlyGridsizeSlider->align(FL_ALIGN_RIGHT);
+	m_painterlyGridsizeSlider->callback(cb_painterlyGridsizeChanges);
+
+	//Blur slider
+	m_painterlyMinStrokeSlider = new Fl_Value_Slider(10, 200, 200, 20, "MinStroke");
+	m_painterlyMinStrokeSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_painterlyMinStrokeSlider->type(FL_HOR_NICE_SLIDER);
+	m_painterlyMinStrokeSlider->labelfont(FL_COURIER);
+	m_painterlyMinStrokeSlider->labelsize(12);
+	m_painterlyMinStrokeSlider->minimum(0);
+	m_painterlyMinStrokeSlider->maximum(30);
+	m_painterlyMinStrokeSlider->step(1);
+	m_painterlyMinStrokeSlider->value(m_painterlyMinStroke);
+	m_painterlyMinStrokeSlider->align(FL_ALIGN_RIGHT);
+	m_painterlyMinStrokeSlider->callback(cb_painterlyMinStrokeChanges);
+
+	//Blur slider
+	m_painterlyMaxStrokeSlider = new Fl_Value_Slider(10, 230, 200, 20, "MaxStroke");
+	m_painterlyMaxStrokeSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_painterlyMaxStrokeSlider->type(FL_HOR_NICE_SLIDER);
+	m_painterlyMaxStrokeSlider->labelfont(FL_COURIER);
+	m_painterlyMaxStrokeSlider->labelsize(12);
+	m_painterlyMaxStrokeSlider->minimum(1);
+	m_painterlyMaxStrokeSlider->maximum(30);
+	m_painterlyMaxStrokeSlider->step(1);
+	m_painterlyMaxStrokeSlider->value(m_painterlyMaxStroke);
+	m_painterlyMaxStrokeSlider->align(FL_ALIGN_RIGHT);
+	m_painterlyMaxStrokeSlider->callback(cb_painterlyMaxStrokeChanges);
+
+	//Blur slider
+	m_painterlyAlphaSlider = new Fl_Value_Slider(10, 260, 200, 20, "Alpha");
+	m_painterlyAlphaSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_painterlyAlphaSlider->type(FL_HOR_NICE_SLIDER);
+	m_painterlyAlphaSlider->labelfont(FL_COURIER);
+	m_painterlyAlphaSlider->labelsize(12);
+	m_painterlyAlphaSlider->minimum(0.0);
+	m_painterlyAlphaSlider->maximum(1.0);
+	m_painterlyAlphaSlider->step(0.01);
+	m_painterlyAlphaSlider->value(m_painterlyAlpha);
+	m_painterlyAlphaSlider->align(FL_ALIGN_RIGHT);
+	m_painterlyAlphaSlider->callback(cb_painterlyAlphaChanges);
+
+	//Blur slider
+	m_painterlyLayersSlider = new Fl_Value_Slider(10, 290, 200, 20, "Layers");
+	m_painterlyLayersSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_painterlyLayersSlider->type(FL_HOR_NICE_SLIDER);
+	m_painterlyLayersSlider->labelfont(FL_COURIER);
+	m_painterlyLayersSlider->labelsize(12);
+	m_painterlyLayersSlider->minimum(1);
+	m_painterlyLayersSlider->maximum(5);
+	m_painterlyLayersSlider->step(1);
+	m_painterlyLayersSlider->value(m_painterlyLayers);
+	m_painterlyLayersSlider->align(FL_ALIGN_RIGHT);
+	m_painterlyLayersSlider->callback(cb_painterlyLayersChanges);
+
+	//Blur slider
+	m_painterlyR0levelSlider = new Fl_Value_Slider(10, 320, 200, 20, "R0 level");
+	m_painterlyR0levelSlider->user_data((void*)(this));	// record self to be used by static callback functions
+	m_painterlyR0levelSlider->type(FL_HOR_NICE_SLIDER);
+	m_painterlyR0levelSlider->labelfont(FL_COURIER);
+	m_painterlyR0levelSlider->labelsize(12);
+	m_painterlyR0levelSlider->minimum(1);
+	m_painterlyR0levelSlider->maximum(5);
+	m_painterlyR0levelSlider->step(1);
+	m_painterlyR0levelSlider->value(m_painterlyR0level);
+	m_painterlyR0levelSlider->align(FL_ALIGN_RIGHT);
+	m_painterlyR0levelSlider->callback(cb_painterlyR0levelChanges);
+
+	m_painterlyDialog->end();
 
 }
