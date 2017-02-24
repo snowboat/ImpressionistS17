@@ -50,6 +50,10 @@ void ScatteredLineBrush::BrushMove(const Point source, const Point target)
 	int maxdist = lineLength;
 	int t = rand() % 2 + 3; // generate 3 or 4 lines
 
+	if (maxdist == 0) {
+		maxdist = 1;
+	}
+
 	for (int i = 0; i < t; i++) {
 		if (maxdist <= 0)
 			maxdist = 1;

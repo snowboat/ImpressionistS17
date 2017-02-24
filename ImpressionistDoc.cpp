@@ -27,6 +27,7 @@ using namespace std;
 #include "SharpeningBrush.h"
 #include "AlphaMappedBrush.h"
 #include "CustomizedBrush.h"
+#include "CurvedBrush.h"
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
@@ -78,7 +79,9 @@ ImpressionistDoc::ImpressionistDoc()
 	ImpBrush::c_pBrushes[BRUSH_ALPHA_MAPPED]
 		= new AlphaMappedBrush(this, "Alpha Mapped Brush");
 	ImpBrush::c_pBrushes[BRUSH_CUSTOMIZED]
-		= new CustomizedBrush(this, "CustomizedBrush");
+		= new CustomizedBrush(this, "Customized Brush");
+	ImpBrush::c_pBrushes[BRUSH_CURVED]
+		= new CurvedBrush(this, "Curved Brush");
 	// make one of the brushes current
 	m_pCurrentBrush = ImpBrush::c_pBrushes[0];
 
