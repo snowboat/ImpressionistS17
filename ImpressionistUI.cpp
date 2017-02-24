@@ -860,10 +860,11 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE + 1] = {
 	{ "Scattered Circles",	FL_ALT + 'd', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_CIRCLES },
 	{ "Saturation",	FL_ALT + 't', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SATURATION_BRUSH },
 	{ "Black and White",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLACKANDWHITE_BRUSH },
-	{ "Blur",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLURRING },
-	{ "Sharpen",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SHARPENING },
-	{ "Alpha Mapped",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_ALPHA_MAPPED },
-	{ "Customized",	FL_ALT + 'w', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_CUSTOMIZED },
+	{ "Blur",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_BLURRING },
+	{ "Sharpen",	FL_ALT + 'r', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SHARPENING },
+	{ "Alpha Mapped",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_ALPHA_MAPPED },
+	{ "Customized",	FL_ALT + 'z', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_CUSTOMIZED },
+	{ "Curved",	FL_ALT + 'v', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_CURVED },
 	{ 0 }
 };
 

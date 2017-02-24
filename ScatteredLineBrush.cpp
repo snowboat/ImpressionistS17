@@ -50,8 +50,12 @@ void ScatteredLineBrush::BrushMove(const Point source, const Point target)
 	int maxdist = lineLength;
 	int t = rand() % 2 + 3; // generate 3 or 4 lines
 
+	if (maxdist == 0) {
+		maxdist = 1;
+	}
+
 	for (int i = 0; i < t; i++) {
-		double dist = rand() % maxdist;
+		int dist = rand() % maxdist;
 		double angle = frand() * 2 * M_PI;
 	    Point lineCtrl(target.x + dist*cos(angle), target.y + dist*sin(angle));
 		Point lineCtrlSource(source.x + dist*cos(angle), source.y + dist*sin(angle));
@@ -215,8 +219,8 @@ void ScatteredLineBrush::BrushMove(const Point source, const Point target)
 		glBegin(GL_LINES);
 		SetColor(lineCtrlSource);
 
-		std::cout << "1 is " << x1 << " " << y1 << std::endl;
-		std::cout << "2 is " << x2 << " " << y2 << std::endl;
+		// std::cout << "1 is " << x1 << " " << y1 << std::endl;
+		// std::cout << "2 is " << x2 << " " << y2 << std::endl;
 
 		glVertex2i(x1, y1);
 		glVertex2i(x2, y2);

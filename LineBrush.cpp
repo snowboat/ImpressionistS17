@@ -250,8 +250,8 @@ void LineBrush::BrushMove(const Point source, const Point target)
 	glBegin(GL_LINES);
 	SetColor(source);
 	
-	std::cout << "1 is " << x1 << " " << y1 << std::endl;
-	std::cout << "2 is " << x2 << " " << y2 << std::endl;
+	// std::cout << "1 is " << x1 << " " << y1 << std::endl;
+	// std::cout << "2 is " << x2 << " " << y2 << std::endl;
 
 	glVertex2i(x1, y1);
 	glVertex2i(x2, y2);
